@@ -33,14 +33,13 @@
         
         .history-list { margin-top: 20px; width: 100%; }
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-        .item-name { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
-        .item-price { font-weight: 800; font-size: 0.9rem; color: #ef4444; }
+        .item-name { font-weight: 600; font-size: 0.85rem; color: #1e293b; }
+        .item-price { font-weight: 800; font-size: 0.85rem; color: #ef4444; }
 
-        /* Talles - Diseño mejorado */
-        .size-section-title { background: #f1f5f9; color: #475569; font-size: 0.75rem; font-weight: 900; padding: 8px; border-radius: 8px; margin: 15px 0 10px 0; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
-        .size-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 10px; }
-        .size-header { font-weight: 800; color: #64748b; font-size: 0.65rem; background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #e2e8f0; }
-        .size-row { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; font-weight: 600; color: #334155; }
+        .size-section-title { background: #f1f5f9; color: #475569; font-size: 0.7rem; font-weight: 900; padding: 8px; border-radius: 8px; margin: 15px 0 8px 0; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        .size-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; text-align: center; margin-bottom: 10px; }
+        .size-header { font-weight: 800; color: #64748b; font-size: 0.6rem; background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #e2e8f0; }
+        .size-row { padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; font-weight: 600; color: #334155; }
     </style>
 </head>
 <body>
@@ -51,7 +50,7 @@
 
     <div class="dolar-container">
         <div class="dolar-box">
-            <span>BNA Oficial</span>
+            <span>Oficial (BNA)</span>
             <b id="val-oficial">...</b>
         </div>
         <div class="dolar-box" style="background: #fffbeb; border-color: #fef3c7;">
@@ -72,11 +71,9 @@
             <div class="amount-ars" id="disp-ars">ARS $0.00</div>
         </div>
 
-        <label style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-left: 5px;">PRESUPUESTO TOTAL</label>
-        <input type="number" id="input-base" placeholder="Ej: 2000">
-        <button class="btn-blue" onclick="setBase()" style="background:#64748b; margin-bottom: 25px;">ACTUALIZAR FONDO</button>
+        <input type="number" id="input-base" placeholder="Fondo Total USD">
+        <button class="btn-blue" onclick="setBase()" style="background:#64748b; margin-bottom: 25px; height: 45px;">ACTUALIZAR FONDO</button>
         
-        <label style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-left: 5px;">NUEVA COMPRA</label>
         <input type="text" id="g-nom" placeholder="¿Qué compraste?">
         <input type="number" id="g-val" placeholder="Precio Final USD">
         <button class="btn-blue" onclick="addGasto()">REGISTRAR COMPRA</button>
@@ -87,17 +84,21 @@
     </div>
 
     <div id="sec-talles" class="card" style="display:none;">
-        <h3 style="text-align:center; color: var(--primary); margin: 0 0 10px 0;">Equivalencias US vs AR</h3>
+        <h3 style="text-align:center; color: var(--primary); margin: 0 0 10px 0;">Guía US vs AR</h3>
         
         <div class="size-section-title">👟 Zapatillas</div>
         <div class="size-grid">
             <div class="size-header">AR</div><div class="size-header">US HOMBRE</div><div class="size-header">US MUJER</div>
+            <div class="size-row">35</div><div class="size-row">-</div><div class="size-row">5</div>
             <div class="size-row">36</div><div class="size-row">4.5</div><div class="size-row">6</div>
+            <div class="size-row">37</div><div class="size-row">5</div><div class="size-row">6.5</div>
             <div class="size-row">38</div><div class="size-row">6</div><div class="size-row">7.5</div>
+            <div class="size-row">39</div><div class="size-row">7</div><div class="size-row">8.5</div>
             <div class="size-row">40</div><div class="size-row">7.5</div><div class="size-row">9</div>
             <div class="size-row">41</div><div class="size-row">8.5</div><div class="size-row">10</div>
             <div class="size-row">42</div><div class="size-row">9</div><div class="size-row">10.5</div>
             <div class="size-row">43</div><div class="size-row">10</div><div class="size-row">11.5</div>
+            <div class="size-row">44</div><div class="size-row">11</div><div class="size-row">12.5</div>
         </div>
 
         <div class="size-section-title">👕 Remeras y Buzos</div>
@@ -107,15 +108,17 @@
             <div class="size-row">M</div><div class="size-row">M</div><div class="size-row">8-10</div>
             <div class="size-row">L</div><div class="size-row">L</div><div class="size-row">12-14</div>
             <div class="size-row">XL</div><div class="size-row">XL</div><div class="size-row">16-18</div>
+            <div class="size-row">XXL</div><div class="size-row">XXL</div><div class="size-row">20+</div>
         </div>
 
-        <div class="size-section-title">👖 Pantalones (Lee/Levis)</div>
+        <div class="size-section-title">👖 Pantalones</div>
         <div class="size-grid">
-            <div class="size-header">AR (Talle)</div><div class="size-header">US (W)</div><div class="size-header">Talle US</div>
-            <div class="size-row">40</div><div class="size-row">30</div><div class="size-row">S</div>
-            <div class="size-row">42</div><div class="size-row">32</div><div class="size-row">M</div>
-            <div class="size-row">44</div><div class="size-row">34</div><div class="size-row">L</div>
-            <div class="size-row">46</div><div class="size-row">36</div><div class="size-row">XL</div>
+            <div class="size-header">AR (Talle)</div><div class="size-header">US Hombre</div><div class="size-header">US Mujer</div>
+            <div class="size-row">38</div><div class="size-row">28</div><div class="size-row">6</div>
+            <div class="size-row">40</div><div class="size-row">30</div><div class="size-row">8</div>
+            <div class="size-row">42</div><div class="size-row">32</div><div class="size-row">10</div>
+            <div class="size-row">44</div><div class="size-row">34</div><div class="size-row">12</div>
+            <div class="size-row">46</div><div class="size-row">36</div><div class="size-row">14</div>
         </div>
     </div>
 
@@ -135,7 +138,7 @@
                 usdTarjeta = dTar.venta;
                 document.getElementById('val-tarjeta').innerText = '$' + usdTarjeta.toFixed(2);
                 updateUI();
-            } catch (e) { console.error("Error API:", e); }
+            } catch (e) { console.error(e); }
         }
 
         function setBase() {
@@ -175,7 +178,7 @@
             document.getElementById('t-talles').classList.toggle('active', s==='talles');
         }
 
-        function borrar() { if(confirm("¿Borrar todo el historial y saldo?")) { balance = 0; compras = []; updateUI(); } }
+        function borrar() { if(confirm("¿Borrar todo el historial?")) { balance = 0; compras = []; updateUI(); } }
         fetchDolar();
     </script>
 </body>
