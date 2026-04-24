@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Shopping Orlando</title>
+    <title>Shopping Orlando Pro</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         :root { --primary: #2563eb; --accent: #7c3aed; --bg: #f8fafc; --white: #ffffff; }
@@ -32,7 +32,7 @@
         input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; margin-bottom: 10px; font-size: 1rem; background: #f8fafc; }
         .btn-blue { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         
-        /* Tabla de Talles Estilizada */
+        /* Tabla de Talles */
         .size-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-top: 10px; }
         .size-header { font-weight: 800; color: #64748b; font-size: 0.7rem; background: #f1f5f9; padding: 5px; border-radius: 6px; }
         .size-row { padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 0.9rem; font-weight: 600; }
@@ -46,12 +46,12 @@
 
     <div class="dolar-container">
         <div class="dolar-box">
-            <span>Oficial (BNA)</span>
-            <b id="val-oficial">Cargando...</b>
+            <span>BNA Oficial</span>
+            <b id="val-oficial">...</b>
         </div>
         <div class="dolar-box" style="background: #fffbeb; border-color: #fef3c7;">
             <span style="color: #92400e;">Dólar Tarjeta</span>
-            <b id="val-tarjeta" style="color: #b45309;">Cargando...</b>
+            <b id="val-tarjeta" style="color: #b45309;">...</b>
         </div>
     </div>
 
@@ -81,26 +81,18 @@
 
     <div id="sec-talles" class="card" style="display:none;">
         <h3 style="text-align:center; color: var(--primary); margin-top: 0;">Guía de Talles US vs AR</h3>
-        
-        <div style="margin-bottom: 20px;">
-            <div class="size-header" style="text-align: center; margin-bottom: 5px;">CALZADO HOMBRE</div>
-            <div class="size-grid">
-                <div class="size-header">AR</div><div class="size-header">US</div><div class="size-header">CM</div>
-                <div class="size-row">40</div><div class="size-row">8.5</div><div class="size-row">26.5</div>
-                <div class="size-row">41</div><div class="size-row">9.5</div><div class="size-row">27.5</div>
-                <div class="size-row">42</div><div class="size-row">10.5</div><div class="size-row">28.5</div>
-                <div class="size-row">43</div><div class="size-row">11.5</div><div class="size-row">29.5</div>
-            </div>
+        <div class="size-header" style="text-align: center;">CALZADO HOMBRE</div>
+        <div class="size-grid">
+            <div class="size-header">AR</div><div class="size-header">US</div><div class="size-header">CM</div>
+            <div class="size-row">40</div><div class="size-row">8.5</div><div class="size-row">26.5</div>
+            <div class="size-row">41</div><div class="size-row">9.5</div><div class="size-row">27.5</div>
+            <div class="size-row">42</div><div class="size-row">10.5</div><div class="size-row">28.5</div>
         </div>
-
-        <div>
-            <div class="size-header" style="text-align: center; margin-bottom: 5px;">PANTALONES / ROPA</div>
-            <div class="size-grid">
-                <div class="size-header">AR</div><div class="size-header">US</div><div class="size-header">Talle</div>
-                <div class="size-row">42</div><div class="size-row">32</div><div class="size-row">M</div>
-                <div class="size-row">44</div><div class="size-row">34</div><div class="size-row">L</div>
-                <div class="size-row">46</div><div class="size-row">36</div><div class="size-row">XL</div>
-            </div>
+        <div class="size-header" style="text-align: center; margin-top: 20px;">ROPA HOMBRE</div>
+        <div class="size-grid">
+            <div class="size-header">AR</div><div class="size-header">US</div><div class="size-header">Talle</div>
+            <div class="size-row">42</div><div class="size-row">32</div><div class="size-row">M</div>
+            <div class="size-row">44</div><div class="size-row">34</div><div class="size-row">L</div>
         </div>
     </div>
 
@@ -108,44 +100,37 @@
         let balance = parseFloat(localStorage.getItem('tripBal')) || 0;
         let usdTarjeta = 0;
 
-        // Conexión con DolarApi
         async function fetchDolar() {
             try {
                 const resOf = await fetch('https://dolarapi.com/v1/dolares/oficial');
                 const dOf = await resOf.json();
-                document.getElementById('val-oficial').innerText = `$${dOf.venta.toFixed(2)}`;
+                document.getElementById('val-oficial').innerText = '$' + dOf.venta.toFixed(2);
 
                 const resTar = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
                 const dTar = await resTar.json();
                 usdTarjeta = dTar.venta;
-                document.getElementById('val-tarjeta').innerText = `$${usdTarjeta.toFixed(2)}`;
-                
+                document.getElementById('val-tarjeta').innerText = '$' + usdTarjeta.toFixed(2);
                 updateUI();
             } catch (e) {
-                document.getElementById('val-tarjeta').innerText = "N/A";
+                console.error("Error API");
             }
         }
 
         function setBase() {
-            balance = parseFloat(document.getElementById('input-base').value) || 0;
-            updateUI();
+            const val = document.getElementById('input-base').value;
+            if(val) { balance = parseFloat(val); updateUI(); }
         }
 
         function addGasto() {
-            const val = parseFloat(document.getElementById('g-val').value) || 0;
-            if(val > 0) {
-                balance -= val;
-                updateUI();
-                document.getElementById('g-val').value = '';
-                document.getElementById('g-nom').value = '';
-            }
+            const val = document.getElementById('g-val').value;
+            if(val) { balance -= parseFloat(val); updateUI(); document.getElementById('g-val').value = ''; }
         }
 
         function updateUI() {
-            document.getElementById('disp-usd').innerText = `USD ${balance.toLocaleString('en-US', {minimumFractionDigits:2})}`;
+            document.getElementById('disp-usd').innerText = 'USD ' + balance.toLocaleString('en-US', {minimumFractionDigits:2});
             if(usdTarjeta > 0) {
                 const ars = balance * usdTarjeta;
-                document.getElementById('disp-ars').innerText = `ARS $${ars.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+                document.getElementById('disp-ars').innerText = 'ARS $' + ars.toLocaleString('es-AR', {minimumFractionDigits:2});
             }
             localStorage.setItem('tripBal', balance);
         }
@@ -157,7 +142,7 @@
             document.getElementById('t-talles').classList.toggle('active', s==='talles');
         }
 
-        function borrar() { if(confirm("¿Seguro quieres borrar todo el historial?")) { balance=0; updateUI(); } }
+        function borrar() { if(confirm("¿Borrar historial?")) { balance=0; updateUI(); } }
 
         fetchDolar();
     </script>
