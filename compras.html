@@ -15,7 +15,6 @@
         
         .card { background: var(--white); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px; }
         
-        /* Bloques de Dólar API */
         .dolar-container { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; max-width: 450px; }
         .dolar-box { flex: 1; background: #f0fdf4; border: 1px solid #dcfce7; padding: 10px; border-radius: 16px; text-align: center; }
         .dolar-box span { display: block; font-size: 0.65rem; font-weight: 800; color: #166534; text-transform: uppercase; }
@@ -32,10 +31,16 @@
         input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; margin-bottom: 10px; font-size: 1rem; background: #f8fafc; }
         .btn-blue { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         
-        /* Tabla de Talles */
-        .size-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center; margin-top: 10px; }
-        .size-header { font-weight: 800; color: #64748b; font-size: 0.7rem; background: #f1f5f9; padding: 5px; border-radius: 6px; }
-        .size-row { padding: 10px 0; border-bottom: 1px solid #f8fafc; font-size: 0.9rem; font-weight: 600; }
+        .history-list { margin-top: 20px; width: 100%; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .item-name { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+        .item-price { font-weight: 800; font-size: 0.9rem; color: #ef4444; }
+
+        /* Talles - Diseño mejorado */
+        .size-section-title { background: #f1f5f9; color: #475569; font-size: 0.75rem; font-weight: 900; padding: 8px; border-radius: 8px; margin: 15px 0 10px 0; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+        .size-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 10px; }
+        .size-header { font-weight: 800; color: #64748b; font-size: 0.65rem; background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #e2e8f0; }
+        .size-row { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; font-weight: 600; color: #334155; }
     </style>
 </head>
 <body>
@@ -69,61 +74,86 @@
 
         <label style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-left: 5px;">PRESUPUESTO TOTAL</label>
         <input type="number" id="input-base" placeholder="Ej: 2000">
-        <button class="btn-blue" onclick="setBase()" style="background:#64748b; margin-bottom: 25px; font-size: 0.8rem;">ACTUALIZAR FONDO</button>
+        <button class="btn-blue" onclick="setBase()" style="background:#64748b; margin-bottom: 25px;">ACTUALIZAR FONDO</button>
         
         <label style="font-size: 0.65rem; font-weight: 800; color: #94a3b8; margin-left: 5px;">NUEVA COMPRA</label>
         <input type="text" id="g-nom" placeholder="¿Qué compraste?">
         <input type="number" id="g-val" placeholder="Precio Final USD">
         <button class="btn-blue" onclick="addGasto()">REGISTRAR COMPRA</button>
 
+        <div id="lista-compras" class="history-list"></div>
+
         <p onclick="borrar()" style="color:#f87171; font-size: 0.7rem; text-align: center; margin-top: 25px; font-weight: 800; cursor: pointer; text-decoration: underline;">BORRAR TODO EL HISTORIAL</p>
     </div>
 
     <div id="sec-talles" class="card" style="display:none;">
-        <h3 style="text-align:center; color: var(--primary); margin-top: 0;">Guía de Talles US vs AR</h3>
-        <div class="size-header" style="text-align: center;">CALZADO HOMBRE</div>
+        <h3 style="text-align:center; color: var(--primary); margin: 0 0 10px 0;">Equivalencias US vs AR</h3>
+        
+        <div class="size-section-title">👟 Zapatillas</div>
         <div class="size-grid">
-            <div class="size-header">AR</div><div class="size-header">US</div><div class="size-header">CM</div>
-            <div class="size-row">40</div><div class="size-row">8.5</div><div class="size-row">26.5</div>
-            <div class="size-row">41</div><div class="size-row">9.5</div><div class="size-row">27.5</div>
-            <div class="size-row">42</div><div class="size-row">10.5</div><div class="size-row">28.5</div>
+            <div class="size-header">AR</div><div class="size-header">US HOMBRE</div><div class="size-header">US MUJER</div>
+            <div class="size-row">36</div><div class="size-row">4.5</div><div class="size-row">6</div>
+            <div class="size-row">38</div><div class="size-row">6</div><div class="size-row">7.5</div>
+            <div class="size-row">40</div><div class="size-row">7.5</div><div class="size-row">9</div>
+            <div class="size-row">41</div><div class="size-row">8.5</div><div class="size-row">10</div>
+            <div class="size-row">42</div><div class="size-row">9</div><div class="size-row">10.5</div>
+            <div class="size-row">43</div><div class="size-row">10</div><div class="size-row">11.5</div>
         </div>
-        <div class="size-header" style="text-align: center; margin-top: 20px;">ROPA HOMBRE</div>
+
+        <div class="size-section-title">👕 Remeras y Buzos</div>
         <div class="size-grid">
-            <div class="size-header">AR</div><div class="size-header">US</div><div class="size-header">Talle</div>
+            <div class="size-header">Talle AR</div><div class="size-header">US Hombre</div><div class="size-header">US Mujer</div>
+            <div class="size-row">S</div><div class="size-row">S</div><div class="size-row">4-6</div>
+            <div class="size-row">M</div><div class="size-row">M</div><div class="size-row">8-10</div>
+            <div class="size-row">L</div><div class="size-row">L</div><div class="size-row">12-14</div>
+            <div class="size-row">XL</div><div class="size-row">XL</div><div class="size-row">16-18</div>
+        </div>
+
+        <div class="size-section-title">👖 Pantalones (Lee/Levis)</div>
+        <div class="size-grid">
+            <div class="size-header">AR (Talle)</div><div class="size-header">US (W)</div><div class="size-header">Talle US</div>
+            <div class="size-row">40</div><div class="size-row">30</div><div class="size-row">S</div>
             <div class="size-row">42</div><div class="size-row">32</div><div class="size-row">M</div>
             <div class="size-row">44</div><div class="size-row">34</div><div class="size-row">L</div>
+            <div class="size-row">46</div><div class="size-row">36</div><div class="size-row">XL</div>
         </div>
     </div>
 
     <script>
         let balance = parseFloat(localStorage.getItem('tripBal')) || 0;
+        let compras = JSON.parse(localStorage.getItem('tripCompras')) || [];
         let usdTarjeta = 0;
 
         async function fetchDolar() {
             try {
-                const resOf = await fetch('https://dolarapi.com/v1/dolares/oficial');
-                const dOf = await resOf.json();
+                const rOf = await fetch('https://dolarapi.com/v1/dolares/oficial');
+                const dOf = await rOf.json();
                 document.getElementById('val-oficial').innerText = '$' + dOf.venta.toFixed(2);
 
-                const resTar = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
-                const dTar = await resTar.json();
+                const rTar = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
+                const dTar = await rTar.json();
                 usdTarjeta = dTar.venta;
                 document.getElementById('val-tarjeta').innerText = '$' + usdTarjeta.toFixed(2);
                 updateUI();
-            } catch (e) {
-                console.error("Error API");
-            }
+            } catch (e) { console.error("Error API:", e); }
         }
 
         function setBase() {
-            const val = document.getElementById('input-base').value;
-            if(val) { balance = parseFloat(val); updateUI(); }
+            const v = document.getElementById('input-base').value;
+            if(v) { balance = parseFloat(v); document.getElementById('input-base').value = ''; updateUI(); }
         }
 
         function addGasto() {
+            const nom = document.getElementById('g-nom').value || 'Compra';
             const val = document.getElementById('g-val').value;
-            if(val) { balance -= parseFloat(val); updateUI(); document.getElementById('g-val').value = ''; }
+            if(val) { 
+                const numVal = parseFloat(val);
+                balance -= numVal;
+                compras.unshift({ nombre: nom, precio: numVal });
+                document.getElementById('g-val').value = '';
+                document.getElementById('g-nom').value = '';
+                updateUI(); 
+            }
         }
 
         function updateUI() {
@@ -132,7 +162,10 @@
                 const ars = balance * usdTarjeta;
                 document.getElementById('disp-ars').innerText = 'ARS $' + ars.toLocaleString('es-AR', {minimumFractionDigits:2});
             }
+            const lista = document.getElementById('lista-compras');
+            lista.innerHTML = compras.map(c => `<div class="history-item"><span class="item-name">${c.nombre}</span><span class="item-price">- USD ${c.precio.toFixed(2)}</span></div>`).join('');
             localStorage.setItem('tripBal', balance);
+            localStorage.setItem('tripCompras', JSON.stringify(compras));
         }
 
         function showSec(s) {
@@ -142,8 +175,7 @@
             document.getElementById('t-talles').classList.toggle('active', s==='talles');
         }
 
-        function borrar() { if(confirm("¿Borrar historial?")) { balance=0; updateUI(); } }
-
+        function borrar() { if(confirm("¿Borrar todo el historial y saldo?")) { balance = 0; compras = []; updateUI(); } }
         fetchDolar();
     </script>
 </body>
