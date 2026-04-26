@@ -255,7 +255,8 @@
             let tax = parseFloat(document.getElementById('city-select').value) || 0;
             if (currentCategory === 'med' || currentCategory === 'food') tax = 0;
             const total = price + (price * (tax / 100));
-            document.getElementById('total').innerText = 'USD ' + total.toLocaleString('en-US', {minimumFractionDigits: 2});
+            // CORRECCIÓN: Forzamos exactamente 2 decimales para el total
+            document.getElementById('total').innerText = 'USD ' + total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('tax-detail').innerText = `Tax Aplicado: ${tax}%`;
         };
 
