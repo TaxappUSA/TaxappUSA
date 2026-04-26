@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Compras y Talles</title>
+    <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
     <style>
         :root { --primary: #2563eb; --accent: #7c3aed; --bg: #f8fafc; --white: #ffffff; --success: #10b981; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
+        /* Estilo para que los emojis de Twemoji tengan el tamaño correcto */
+        img.emoji { height: 1em; width: 1em; margin: 0 .05em 0 .1em; vertical-align: -0.1em; }
+
         .nav-bar { width: 100%; max-width: 450px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; }
         .btn-nav { flex: 1; padding: 12px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.8rem; border: 2px solid var(--primary); color: var(--primary); }
         .btn-nav-cyan { border-color: #0ea5e9; color: #0ea5e9; }
@@ -46,7 +50,6 @@
         .btn-add { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
         
         .history-item { background: #f8fafc; padding: 15px; border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
-        .h-amount { font-weight: 800; color: #ef4444; }
         .dato-clave { background: #f0fdf4; padding: 15px; border-radius: 16px; border: 1.5px solid var(--success); margin-bottom: 15px; text-align: center; cursor: pointer; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
 
         .rates-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
@@ -120,9 +123,9 @@
                 
                 <div class="rate-box multi">
                     <select id="select-eur" class="currency-select" onchange="updateMulti('eur')">
-                        <option value="EUR">🇪🇺 Euro</option>
-                        <option value="GBP">🇬🇧 Libra</option>
-                        <option value="CHF">🇨🇭 F. Suizo</option>
+                        <option value="EUR">Euro</option>
+                        <option value="GBP">Libra</option>
+                        <option value="CHF">F. Suizo</option>
                     </select>
                     <div class="rate-row"><span>🇺🇸</span><input type="number" id="eur-usd" value="1" oninput="convert('eur', 'usd')"></div>
                     <div class="rate-divider">⇅</div>
@@ -131,12 +134,12 @@
 
                 <div class="rate-box multi">
                     <select id="select-brl" class="currency-select" onchange="updateMulti('brl')">
-                        <option value="BRL">🇧🇷 Real</option>
-                        <option value="CLP">🇨🇱 P. Chileno</option>
-                        <option value="UYU">🇺🇾 P. Uruguayo</option>
-                        <option value="MXN">🇲🇽 P. Mexicano</option>
-                        <option value="PEN">🇵🇪 Sol Peruano</option>
-                        <option value="COP">🇨🇴 P. Colombiano</option>
+                        <option value="BRL">Real</option>
+                        <option value="CLP">P. Chileno</option>
+                        <option value="UYU">P. Uruguayo</option>
+                        <option value="MXN">P. Mexicano</option>
+                        <option value="PEN">Sol Peruano</option>
+                        <option value="COP">P. Colombiano</option>
                     </select>
                     <div class="rate-row"><span>🇺🇸</span><input type="number" id="brl-usd" value="1" oninput="convert('brl', 'usd')"></div>
                     <div class="rate-divider">⇅</div>
@@ -213,7 +216,7 @@
         </div>
     </div>
 
-    <div class="footer"><span>Creado por Juan Cruz Bria <img src="https://flagcdn.com/w40/ar.png" style="width:18px;"></span></div>
+    <div class="footer"><span>Creado por Juan Cruz Bria 🇦🇷</span></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
@@ -231,10 +234,14 @@
         let baseRates = { oficial: 0, tarjeta: 0, eur: 0, brl: 0 };
         const flags = { EUR: "🇪🇺", GBP: "🇬🇧", CHF: "🇨🇭", BRL: "🇧🇷", CLP: "🇨🇱", UYU: "🇺🇾", MXN: "🇲🇽", PEN: "🇵🇪", COP: "🇨🇴" };
 
-        // Función para formatear números con puntos y comas
-        const formatMoney = (amount) => {
-            return amount.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        };
+        // Función para formatear con puntos de miles y comas decimales
+        function formatNumber(num) {
+            return Number(num).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function updateEmojis() {
+            twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
+        }
 
         async function fetchRates() {
             try {
@@ -251,6 +258,7 @@
                 document.getElementById('tarjeta-local').value = baseRates.tarjeta;
                 document.getElementById('eur-local').value = baseRates.eur;
                 document.getElementById('brl-local').value = baseRates.brl;
+                updateEmojis();
             } catch (e) { console.error("Error rates:", e); }
         }
 
@@ -259,7 +267,8 @@
             baseRates[type] = allRates[code];
             document.getElementById(`flag-${type}`).innerText = flags[code];
             document.getElementById(`${type}-usd`).value = 1;
-            document.getElementById(`${type}-local').value = baseRates[type];
+            document.getElementById(`${type}-local`).value = baseRates[type];
+            updateEmojis();
         };
 
         window.convert = (type, direction) => {
@@ -287,6 +296,7 @@
             document.getElementById('sec-talles').style.display = s === 'talles' ? 'block' : 'none'; 
             document.getElementById('t-gastos').className = s === 'gastos' ? 'tab active' : 'tab';
             document.getElementById('t-talles').className = s === 'talles' ? 'tab active' : 'tab';
+            updateEmojis();
         };
 
         window.toggleSettings = () => { 
@@ -294,6 +304,7 @@
             const o = document.getElementById('menuOverlay');
             d.classList.toggle('open'); 
             o.style.display = d.classList.contains('open') ? 'block' : 'none'; 
+            updateEmojis();
         };
 
         window.changePassword = () => { if (currentUser && currentUser.email) sendPasswordResetEmail(auth, currentUser.email).then(() => alert("Correo enviado.")).catch((e) => alert(e.message)); };
@@ -320,12 +331,23 @@
             "Ross/Marshalls: Los mejores días son los martes, cuando renuevan el stock más barato.",
             "NYC: Woodbury Common es el mejor outlet, pero está a 1 hora de Manhattan.",
             "NYC: En Manhattan, las tiendas de la 5ta Ave abren a las 10 AM. Andá temprano para evitar filas.",
+            "Las Vegas: North Premium Outlets es al aire libre. Evitá ir al mediodía por el calor extremo.",
+            "Las Vegas: Registrate en 'VIP Club' online para cupones extra en los Outlets de Simon.",
+            "Chicago: Fashion Outlets of Chicago está cerca del aeropuerto O'Hare y es techado.",
+            "Los Ángeles: Citadel Outlets es el más cercano al centro y tiene muy buenos precios en Nike.",
+            "San Francisco: San Francisco Premium Outlets en Livermore tiene las mejores marcas de diseño.",
+            "Washington DC: Potomac Mills es uno de los outlets más grandes de la costa este.",
             "Tax: El impuesto en Miami es 7%, en Orlando 6.5% y en NYC 8.875% (excepto ropa < $110).",
             "Apple: Los precios que ves online NO incluyen impuestos. Sumale el tax local al final.",
             "Best Buy: Podés pedir 'Price Match' si encontrás el mismo producto más barato en Amazon.",
             "Walmart/Target: Ideales para comprar snacks y valijas baratas si te falta espacio.",
             "T.J. Maxx: Buscá las etiquetas amarillas (Yellow Tag), son las liquidaciones finales.",
-            "Cuponeras: En la mayoría de los Simon Outlets, si mostrás el pasaporte te dan una cuponera."
+            "Cuponeras: En la mayoría de los Simon Outlets, si mostrás el pasaporte te dan una cuponera.",
+            "Philadelphia: Al igual que en New Jersey, no hay impuesto a las ventas en ropa.",
+            "Atlanta: North Georgia Premium Outlets es el lugar ideal para marcas deportivas.",
+            "Boston: Wrentham Village es el outlet de referencia en Massachusetts.",
+            "Houston: The Galleria es masivo, ideal si buscás marcas como Zara, H&M o Apple.",
+            "Seattle: Seattle Premium Outlets en Tulalip tiene muy buenos precios en marcas outdoor."
         ];
 
         let currentTipIndex = 0;
@@ -333,7 +355,11 @@
             currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
             const el = document.getElementById('tip-text');
             el.style.opacity = 0;
-            setTimeout(() => { el.innerText = shoppingTips[currentTipIndex]; el.style.opacity = 1; }, 300);
+            setTimeout(() => { 
+                el.innerText = shoppingTips[currentTipIndex]; 
+                el.style.opacity = 1; 
+                updateEmojis();
+            }, 300);
         };
 
         function listenGastos(uid) {
@@ -344,13 +370,19 @@
                 if (snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No hay gastos.</p>'; updateDisplay(0); return; }
                 container.innerHTML = snapshot.docs.map(docSnap => {
                     const d = docSnap.data(); totalGastado += parseFloat(d.valor);
-                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${formatMoney(d.valor)}</div><div onclick="deleteGasto('${docSnap.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">×</div></div></div>`;
+                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${formatNumber(d.valor)}</div><div onclick="deleteGasto('${docSnap.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">×</div></div></div>`;
                 }).join('');
                 updateDisplay(totalGastado);
+                updateEmojis();
             });
         }
-        function updateDisplay(gastado) { document.getElementById('disp-fondo').innerText = 'USD ' + formatMoney(presupuestoBase - gastado); }
-        window.onload = () => { document.getElementById('tip-text').innerText = shoppingTips[0]; setInterval(window.nextTip, 8000); };
+        function updateDisplay(gastado) { document.getElementById('disp-fondo').innerText = 'USD ' + formatNumber(presupuestoBase - gastado); }
+        
+        window.onload = () => { 
+            document.getElementById('tip-text').innerText = shoppingTips[0]; 
+            updateEmojis();
+            setInterval(window.nextTip, 8000); 
+        };
     </script>
 </body>
 </html>
