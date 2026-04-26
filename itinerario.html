@@ -128,13 +128,13 @@
 
         const citiesConfig = {
             orlando: [
-                { name: "🏰 Magic Kingdom", id: "mk", parkId: "75ea4cdc-7d70-4ddd-901d-79da399081e7" },
-                { name: "🚀 Epcot", id: "ep", parkId: "47f909e4-bc22-4462-9960-244030d9588c" },
-                { name: "🎬 Hollywood Studios", id: "hs", parkId: "288747d1-8b4f-4a4a-9843-34b09355d5d6" },
-                { name: "🦁 Animal Kingdom", id: "ak", parkId: "1c84a229-8861-4648-9f39-f53fe87d9c27" },
-                { name: "📽️ Universal Studios", id: "us", parkId: "eb38b317-09cd-4bc7-95a2-f6735e2cf94b" },
-                { name: "🦖 Islands of Adventure", id: "ioa", parkId: "207797e5-8777-400d-8549-041846ed3f79" },
-                { name: "✨ Epic Universe", id: "epic", parkId: "097973d4-b9b5-412e-9ad8-2b8474278912", span: true }
+                { name: "🏰 Magic Kingdom", id: "mk", parkId: "6" },
+                { name: "🚀 Epcot", id: "ep", parkId: "5" },
+                { name: "🎬 Hollywood Studios", id: "hs", parkId: "7" },
+                { name: "🦁 Animal Kingdom", id: "ak", parkId: "8" },
+                { name: "📽️ Universal Studios", id: "us", parkId: "65" },
+                { name: "🦖 Islands of Adventure", id: "ioa", parkId: "64" },
+                { name: "✨ Epic Universe", id: "epic", parkId: null, span: true }
             ],
             nyc: [
                 { name: "🔭 Top of the Rock", id: "rock" }, { name: "🏙️ Empire State", id: "emp" },
@@ -244,30 +244,33 @@
 
                 try {
                     const proxy = "https://corsproxy.io/?";
-                    const wikiUrl = `https://api.themeparks.wiki/v1/entity/${park.parkId}/live`;
+                    const apiUrl = `https://queue-times.com/parks/${park.parkId}/queue_times.json`;
                     
-                    const response = await fetch(proxy + encodeURIComponent(wikiUrl));
+                    const response = await fetch(proxy + encodeURIComponent(apiUrl));
                     const data = await response.json();
                     
-                    let average = 0;
-                    let activeRides = 0;
+                    let totalWait = 0;
+                    let count = 0;
 
-                    if (data.liveData) {
-                        // Filtramos solo atracciones operando y con tiempo de espera real
-                        const waits = data.liveData.filter(a => 
-                            a.status === "OPERATING" && 
-                            a.queue?.STANDBY?.waitTime !== null &&
-                            a.entityType === "ATTRACTION"
-                        ).map(a => a.queue.STANDBY.waitTime);
-
-                        activeRides = waits.length;
-                        average = activeRides ? waits.reduce((a, b) => a + b, 0) / activeRides : 0;
+                    if (data && data.lands) {
+                        data.lands.forEach(land => {
+                            land.rides.forEach(ride => {
+                                if (ride.is_open) {
+                                    totalWait += ride.wait_time;
+                                    count++;
+                                }
+                            });
+                        });
                     }
 
-                    if (activeRides === 0 && (hour < 8 || hour > 22)) {
-                        el.innerText = "CERRADO 🌙"; el.className = "queue-status q-off";
-                    } else if (activeRides === 0) {
-                        el.innerText = "SIN INFO 🔄"; el.className = "queue-status q-off";
+                    const average = count > 0 ? totalWait / count : 0;
+
+                    if (count === 0) {
+                        if (hour < 8 || hour > 22) {
+                            el.innerText = "CERRADO 🌙"; el.className = "queue-status q-off";
+                        } else {
+                            el.innerText = "SIN INFO 🔄"; el.className = "queue-status q-off";
+                        }
                     } else if (average <= 20) {
                         el.innerText = "BAJA 🟢"; el.className = "queue-status q-low";
                     } else if (average <= 45) {
