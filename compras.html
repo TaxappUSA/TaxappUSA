@@ -14,8 +14,6 @@
         
         .card { background: var(--white); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px; position: relative; }
         
-        .settings-trigger { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; border-radius: 50%; width: 38px; height: 38px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
-
         .dolar-container { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; max-width: 450px; }
         .dolar-box { flex: 1; background: #f0fdf4; border: 1px solid #dcfce7; padding: 10px; border-radius: 16px; text-align: center; }
         .dolar-box b { font-size: 1.1rem; color: #15803d; display: block; }
@@ -32,20 +30,19 @@
         input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; margin-bottom: 10px; font-size: 1rem; outline: none; background: #f8fafc; }
         .btn-blue { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-        .item-name { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
-        .item-price { font-weight: 800; font-size: 0.9rem; color: #ef4444; }
+        /* Estilo del Historial */
+        .history-container { margin-top: 20px; border-top: 2px solid #f1f5f9; padding-top: 15px; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8fafc; border-radius: 12px; margin-bottom: 8px; border: 1px solid #e2e8f0; }
+        .item-info { display: flex; flex-direction: column; }
+        .item-name { font-weight: 700; font-size: 0.9rem; color: #1e293b; }
+        .item-date { font-size: 0.65rem; color: #64748b; }
+        .item-price { font-weight: 800; color: #ef4444; }
 
         /* TABLAS DE TALLES */
-        .size-section-title { background: #f1f5f9; padding: 8px; border-radius: 8px; margin: 15px 0 8px 0; text-align: center; font-size: 0.75rem; font-weight: 900; text-transform: uppercase; color: var(--primary); }
-        .size-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; text-align: center; margin-bottom: 15px; background: #e2e8f0; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
-        .size-header { font-weight: 800; color: white; font-size: 0.65rem; background: var(--primary); padding: 8px 4px; }
-        .size-row { padding: 8px 4px; background: white; font-size: 0.8rem; font-weight: 600; color: #334155; }
-
-        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
-        .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; }
-        .settings-drawer.open { right: 0; }
-        .drawer-btn { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; font-weight: 700; text-align: left; cursor: pointer; }
+        .size-section-title { background: #f1f5f9; padding: 10px; border-radius: 10px; margin: 20px 0 10px 0; text-align: center; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .size-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #e2e8f0; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+        .size-header { font-weight: 800; color: white; font-size: 0.7rem; background: var(--primary); padding: 10px 5px; text-align: center; }
+        .size-row { padding: 10px 5px; background: white; font-size: 0.85rem; font-weight: 600; color: #334155; text-align: center; }
     </style>
 </head>
 <body>
@@ -66,7 +63,6 @@
     </div>
 
     <div id="sec-gastos" class="card">
-        <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
         <div class="budget-box">
             <div class="amount" id="disp-usd">USD 0.00</div>
             <div id="disp-ars" class="amount-ars">ARS $0.00</div>
@@ -76,20 +72,21 @@
             <input type="number" id="input-base" placeholder="Nuevo fondo USD" style="margin-bottom:0;">
             <button onclick="updateBase()" class="btn-blue" style="width:40%; font-size:0.7rem;">SET FONDO</button>
         </div>
+        
         <input type="text" id="g-nom" placeholder="¿Qué compraste?">
         <input type="number" id="g-val" placeholder="Precio USD">
         <button id="btnReg" class="btn-blue" onclick="addGasto()">REGISTRAR COMPRA</button>
         
-        <div id="lista-compras" style="margin-top:20px;">
+        <div class="history-container" id="lista-compras">
             </div>
         
-        <button onclick="borrarTodo()" style="background:none; border:none; color:gray; text-decoration:underline; width:100%; margin-top:20px; font-size:0.7rem; cursor:pointer;">Limpiar Historial</button>
+        <button onclick="borrarTodo()" style="background:none; border:none; color:#94a3b8; text-decoration:underline; width:100%; margin-top:20px; font-size:0.7rem; cursor:pointer; font-weight:600;">BORRAR TODO EL HISTORIAL</button>
     </div>
 
     <div id="sec-talles" class="card" style="display:none;">
         <h3 style="text-align:center; color: var(--primary); margin-top:0;">Guía de Talles US</h3>
         
-        <div class="size-section-title">👟 CALZADO (Zapatillas)</div>
+        <div class="size-section-title">👟 Calzado</div>
         <div class="size-grid">
             <div class="size-header">AR</div><div class="size-header">US Hombre</div><div class="size-header">US Mujer</div>
             <div class="size-row">35</div><div class="size-row">-</div><div class="size-row">5</div>
@@ -100,30 +97,30 @@
             <div class="size-row">40</div><div class="size-row">7.5</div><div class="size-row">9</div>
             <div class="size-row">41</div><div class="size-row">8.5</div><div class="size-row">10</div>
             <div class="size-row">42</div><div class="size-row">9</div><div class="size-row">10.5</div>
-            <div class="size-row">43</div><div class="size-row">10</div><div class="size-row">11.5</div>
         </div>
 
-        <div class="size-section-title">👕 ROPA (Remeras / Buzos)</div>
-        <div class="size-grid" style="grid-template-columns: 1fr 1fr;">
-            <div class="size-header">Concepto</div><div class="size-header">Talle US</div>
-            <div class="size-row">Small</div><div class="size-row">S</div>
-            <div class="size-row">Medium</div><div class="size-row">M</div>
-            <div class="size-row">Large</div><div class="size-row">L</div>
-            <div class="size-row">X-Large</div><div class="size-row">XL</div>
-            <div class="size-row">XX-Large</div><div class="size-row">XXL</div>
+        <div class="size-section-title">👕 Remeras</div>
+        <div class="size-grid">
+            <div class="size-header">Talle</div><div class="size-header">Pecho (cm)</div><div class="size-header">US</div>
+            <div class="size-row">S</div><div class="size-row">88-96</div><div class="size-row">S</div>
+            <div class="size-row">M</div><div class="size-row">96-104</div><div class="size-row">M</div>
+            <div class="size-row">L</div><div class="size-row">104-112</div><div class="size-row">L</div>
+            <div class="size-row">XL</div><div class="size-row">112-124</div><div class="size-row">XL</div>
         </div>
-    </div>
 
-    <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
-    <div id="settingsDrawer" class="settings-drawer">
-        <h3>Ajustes</h3>
-        <button class="drawer-btn" onclick="changePass()">📧 Cambiar clave</button>
-        <button class="drawer-btn" style="margin-top:auto; color:red;" onclick="logout()">🚪 Cerrar Sesión</button>
+        <div class="size-section-title">🧥 Buzos / Hoodies</div>
+        <div class="size-grid">
+            <div class="size-header">Talle</div><div class="size-header">Ancho</div><div class="size-header">US</div>
+            <div class="size-row">S</div><div class="size-row">54 cm</div><div class="size-row">S</div>
+            <div class="size-row">M</div><div class="size-row">57 cm</div><div class="size-row">M</div>
+            <div class="size-row">L</div><div class="size-row">60 cm</div><div class="size-row">L</div>
+            <div class="size-row">XL</div><div class="size-row">63 cm</div><div class="size-row">XL</div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, query, where, orderBy, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -144,6 +141,7 @@
         let usdTarjeta = 0;
         let fondoActual = 0;
 
+        // Cargar Dólar
         async function fetchDolar() {
             try {
                 const r = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
@@ -155,7 +153,7 @@
                 const d2 = await r2.json();
                 document.getElementById('val-oficial').innerText = '$' + d2.venta.toFixed(2);
                 updateDisplay();
-            } catch(e) { console.error("Error API Dolar"); }
+            } catch(e) { console.error("Error Dolar API"); }
         }
 
         onAuthStateChanged(auth, (user) => {
@@ -165,57 +163,60 @@
         });
 
         function syncData(uid) {
-            // Sincronizar Fondo
+            // Escuchar Fondo
             onSnapshot(doc(db, "usuarios", uid), (snap) => {
                 fondoActual = snap.exists() ? snap.data().fondo : 0;
                 updateDisplay();
             });
 
-            // Sincronizar Historial (IMPORTANTE: Requiere índice en Firestore si no carga)
-            const q = query(
-                collection(db, "compras"), 
-                where("userId", "==", uid), 
-                orderBy("createdAt", "desc")
-            );
-
+            // Escuchar Historial en tiempo real
+            const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
             onSnapshot(q, (snap) => {
                 const lista = document.getElementById('lista-compras');
                 if(snap.empty) {
-                    lista.innerHTML = '<p style="text-align:center; font-size:0.8rem; color:gray;">Sin compras registradas</p>';
+                    lista.innerHTML = '<p style="text-align:center; font-size:0.8rem; color:gray;">No hay compras registradas.</p>';
                     return;
                 }
-                lista.innerHTML = snap.docs.map(d => `
-                    <div class="history-item">
-                        <span class="item-name">${d.data().nombre}</span>
-                        <span class="item-price">- USD ${parseFloat(d.data().precio).toFixed(2)}</span>
-                    </div>`).join('');
-            }, (error) => {
-                console.error("Error en el historial:", error);
+                lista.innerHTML = snap.docs.map(d => {
+                    const data = d.data();
+                    const fecha = new Date(data.createdAt).toLocaleDateString('es-AR');
+                    return `
+                        <div class="history-item">
+                            <div class="item-info">
+                                <span class="item-name">${data.nombre}</span>
+                                <span class="item-date">${fecha}</span>
+                            </div>
+                            <span class="item-price">- USD ${parseFloat(data.precio).toFixed(2)}</span>
+                        </div>`;
+                }).join('');
             });
         }
 
         window.addGasto = async () => {
-            const nom = document.getElementById('g-nom').value || 'Compra';
-            const val = parseFloat(document.getElementById('g-val').value);
-            if(!val || !currentUser) return;
+            const nomInput = document.getElementById('g-nom');
+            const valInput = document.getElementById('g-val');
+            const nombre = nomInput.value.trim() || 'Compra';
+            const precio = parseFloat(valInput.value);
+
+            if(!precio || !currentUser) return;
             
             try {
-                // 1. Guardamos la compra en la colección
+                // Guardar compra
                 await addDoc(collection(db, "compras"), { 
-                    nombre: nom, 
-                    precio: val, 
+                    nombre: nombre, 
+                    precio: precio, 
                     userId: currentUser.uid, 
                     createdAt: Date.now() 
                 });
 
-                // 2. Actualizamos el saldo del usuario
+                // Descontar del fondo
                 await setDoc(doc(db, "usuarios", currentUser.uid), { 
-                    fondo: fondoActual - val 
+                    fondo: fondoActual - precio 
                 }, { merge: true });
 
-                document.getElementById('g-nom').value = '';
-                document.getElementById('g-val').value = '';
-            } catch(e) { alert("Error al registrar: " + e.message); }
+                nomInput.value = '';
+                valInput.value = '';
+            } catch(e) { alert("Error: " + e.message); }
         };
 
         window.updateBase = async () => {
@@ -239,16 +240,8 @@
             document.getElementById('t-talles').classList.toggle('active', s==='talles');
         };
 
-        window.toggleSettings = () => {
-            document.getElementById('settingsDrawer').classList.toggle('open');
-            document.getElementById('menuOverlay').style.display = document.getElementById('settingsDrawer').classList.contains('open') ? 'block' : 'none';
-        };
-
-        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
-        window.changePass = () => sendPasswordResetEmail(auth, currentUser.email).then(() => alert("Email enviado"));
-        
         window.borrarTodo = async () => {
-            if(!confirm("¿Limpiar historial permanentemente?")) return;
+            if(!confirm("¿Borrar todo el historial de compras?")) return;
             const q = query(collection(db, "compras"), where("userId", "==", currentUser.uid));
             const snap = await getDocs(q);
             const deletePromises = snap.docs.map(d => deleteDoc(doc(db, "compras", d.id)));
