@@ -39,6 +39,19 @@
         button { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 1rem; letter-spacing: 1px; transition: 0.3s; }
         button:active { transform: scale(0.98); }
 
+        .verification-notice {
+            display: none;
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            border: 1px solid #dbeafe;
+        }
+
         .links-container { margin-top: 25px; display: flex; flex-direction: column; gap: 12px; }
         .reset-link { color: #ef4444; font-size: 0.8rem; cursor: pointer; font-weight: 700; text-decoration: none; }
         .toggle-link { color: #64748b; font-size: 0.85rem; cursor: pointer; text-decoration: none; font-weight: 600; }
@@ -51,8 +64,14 @@
 
     <div class="login-card">
         <h1 id="title">Bienvenido</h1>
+        
         <input type="email" id="email" placeholder="Correo electrónico">
         <input type="password" id="password" placeholder="Contraseña">
+        
+        <div id="verifAlert" class="verification-notice">
+            Te enviaremos un mail de verificación. Puede que el mensaje esté en inglés, pero es seguro. ✈️
+        </div>
+
         <button id="mainBtn" onclick="handleAuth()">INGRESAR</button>
         
         <div class="links-container">
@@ -68,7 +87,8 @@
             signInWithEmailAndPassword, 
             createUserWithEmailAndPassword, 
             onAuthStateChanged,
-            sendPasswordResetEmail 
+            sendPasswordResetEmail,
+            sendEmailVerification 
         } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -90,6 +110,7 @@
             document.getElementById('title').innerText = isLogin ? "Bienvenido" : "Crea tu cuenta";
             document.getElementById('mainBtn').innerText = isLogin ? "INGRESAR" : "REGISTRARME";
             document.getElementById('toggleLink').innerText = isLogin ? "¿No tienes cuenta? Regístrate aquí" : "¿Ya tienes cuenta? Ingresa aquí";
+            document.getElementById('verifAlert').style.display = isLogin ? "none" : "block";
         };
 
         window.handleAuth = async () => {
@@ -103,7 +124,12 @@
                 if (isLogin) {
                     await signInWithEmailAndPassword(auth, email, pass);
                 } else {
-                    await createUserWithEmailAndPassword(auth, email, pass);
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                    // Envío del correo de verificación
+                    await sendEmailVerification(userCredential.user);
+                    
+                    // Aviso detallado post-registro
+                    alert("¡Registro exitoso!\n\nSe ha enviado un correo de verificación a " + email + ".\n\nIMPORTANTE: Si no lo ves en tu bandeja de entrada, revisa la carpeta de SPAM o Correo no deseado. El mensaje podría aparecer en inglés, pero el enlace es seguro.");
                 }
             } catch (e) { alert("Error: " + e.message); }
         };
@@ -116,7 +142,7 @@
             }
             try {
                 await sendPasswordResetEmail(auth, email);
-                alert("Correo de recuperación enviado.");
+                alert("Correo de recuperación enviado. Revisa también tu carpeta de SPAM.");
             } catch (e) { alert("Error: " + e.message); }
         };
 
