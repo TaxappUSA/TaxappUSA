@@ -180,7 +180,7 @@
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
         <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
         
-        <button class="drawer-btn" onclick="updateEmail()">📧 Cambiar Correo</button>
+        <button class="drawer-btn" onclick="updateEmail()">📧 Cambiar Correo (Verificación)</button>
         <button class="drawer-btn" onclick="changePassword()">🔑 Cambiar Contraseña</button>
         <button class="drawer-btn" onclick="logout()">🚪 Cerrar Sesión</button>
         
@@ -252,16 +252,19 @@
             }
         });
 
-        // Lógica de Ajustes
+        // Lógica de Ajustes (Cambio de correo con verificación)
         window.updateEmail = async () => {
-            const newEmail = prompt("Ingresa tu nuevo correo electrónico:");
-            if (newEmail && newEmail !== currentUser.email) {
+            const newEmail = prompt("Ingresa el nuevo correo electrónico para verificar:");
+            if (newEmail && newEmail !== currentUser.email && newEmail.includes("@")) {
                 try {
-                    // Firebase pide verificación para cambiar el mail por seguridad
+                    // Envía correo de verificación al NUEVO correo antes de cambiarlo
                     await verifyBeforeUpdateEmail(currentUser, newEmail);
-                    alert("Se ha enviado un correo de verificación a la nueva dirección. El cambio se aplicará cuando confirmes el mail.");
-                } catch (e) { alert("Error: " + e.message); }
-            }
+                    alert("Se ha enviado un correo de verificación a " + newEmail + ". El cambio se aplicará automáticamente una vez que confirmes el enlace en tu bandeja de entrada.");
+                    toggleSettings();
+                } catch (e) { 
+                    alert("Error: Por seguridad, debes haber iniciado sesión recientemente para realizar esta acción."); 
+                }
+            } else if (newEmail) { alert("Correo inválido."); }
         };
 
         window.changePassword = async () => {
@@ -277,7 +280,7 @@
                     await deleteDoc(doc(db, "users", currentUser.uid));
                     await deleteUser(currentUser);
                     window.location.replace("login.html");
-                } catch (e) { alert("Para eliminar la cuenta, debes haber iniciado sesión recientemente. Cierra sesión e ingresa de nuevo para intentar."); }
+                } catch (e) { alert("Error: Re-autenticación necesaria. Cierra sesión e ingresa de nuevo para eliminar la cuenta."); }
             }
         };
 
