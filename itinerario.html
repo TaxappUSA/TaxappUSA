@@ -26,15 +26,19 @@
         
         .btn-add { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         
-        /* ESTILO PARA LOS TIPS DINÁMICOS */
         .dato-itinerario { background: #f0f9ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--blue); margin-top: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
         .dato-itinerario:active { transform: scale(0.98); }
 
         .list-container { width: 100%; max-width: 450px; margin-top: 10px; }
-        .note-item { background: var(--card-note); padding: 15px; border-left: 5px solid #f59e0b; border-radius: 12px; margin-bottom: 12px; position: relative; }
+        
+        /* ESTILOS DEL CHECK */
+        .note-item { background: var(--card-note); padding: 15px; border-left: 5px solid #f59e0b; border-radius: 12px; margin-bottom: 12px; position: relative; cursor: pointer; transition: 0.2s; }
+        .note-item.completed { opacity: 0.6; border-left-color: #10b981; background: #ecfdf5; }
+        .note-item.completed .note-text { text-decoration: line-through; color: #064e3b; }
+
         .note-text { font-size: 1rem; color: #451a03; font-weight: 500; white-space: pre-wrap; padding-right: 20px; }
         .note-date { font-size: 0.65rem; color: #92400e; margin-top: 8px; font-weight: 800; text-transform: uppercase; }
-        .btn-delete-note { position: absolute; top: 10px; right: 12px; color: #b45309; font-weight: 900; font-size: 1.2rem; cursor: pointer; }
+        .btn-delete-note { position: absolute; top: 10px; right: 12px; color: #b45309; font-weight: 900; font-size: 1.2rem; cursor: pointer; z-index: 5; }
 
         .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
         .footer span { display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -94,7 +98,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
         import { 
-            getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc, getDocs
+            getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc, getDocs, updateDoc
         } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -133,16 +137,17 @@
 
                 container.innerHTML = snapshot.docs.map(docSnap => {
                     const data = docSnap.data();
+                    const isCompleted = data.completed || false;
                     const date = data.createdAt ? new Date(data.createdAt) : new Date();
                     const dateStr = date.toLocaleString('es-AR', {
                         day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
                     }).toUpperCase();
 
                     return `
-                        <div class="note-item">
-                            <div class="btn-delete-note" onclick="deleteNote('${docSnap.id}')">×</div>
+                        <div class="note-item ${isCompleted ? 'completed' : ''}" onclick="toggleCheck('${docSnap.id}', ${isCompleted})">
+                            <div class="btn-delete-note" onclick="event.stopPropagation(); deleteNote('${docSnap.id}')">×</div>
                             <div class="note-text">${data.text}</div>
-                            <div class="note-date">${dateStr}</div>
+                            <div class="note-date">${dateStr} ${isCompleted ? '✅' : ''}</div>
                         </div>`;
                 }).join('');
             });
@@ -156,17 +161,25 @@
                 await addDoc(collection(db, "notas"), {
                     text: text,
                     userId: currentUser.uid,
-                    createdAt: Date.now()
+                    createdAt: Date.now(),
+                    completed: false
                 });
                 input.value = '';
             } catch (e) { alert("Error al guardar: " + e.message); }
+        };
+
+        window.toggleCheck = async (id, currentStatus) => {
+            try {
+                await updateDoc(doc(db, "notas", id), {
+                    completed: !currentStatus
+                });
+            } catch (e) { console.error("Error al actualizar:", e); }
         };
 
         window.deleteNote = async (id) => {
             if (confirm('¿Eliminar esta nota?')) await deleteDoc(doc(db, "notas", id));
         };
 
-        // --- LÓGICA DE TIPS DE ITINERARIO ---
         const itinerarioTips = [
             "Llegá a los parques 45 min antes de la apertura (Rope Drop).",
             "Bajate la App 'My Disney Experience' para ver tiempos de espera.",
@@ -200,9 +213,8 @@
                 el.style.opacity = 1;
             }, 300);
         };
-        setInterval(window.nextTip, 10000); // Cambia cada 10 seg
+        setInterval(window.nextTip, 10000);
 
-        // --- Ajustes ---
         window.toggleSettings = () => {
             const d = document.getElementById('settingsDrawer');
             const o = document.getElementById('menuOverlay');
