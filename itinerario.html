@@ -26,11 +26,11 @@
         
         .btn-add { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         
-        /* ESTILOS FILAS TIEMPO REAL - GRID DE 3 COLUMNAS */
+        /* FILAS TIEMPO REAL - DISEÑO MEJORADO */
         .queues-box { margin-top: 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .queue-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 4px; border-radius: 12px; text-align: center; }
-        .queue-name { font-size: 0.5rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 2px; height: 24px; display: flex; align-items: center; justify-content: center; }
-        .queue-status { font-size: 0.75rem; font-weight: 800; }
+        .queue-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 4px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .queue-name { font-size: 0.52rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 4px; line-height: 1.2; height: 28px; display: flex; align-items: center; justify-content: center; }
+        .queue-status { font-size: 0.72rem; font-weight: 900; }
         .q-low { color: #10b981; }
         .q-med { color: #f59e0b; }
         .q-high { color: #ef4444; }
@@ -81,12 +81,16 @@
         <button class="btn-add" onclick="addNote()">AGREGAR AL HISTORIAL</button>
 
         <div class="queues-box">
-            <div class="queue-card"><div class="queue-name">Magic K.</div><div id="mk" class="queue-status">...</div></div>
-            <div class="queue-card"><div class="queue-name">Epcot</div><div id="ep" class="queue-status">...</div></div>
-            <div class="queue-card"><div class="queue-name">H. Studios</div><div id="hs" class="queue-status">...</div></div>
-            <div class="queue-card"><div class="queue-name">Animal K.</div><div id="ak" class="queue-status">...</div></div>
-            <div class="queue-card"><div class="queue-name">Universal</div><div id="us" class="queue-status">...</div></div>
-            <div class="queue-card"><div class="queue-name">Islands</div><div id="ioa" class="queue-status">...</div></div>
+            <div class="queue-card"><div class="queue-name">🏰 Magic<br>Kingdom</div><div id="mk" class="queue-status">...</div></div>
+            <div class="queue-card"><div class="queue-name">🚀 Epcot</div><div id="ep" class="queue-status">...</div></div>
+            <div class="queue-card"><div class="queue-name">🎬 Hollywood<br>Studios</div><div id="hs" class="queue-status">...</div></div>
+            <div class="queue-card"><div class="queue-name">🦁 Animal<br>Kingdom</div><div id="ak" class="queue-status">...</div></div>
+            <div class="queue-card"><div class="queue-name">📽️ Universal<br>Studios</div><div id="us" class="queue-status">...</div></div>
+            <div class="queue-card"><div class="queue-name">🦖 Islands of<br>Adventure</div><div id="ioa" class="queue-status">...</div></div>
+            <div class="queue-card" style="grid-column: span 3; background: #f5f3ff; border-color: #c084fc;">
+                <div class="queue-name" style="color: #7c3aed; height: auto; margin-bottom: 6px;">✨ Epic Universe</div>
+                <div id="epic" class="queue-status">...</div>
+            </div>
         </div>
 
         <div class="dato-itinerario" onclick="nextTip()">
@@ -143,12 +147,13 @@
 
         async function updateQueueTimes() {
             const parks = [
-                { id: '75ea4cdc-7d70-4ddd-901d-79da399081e7', el: 'mk' }, // Magic Kingdom
-                { id: '47f909e4-bc22-4462-9960-244030d9588c', el: 'ep' }, // Epcot
-                { id: '288747d1-8b4f-4a4a-9843-34b09355d5d6', el: 'hs' }, // Hollywood Studios
-                { id: '1c84a229-8861-4648-9f39-f53fe87d9c27', el: 'ak' }, // Animal Kingdom
-                { id: 'eb38b317-09cd-4bc7-95a2-f6735e2cf94b', el: 'us' }, // Universal Studios Florida
-                { id: '207797e5-8777-400d-8549-041846ed3f79', el: 'ioa' }  // Islands of Adventure
+                { id: '75ea4cdc-7d70-4ddd-901d-79da399081e7', el: 'mk' }, 
+                { id: '47f909e4-bc22-4462-9960-244030d9588c', el: 'ep' }, 
+                { id: '288747d1-8b4f-4a4a-9843-34b09355d5d6', el: 'hs' }, 
+                { id: '1c84a229-8861-4648-9f39-f53fe87d9c27', el: 'ak' }, 
+                { id: 'eb38b317-09cd-4bc7-95a2-f6735e2cf94b', el: 'us' }, 
+                { id: '207797e5-8777-400d-8549-041846ed3f79', el: 'ioa' },
+                { id: '3439b78c-0238-4e83-8686-3507d73010b9', el: 'epic' }
             ];
 
             for (const park of parks) {
@@ -172,7 +177,7 @@
                     else if (avg < 45) { el.innerText = "MED 🟡"; el.className = "queue-status q-med"; }
                     else { el.innerText = "ALTA 🔴"; el.className = "queue-status q-high"; }
                 } catch (e) {
-                    el.innerText = "Cerrado 🌙";
+                    el.innerText = park.el === 'epic' ? "Próximamente 🚀" : "Cerrado 🌙";
                     el.className = "queue-status q-off";
                 }
             }
