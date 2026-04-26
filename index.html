@@ -31,30 +31,33 @@
         .cat-btn { padding: 15px 10px; border: 2px solid #f1f5f9; border-radius: 16px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .cat-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
         
-        /* Tip Buttons */
-        .tip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-        .tip-btn { padding: 10px 5px; border: 2px solid #f1f5f9; border-radius: 12px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; }
-        .tip-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        /* Estilos Propinas */
+        .tip-section { margin-bottom: 1.2rem; text-align: left; }
+        .tip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }
+        .tip-btn { padding: 10px 5px; border: 2px solid #f1f5f9; border-radius: 12px; background: white; font-size: 0.8rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; }
+        .tip-btn.active { border-color: var(--accent); background: #f5f3ff; color: var(--accent); }
+        .custom-tip-container { display: flex; align-items: center; background: #f1f5f9; border-radius: 12px; padding: 5px 12px; }
+        .custom-tip-container span { font-weight: 800; color: #64748b; font-size: 0.8rem; }
+        #custom-tip-input { background: transparent; border: none; padding: 8px; text-align: right; font-size: 0.9rem; color: var(--accent); }
 
         .result-box { background: #eff6ff; padding: 1.2rem; border-radius: 20px; margin-top: 0.8rem; border: 2px dashed var(--primary); margin-bottom: 10px; }
-        .result-value { font-size: 2.2rem; font-weight: 900; color: var(--primary); margin: 4px 0; }
-        
-        .grand-total-box { background: var(--primary); padding: 15px; border-radius: 20px; color: white; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .result-value { font-size: 2rem; font-weight: 900; color: var(--primary); margin: 2px 0; }
+        .final-box { background: var(--primary); padding: 1.2rem; border-radius: 20px; color: white; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+        .final-value { font-size: 2.2rem; font-weight: 900; margin: 4px 0; }
 
         .nav-buttons { margin-top: 25px; display: flex; flex-direction: column; gap: 10px; }
-        .nav-btn { text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; text-align: center; font-size: 0.9rem; transition: 0.2s; }
-        .btn-blue { background: #2563eb; color: white; border: none; width: 100%; cursor: pointer; }
+        .nav-btn { text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; text-align: center; font-size: 0.9rem; transition: 0.2s; border: none; cursor: pointer; }
+        .btn-blue { background: #2563eb; color: white; width: 100%; }
         .btn-purple { background: #7c3aed; color: white; }
-        .btn-cyan { background: #0ea5e9; color: white; border: none; }
+        .btn-cyan { background: #0ea5e9; color: white; }
 
+        /* Modales y Drawer */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
         .modal-content { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; }
-
         .settings-trigger { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
         .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
         .settings-drawer.open { right: 0; }
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
-        
         .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-align: left; }
         .btn-danger { color: #ef4444; border-color: #fecaca; }
 
@@ -88,31 +91,37 @@
         </div>
 
         <div class="input-group">
-            <label>Estado / Ciudad</label>
-            <div style="display: flex; gap: 10px;">
-                <select id="state-select" onchange="loadCities()" style="flex: 1;"></select>
-                <select id="city-select" onchange="calculate()" style="flex: 1.2;"></select>
-            </div>
+            <label>Estado</label>
+            <select id="state-select" onchange="loadCities()"></select>
+        </div>
+
+        <div class="input-group">
+            <label>Ciudad / Condado</label>
+            <select id="city-select" onchange="calculate()"></select>
         </div>
 
         <div class="result-box">
-            <div class="result-value" id="total">USD 0.00</div>
-            <div id="tax-detail" style="font-size: 0.8rem; color: #3b82f6; font-weight: bold;">Tax: 0%</div>
+            <div class="result-value" id="total-with-tax">USD 0.00</div>
+            <div id="tax-detail" style="font-size: 0.8rem; color: #3b82f6; font-weight: bold;">Tax Aplicado: 0%</div>
         </div>
 
-        <div id="tip-section" style="margin-bottom: 15px; text-align: left;">
-            <label>Propina (Tip) <span id="tip-usd-label" style="float: right; color: var(--accent);">+$0.00</span></label>
+        <div class="tip-section">
+            <label>Propina (Tip)</label>
             <div class="tip-grid">
                 <button class="tip-btn" id="tip-0" onclick="setTip(0)">0%</button>
-                <button class="tip-btn" id="tip-15" onclick="setTip(15)">15%</button>
-                <button class="tip-btn active" id="tip-18" onclick="setTip(18)">18%</button>
+                <button class="tip-btn" id="tip-10" onclick="setTip(10)">10%</button>
+                <button class="tip-btn active" id="tip-15" onclick="setTip(15)">15%</button>
                 <button class="tip-btn" id="tip-20" onclick="setTip(20)">20%</button>
+            </div>
+            <div class="custom-tip-container">
+                <span>OTRO %</span>
+                <input type="number" id="custom-tip-input" placeholder="Ej: 18" oninput="setCustomTip()" inputmode="numeric">
             </div>
         </div>
 
-        <div class="grand-total-box">
-            <div style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; opacity: 0.9;">Total Final (Inc. Tip)</div>
-            <div style="font-size: 1.8rem; font-weight: 900;" id="grand-total">USD 0.00</div>
+        <div class="final-box">
+            <label style="color: rgba(255,255,255,0.8); margin: 0;">TOTAL FINAL (INC. TIP)</label>
+            <div class="final-value" id="final-total">USD 0.00</div>
         </div>
 
         <div id="dynamic-tip" style="background: #f0fdf4; padding: 10px; border-radius: 12px; font-size: 0.75rem; color: #166534; font-weight: 700; margin-bottom: 15px; border: 1px solid #bbf7d0;">
@@ -179,7 +188,7 @@
         const db = getFirestore(app);
         let currentUser = null;
         let tripData = { destination: "Orlando", date: "2027-01-01" };
-        let currentTipPercent = 18;
+        let currentTipPercentage = 15;
 
         const econTips = [
             "Delaware y Oregon tienen 0% de Sales Tax. Ideal para comprar Apple o lujo.",
@@ -187,14 +196,8 @@
             "New Jersey tiene 0% de tax en ropa. Ideal si estás cerca de NYC (Jersey Gardens).",
             "En Miami, el tax es del 7%. Los outlets como Sawgrass rinden más por cupones.",
             "Texas ofrece 'Tax Free Shopping' para turistas extranjeros en ciertos locales.",
-            "Chicago tiene uno de los Sales Tax más altos de EE.UU. (10.25%).",
             "Recuerda que en EE.UU. el precio de etiqueta NUNCA incluye el impuesto."
         ];
-
-        function rotateTips() {
-            const el = document.getElementById('tip-content');
-            if(el) el.innerText = econTips[Math.floor(Math.random() * econTips.length)];
-        }
 
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.replace("login.html"); } 
@@ -202,29 +205,53 @@
                 currentUser = user;
                 document.getElementById('userEmail').innerText = user.email;
                 const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists() && docSnap.data().trip) tripData = docSnap.data().trip;
+                if (docSnap.exists() && docSnap.data().trip) { tripData = docSnap.data().trip; }
                 updateTripUI();
             }
         });
 
-        const taxData = {
-            "Alabama": [{n:"Promedio", t:9.29}], "Alaska": [{n:"Sin Tax", t:0}], "Arizona": [{n:"Phoenix", t:8.6}],
-            "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.63}], "Delaware": [{n:"Sin Tax", t:0}], 
-            "Florida": [{n:"Orlando", t:6.5}, {n:"Miami", t:7.0}, {n:"Tampa", t:8.5}], "Illinois": [{n:"Chicago", t:10.25}],
-            "Nevada": [{n:"Las Vegas", t:8.38}], "New Jersey": [{n:"Jersey City", t:6.63}], "New York": [{n:"NYC", t:8.88}],
-            "Oregon": [{n:"Sin Tax", t:0}], "Pennsylvania": [{n:"Philadelphia", t:8.0}], "Texas": [{n:"Houston", t:8.25}]
+        window.setCategory = (cat) => {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + cat).classList.add('active');
+            window.currentCategory = cat;
+            window.calculate();
         };
 
-        const stateSelect = document.getElementById('state-select');
-        Object.keys(taxData).sort().forEach(s => {
-            let opt = document.createElement('option');
-            opt.value = s; opt.text = s;
-            if(s === "Florida") opt.selected = true;
-            stateSelect.appendChild(opt);
-        });
+        window.setTip = (percent) => {
+            currentTipPercentage = percent;
+            document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tip-' + percent).classList.add('active');
+            document.getElementById('custom-tip-input').value = "";
+            window.calculate();
+        };
+
+        window.setCustomTip = () => {
+            const val = parseFloat(document.getElementById('custom-tip-input').value);
+            if (!isNaN(val)) {
+                currentTipPercentage = val;
+                document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+            }
+            window.calculate();
+        };
+
+        window.calculate = () => {
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            let tax = parseFloat(document.getElementById('city-select').value) || 0;
+            const category = document.querySelector('.cat-btn.active').id;
+            
+            if (category === 'btn-med' || category === 'btn-food') tax = 0;
+            
+            const subtotal = price + (price * (tax / 100));
+            const tipAmount = subtotal * (currentTipPercentage / 100);
+            const finalTotal = subtotal + tipAmount;
+
+            document.getElementById('total-with-tax').innerText = 'USD ' + subtotal.toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('tax-detail').innerText = `Tax Aplicado: ${tax}%`;
+            document.getElementById('final-total').innerText = 'USD ' + finalTotal.toLocaleString('en-US', {minimumFractionDigits: 2});
+        };
 
         window.loadCities = () => {
-            const state = stateSelect.value;
+            const state = document.getElementById('state-select').value;
             const citySelect = document.getElementById('city-select');
             citySelect.innerHTML = "";
             taxData[state].forEach(city => {
@@ -235,47 +262,39 @@
             window.calculate();
         };
 
-        window.setCategory = (cat) => {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + cat).classList.add('active');
-            window.currentCategory = cat;
-            window.calculate();
+        // Datos de Impuestos
+        const taxData = {
+            "Alabama": [{n:"Promedio", t:9.29}], "Alaska": [{n:"Sin Tax", t:0}], "Arizona": [{n:"Phoenix", t:8.6}], 
+            "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.63}], "Florida": [{n:"Orlando", t:6.5}, {n:"Miami", t:7.0}],
+            "New York": [{n:"NYC", t:8.88}], "Texas": [{n:"Houston", t:8.25}], "Nevada": [{n:"Las Vegas", t:8.38}]
         };
 
-        window.setTip = (percent) => {
-            currentTipPercent = percent;
-            document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tip-' + percent).classList.add('active');
-            window.calculate();
+        // Carga inicial de estados
+        const stateSelect = document.getElementById('state-select');
+        Object.keys(taxData).sort().forEach(s => {
+            let opt = document.createElement('option');
+            opt.value = s; opt.text = s;
+            if(s === "Florida") opt.selected = true;
+            stateSelect.appendChild(opt);
+        });
+
+        // Funciones de UI y Cuenta regresiva
+        window.toggleSettings = () => {
+            const d = document.getElementById('settingsDrawer');
+            document.getElementById('menuOverlay').style.display = d.classList.toggle('open') ? 'block' : 'none';
         };
 
-        window.calculate = () => {
-            const price = parseFloat(document.getElementById('price').value) || 0;
-            let taxRate = parseFloat(document.getElementById('city-select').value) || 0;
-            
-            const cat = document.querySelector('.cat-btn.active').id;
-            if (cat === 'btn-med' || cat === 'btn-food') taxRate = 0;
+        window.openTripModal = () => document.getElementById('tripModal').style.display = 'flex';
+        window.closeTripModal = () => document.getElementById('tripModal').style.display = 'none';
 
-            const taxAmount = price * (taxRate / 100);
-            const priceWithTax = price + taxAmount;
-            
-            const tipAmount = price * (currentTipPercent / 100);
-            const totalFinal = priceWithTax + tipAmount;
-
-            document.getElementById('total').innerText = 'USD ' + priceWithTax.toLocaleString('en-US', {minimumFractionDigits: 2});
-            document.getElementById('tax-detail').innerText = `Tax Aplicado: ${taxRate}%`;
-            document.getElementById('tip-usd-label').innerText = `+ $${tipAmount.toFixed(2)}`;
-            document.getElementById('grand-total').innerText = 'USD ' + totalFinal.toLocaleString('en-US', {minimumFractionDigits: 2});
-        };
-
-        // Firebase & UI Utils
         window.saveTripSettings = async () => {
-            const dest = document.getElementById('input-destination').value;
-            const date = document.getElementById('input-date').value;
-            tripData = { destination: dest, date: date };
+            tripData = { 
+                destination: document.getElementById('input-destination').value || "Orlando", 
+                date: document.getElementById('input-date').value || "2027-01-01" 
+            };
             updateTripUI();
             closeTripModal();
-            await setDoc(doc(db, "users", currentUser.uid), { trip: tripData }, { merge: true });
+            if(currentUser) await setDoc(doc(db, "users", currentUser.uid), { trip: tripData }, { merge: true });
         };
 
         function updateTripUI() {
@@ -284,29 +303,21 @@
             document.getElementById('input-date').value = tripData.date;
         }
 
-        window.openTripModal = () => document.getElementById('tripModal').style.display = 'flex';
-        window.closeTripModal = () => document.getElementById('tripModal').style.display = 'none';
-        window.toggleSettings = () => {
-            const d = document.getElementById('settingsDrawer');
-            d.classList.toggle('open');
-            document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
-        };
-        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
-
         function updateCountdown() {
+            if (!tripData.date) return;
             const target = new Date(tripData.date + "T00:00:00").getTime();
-            const now = new Date().getTime();
-            const diff = target - now;
+            const diff = target - new Date().getTime();
             if (diff <= 0) { document.getElementById("timer").innerText = "¡Buen viaje! ✈️"; return; }
             const d = Math.floor(diff / 864e5), h = Math.floor((diff % 864e5) / 36e5), m = Math.floor((diff % 36e5) / 6e4), s = Math.floor((diff % 6e4) / 1e3);
             document.getElementById("timer").innerText = `${d}d ${h}h ${m}m ${s}s`;
         }
 
+        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
+
         window.onload = () => { 
             window.loadCities(); 
             setInterval(updateCountdown, 1000); 
-            rotateTips();
-            setInterval(rotateTips, 10000);
+            document.getElementById('tip-content').innerText = econTips[Math.floor(Math.random() * econTips.length)];
         };
     </script>
 </body>
