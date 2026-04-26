@@ -14,17 +14,9 @@
         h1 { margin: 0 0 0.5rem 0; font-size: 1.6rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 10px; }
 
         .countdown-box {
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 16px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            cursor: pointer;
-            position: relative;
-            border: 2px solid transparent;
-            transition: 0.2s;
+            background: #f1f5f9; padding: 12px; border-radius: 16px; margin-bottom: 1.5rem;
+            display: flex; flex-direction: column; gap: 2px; cursor: pointer; position: relative;
+            border: 2px solid transparent; transition: 0.2s;
         }
         .countdown-box:active { transform: scale(0.98); border-color: var(--primary); }
         .countdown-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
@@ -42,8 +34,6 @@
         .result-box { background: #eff6ff; padding: 1.2rem; border-radius: 20px; margin-top: 0.8rem; border: 2px dashed var(--primary); margin-bottom: 15px; }
         .result-value { font-size: 2.2rem; font-weight: 900; color: var(--primary); margin: 4px 0; }
         
-        .dato-clave { background: #f5f3ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--accent); margin-top: 10px; text-align: center; cursor: pointer; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
-
         .nav-buttons { margin-top: 25px; display: flex; flex-direction: column; gap: 10px; }
         .nav-btn { text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; text-align: center; font-size: 0.9rem; transition: 0.2s; }
         .btn-blue { background: #2563eb; color: white; border: none; width: 100%; }
@@ -64,12 +54,11 @@
 
     <div class="card">
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
-        <div style="font-size: 0.6rem; color: #10b981; font-weight: 800; margin-bottom: 5px;">● En línea</div>
         <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
         
         <div class="countdown-box" id="box-trip" onclick="openTripModal()">
             <span class="edit-hint">✏️</span>
-            <span class="countdown-label" id="trip-label">Calculando...</span>
+            <span class="countdown-label" id="trip-label">Cargando viaje...</span>
             <span id="timer">00d 00h 00m 00s</span>
         </div>
         
@@ -78,7 +67,7 @@
             <input type="number" id="price" placeholder="0.00" oninput="calculate()" step="0.01" inputmode="decimal">
         </div>
 
-        <label>Categoría de Compra</label>
+        <label>Categoría</label>
         <div class="category-grid">
             <button class="cat-btn active" id="btn-general" onclick="setCategory('general')">🛍️ GENERAL</button>
             <button class="cat-btn" id="btn-tech" onclick="setCategory('tech')">💻 TECH</button>
@@ -99,11 +88,6 @@
         <div class="result-box">
             <div class="result-value" id="total">USD 0.00</div>
             <div id="tax-detail" style="font-size: 0.8rem; color: #3b82f6; font-weight: bold;">Tax: 0%</div>
-        </div>
-
-        <div class="dato-clave" onclick="nextTip()">
-            <small style="color: var(--accent); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;">💡 Tip de Compra</small>
-            <div id="tip-text" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-top: 4px;">Toque para ver más consejos.</div>
         </div>
 
         <div class="nav-buttons">
@@ -132,19 +116,13 @@
     <div id="settingsDrawer" class="settings-drawer">
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
         <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
-        <button class="drawer-btn" onclick="changePass()">📧 Cambiar clave</button>
-        <button class="drawer-btn" style="color:#ef4444;" onclick="eliminarCuenta()">🗑️ Eliminar Cuenta</button>
-        <button class="drawer-btn" style="margin-top:auto; background:#f1f5f9; border:none; text-align:center;" onclick="logout()">Cerrar Sesión</button>
-    </div>
-
-    <div class="footer">
-        <span>Creado por Juan Cruz Bria <img src="https://flagcdn.com/w40/ar.png" style="width:18px;" alt="Argentina"></span>
+        <button class="drawer-btn" onclick="logout()">Cerrar Sesión</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
@@ -162,16 +140,13 @@
         let tripData = { destination: "Orlando", date: "2027-01-01" };
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.replace("login.html");
-            } else {
+            if (!user) { window.location.replace("login.html"); } 
+            else {
                 currentUser = user;
                 document.getElementById('userEmail').innerText = user.email;
                 const docRef = doc(db, "users", user.uid);
                 const docSnap = await getDoc(docRef);
-                if (docSnap.exists() && docSnap.data().trip) {
-                    tripData = docSnap.data().trip;
-                }
+                if (docSnap.exists() && docSnap.data().trip) { tripData = docSnap.data().trip; }
                 updateTripUI();
             }
         });
@@ -179,27 +154,42 @@
         window.saveTripSettings = async () => {
             const dest = document.getElementById('input-destination').value || "Orlando";
             const date = document.getElementById('input-date').value || "2027-01-01";
+            if (!currentUser) return;
             tripData = { destination: dest, date: date };
-            await setDoc(doc(db, "users", currentUser.uid), { trip: tripData }, { merge: true });
-            updateTripUI();
-            closeTripModal();
+            try {
+                await setDoc(doc(db, "users", currentUser.uid), { trip: tripData }, { merge: true });
+                updateTripUI();
+                closeTripModal();
+            } catch (e) { alert("Error: " + e.message); }
         };
 
         function updateTripUI() {
             document.getElementById('trip-label').innerText = `Faltan para ${tripData.destination} ✈️`;
+            document.getElementById('input-destination').value = tripData.destination;
+            document.getElementById('input-date').value = tripData.date;
         }
 
         window.openTripModal = () => document.getElementById('tripModal').style.display = 'flex';
         window.closeTripModal = () => document.getElementById('tripModal').style.display = 'none';
 
-        // LÓGICA DE IMPUESTOS
+        // --- BASE DE DATOS DE LOS 50 ESTADOS ---
         const taxData = {
-            "Alabama": [{n:"Birmingham", t:10.0}], "Florida": [{n:"Orlando", t:6.5}, {n:"Miami", t:7.0}, {n:"Kissimmee", t:7.5}],
-            "New York": [{n:"NYC", t:8.875}], "New Jersey": [{n:"Jersey City", t:6.625}], "Texas": [{n:"Houston", t:8.25}, {n:"Dallas", t:8.25}],
-            "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.625}]
+            "Alabama": [{n:"Promedio", t:9.29}], "Alaska": [{n:"Sin Tax", t:0}], "Arizona": [{n:"Phoenix", t:8.6}], "Arkansas": [{n:"Little Rock", t:9.47}],
+            "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.63}, {n:"San Diego", t:7.75}], "Colorado": [{n:"Denver", t:8.81}], 
+            "Connecticut": [{n:"Estado", t:6.35}], "Delaware": [{n:"Sin Tax", t:0}], "Florida": [{n:"Orlando", t:6.5}, {n:"Miami", t:7.0}, {n:"Tampa", t:8.5}],
+            "Georgia": [{n:"Atlanta", t:8.9}], "Hawaii": [{n:"Honolulu", t:4.5}], "Idaho": [{n:"Boise", t:6.0}], "Illinois": [{n:"Chicago", t:10.25}],
+            "Indiana": [{n:"Estado", t:7.0}], "Iowa": [{n:"Des Moines", t:7.0}], "Kansas": [{n:"Wichita", t:9.5}], "Kentucky": [{n:"Estado", t:6.0}],
+            "Louisiana": [{n:"New Orleans", t:9.45}], "Maine": [{n:"Estado", t:5.5}], "Maryland": [{n:"Estado", t:6.0}], "Massachusetts": [{n:"Boston", t:6.25}],
+            "Michigan": [{n:"Detroit", t:6.0}], "Minnesota": [{n:"Minneapolis", t:8.03}], "Mississippi": [{n:"Estado", t:7.07}], "Missouri": [{n:"St. Louis", t:9.68}],
+            "Montana": [{n:"Sin Tax", t:0}], "Nebraska": [{n:"Omaha", t:7.0}], "Nevada": [{n:"Las Vegas", t:8.38}], "New Hampshire": [{n:"Sin Tax", t:0}],
+            "New Jersey": [{n:"Jersey City", t:6.63}], "New Mexico": [{n:"Albuquerque", t:7.75}], "New York": [{n:"NYC", t:8.88}], "North Carolina": [{n:"Charlotte", t:7.25}],
+            "North Dakota": [{n:"Fargo", t:7.5}], "Ohio": [{n:"Columbus", t:7.5}], "Oklahoma": [{n:"Ok. City", t:8.63}], "Oregon": [{n:"Sin Tax", t:0}],
+            "Pennsylvania": [{n:"Philadelphia", t:8.0}], "Rhode Island": [{n:"Providence", t:7.0}], "South Carolina": [{n:"Charleston", t:9.0}],
+            "South Dakota": [{n:"Sioux Falls", t:6.5}], "Tennessee": [{n:"Nashville", t:9.25}], "Texas": [{n:"Houston", t:8.25}, {n:"Dallas", t:8.25}, {n:"Austin", t:8.25}],
+            "Utah": [{n:"Salt Lake City", t:7.75}], "Vermont": [{n:"Burlington", t:7.0}], "Virginia": [{n:"Virginia Beach", t:6.0}], "Washington": [{n:"Seattle", t:10.25}],
+            "West Virginia": [{n:"Charleston", t:7.0}], "Wisconsin": [{n:"Milwaukee", t:5.5}], "Wyoming": [{n:"Cheyenne", t:6.0}]
         };
 
-        let currentCategory = 'general';
         const stateSelect = document.getElementById('state-select');
         Object.keys(taxData).sort().forEach(s => {
             let opt = document.createElement('option');
@@ -220,6 +210,7 @@
             window.calculate();
         };
 
+        let currentCategory = 'general';
         window.setCategory = (cat) => {
             currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -244,9 +235,9 @@
         };
 
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
-        window.changePass = () => sendPasswordResetEmail(auth, currentUser.email).then(() => alert("Email enviado")).catch(e => alert(e.message));
 
         function updateCountdown() {
+            if (!tripData.date) return;
             const targetDate = new Date(tripData.date + "T00:00:00").getTime();
             const diff = targetDate - new Date().getTime();
             if (diff <= 0) { document.getElementById("timer").innerText = "¡Buen viaje! ✈️"; return; }
@@ -254,10 +245,7 @@
             document.getElementById("timer").innerText = `${d}d ${h}h ${m}m ${s}s`;
         }
 
-        window.onload = () => {
-            window.loadCities();
-            setInterval(updateCountdown, 1000);
-        };
+        window.onload = () => { window.loadCities(); setInterval(updateCountdown, 1000); };
     </script>
 </body>
 </html>
