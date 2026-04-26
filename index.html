@@ -4,67 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TaxUSA</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968260.png">
+
     <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw"></script>
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --accent: #7c3aed; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
-        .card { background: var(--card); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; position: relative; }
-        
-        h1 { margin: 0 0 0.5rem 0; font-size: 1.6rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 10px; }
-
-        .countdown-box {
-            background: #f1f5f9; padding: 12px; border-radius: 16px; margin-bottom: 1.5rem;
-            display: flex; flex-direction: column; gap: 2px; cursor: pointer; position: relative;
-            border: 2px solid transparent; transition: 0.2s;
+        /* Estilos Banner Instalación (AÑADIDO) */
+        #install-banner {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 9999;
+            border: 2px solid var(--primary);
+            animation: slideUp 0.5s ease-out;
         }
+        @keyframes slideUp { from { bottom: -100px; } to { bottom: 20px; } }
+        .install-flex { display: flex; align-items: center; gap: 12px; }
+        .install-text { flex: 1; text-align: left; }
+        .install-text p { margin: 0; font-size: 0.8rem; font-weight: 700; color: #1e293b; }
+        .install-text span { font-size: 0.7rem; color: #64748b; }
+        .install-btns { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-install-now { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; flex: 1; }
+        .btn-later { background: #f1f5f9; color: #64748b; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
+
+        .card { background: var(--card); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; position: relative; }
+        h1 { margin: 0 0 0.5rem 0; font-size: 1.6rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .countdown-box { background: #f1f5f9; padding: 12px; border-radius: 16px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 2px; cursor: pointer; position: relative; border: 2px solid transparent; transition: 0.2s; }
         .countdown-box:active { transform: scale(0.98); border-color: var(--primary); }
         .countdown-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
         #timer { font-size: 1.1rem; font-weight: 900; color: #1e3a8a; letter-spacing: 0.5px; }
         .edit-hint { position: absolute; top: 5px; right: 8px; font-size: 0.7rem; opacity: 0.5; }
-        
         .input-group { margin-bottom: 1rem; text-align: left; }
         label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 0.4rem; text-transform: uppercase; margin-left: 5px; }
         input, select { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 0.9rem; outline: none; background: white; font-weight: 600; }
-        
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
         .cat-btn { padding: 15px 10px; border: 2px solid #f1f5f9; border-radius: 16px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .cat-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
-        
         .tip-section { margin-bottom: 1.2rem; text-align: left; }
         .tip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }
         .tip-btn { padding: 10px 2px; border: 2px solid #f1f5f9; border-radius: 12px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; }
         .tip-btn span { font-size: 0.55rem; font-weight: 600; opacity: 0.8; }
         .tip-btn.active { border-color: var(--accent); background: #f5f3ff; color: var(--accent); }
-        
-        .custom-tip-container { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            background: #f1f5f9; 
-            border-radius: 14px; 
-            padding: 8px 12px; 
-            border: 2px solid transparent;
-            transition: 0.2s;
-        }
+        .custom-tip-container { display: flex; flex-direction: column; align-items: center; background: #f1f5f9; border-radius: 14px; padding: 8px 12px; border: 2px solid transparent; transition: 0.2s; }
         .custom-tip-container:focus-within { border-color: var(--accent); background: #f5f3ff; }
         .custom-tip-header { display: flex; align-items: center; justify-content: center; width: 100%; gap: 5px; }
         .custom-tip-header span { font-weight: 800; color: #64748b; font-size: 0.7rem; }
         #custom-tip-input { background: transparent; border: none; padding: 0; text-align: center; font-size: 0.8rem; color: var(--accent); width: 40px; font-weight: 800; outline: none; }
         #val-tip-custom { font-size: 0.55rem; font-weight: 600; color: var(--accent); opacity: 0.8; margin-top: 2px; }
-
         .result-box { background: #eff6ff; padding: 1.2rem; border-radius: 20px; margin-top: 0.8rem; border: 2px dashed var(--primary); margin-bottom: 10px; }
         .result-value { font-size: 2rem; font-weight: 900; color: var(--primary); margin: 2px 0; }
         .final-box { background: var(--primary); padding: 1.2rem; border-radius: 20px; color: white; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
         .final-value { font-size: 2.2rem; font-weight: 900; margin: 4px 0; }
-
         .nav-buttons { margin-top: 25px; display: flex; flex-direction: column; gap: 10px; }
         .nav-btn { text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; text-align: center; font-size: 0.9rem; transition: 0.2s; border: none; cursor: pointer; }
         .btn-blue { background: #2563eb; color: white; width: 100%; }
         .btn-purple { background: #7c3aed; color: white; }
         .btn-cyan { background: #0ea5e9; color: white; }
-
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
         .modal-content { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; }
         .settings-trigger { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
@@ -73,12 +84,25 @@
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
         .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-align: left; }
         .btn-danger { color: #ef4444; border-color: #fecaca; }
-
         .footer { margin-top: 30px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; padding-bottom: 10px; }
         .api-credits { font-size: 0.55rem; color: #cbd5e1; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 20px; text-align: center; font-weight: 500; }
     </style>
 </head>
 <body>
+
+    <div id="install-banner">
+        <div class="install-flex">
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968260.png" style="width: 40px; border-radius: 10px;">
+            <div class="install-text">
+                <p>Instalar TaxUSA App</p>
+                <span>Acceso rápido y ahorro de datos</span>
+            </div>
+        </div>
+        <div class="install-btns">
+            <button class="btn-install-now" id="btn-install-pwa">INSTALAR</button>
+            <button class="btn-later" onclick="closeInstallBanner()">LUEGO</button>
+        </div>
+    </div>
 
     <div class="card">
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
@@ -192,12 +216,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-        import { 
-            getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail 
-        } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-        import { 
-            getFirestore, doc, setDoc, getDoc, deleteDoc 
-        } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
@@ -214,6 +234,37 @@
         let currentUser = null;
         let tripData = { destination: "Orlando", date: "2027-01-01" };
         let currentTipPercentage = 15;
+
+        // Registro de Service Worker (AÑADIDO)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error', err));
+            });
+        }
+
+        // Lógica de Banner PWA (AÑADIDO)
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const dismissed = localStorage.getItem('pwa_banner_dismissed');
+            if (!dismissed || (Date.now() - dismissed > 86400000)) {
+                document.getElementById('install-banner').style.display = 'block';
+            }
+        });
+
+        document.getElementById('btn-install-pwa').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt = null;
+                document.getElementById('install-banner').style.display = 'none';
+            }
+        });
+
+        window.closeInstallBanner = () => {
+            document.getElementById('install-banner').style.display = 'none';
+            localStorage.setItem('pwa_banner_dismissed', Date.now());
+        };
 
         // Función para obtener token reCAPTCHA v3
         async function getRecaptchaToken(actionName) {
@@ -268,7 +319,6 @@
             }
         });
 
-        // Lógica de Ajustes
         window.updateEmail = async () => {
             const token = await getRecaptchaToken('update_email');
             const newEmail = prompt("Ingresa el nuevo correo electrónico para verificar:");
@@ -302,7 +352,6 @@
             }
         };
 
-        // Lógica de Calculadora
         window.setCategory = (cat) => {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + cat).classList.add('active');
@@ -366,7 +415,6 @@
             window.calculate();
         };
 
-        // Lógica de Viaje
         window.saveTripSettings = async () => {
             await getRecaptchaToken('save_trip');
             tripData = { 
@@ -393,7 +441,6 @@
             document.getElementById("timer").innerText = `${d}d ${h}h ${m}m ${s}s`;
         }
 
-        // Inicialización General
         const stateSelect = document.getElementById('state-select');
         Object.keys(taxData).sort().forEach(s => {
             let opt = document.createElement('option');
@@ -415,7 +462,6 @@
             window.loadCities(); 
             setInterval(updateCountdown, 1000); 
 
-            // Rotación automática de tips cada 8 segundos
             const tipElement = document.getElementById('tip-content');
             let tipIndex = 0;
             
