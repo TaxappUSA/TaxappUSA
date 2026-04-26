@@ -16,7 +16,7 @@
         label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 0.4rem; text-transform: uppercase; margin-left: 5px; }
         input, select { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 1rem; outline: none; background: white; font-weight: 600; }
         
-        /* Botones de Categoría (Restaurados) */
+        /* Botones de Categoría Grandes */
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
         .cat-btn { padding: 15px 10px; border: 2px solid #f1f5f9; border-radius: 16px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .cat-btn i { font-style: normal; font-size: 1.2rem; }
@@ -32,6 +32,11 @@
 
         .settings-trigger { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #sync-status { font-size: 0.6rem; color: #10b981; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; }
+
+        /* Footer con bandera arreglada */
+        .footer { margin-top: 30px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; padding-bottom: 20px; }
+        .footer span { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .flag-icon { width: 18px; height: auto; border-radius: 2px; }
     </style>
 </head>
 <body>
@@ -75,8 +80,15 @@
         </div>
     </div>
 
+    <div class="footer">
+        <span>
+            Creado por Juan Cruz Bria 
+            <img src="https://flagcdn.com/w40/ar.png" class="flag-icon" alt="Argentina">
+        </span>
+        <div style="margin-top: 4px; opacity: 0.7;">© 2026 Todos los derechos reservados</div>
+    </div>
+
     <script type="module">
-        // --- BASE DE DATOS DE LOS 50 ESTADOS ---
         const taxData = {
             "Alabama": [{n:"Birmingham", t:10.0}], "Alaska": [{n:"Anchorage", t:0}], "Arizona": [{n:"Phoenix", t:8.6}],
             "Arkansas": [{n:"Little Rock", t:9.375}], "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.625}],
@@ -100,7 +112,6 @@
 
         let currentCategory = 'general';
 
-        // Cargar Estados al inicio
         window.onload = () => {
             const stateSelect = document.getElementById('state-select');
             Object.keys(taxData).sort().forEach(s => {
@@ -137,12 +148,15 @@
             const price = parseFloat(document.getElementById('price').value) || 0;
             let tax = parseFloat(document.getElementById('city-select').value) || 0;
             
-            // Regla de exención (Comida y Medicina suelen ser 0% en la mayoría de estados)
             if (currentCategory === 'med' || currentCategory === 'food') tax = 0;
             
             const total = price + (price * (tax / 100));
             document.getElementById('total').innerText = 'USD ' + total.toLocaleString('en-US', {minimumFractionDigits: 2});
             document.getElementById('tax-detail').innerText = `Tax Aplicado: ${tax}%`;
+        };
+
+        window.toggleSettings = () => {
+            alert("Ajustes: Se gestionan desde la pantalla de Login o Menú Lateral");
         };
     </script>
 </body>
