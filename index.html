@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TaxUSA</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --accent: #7c3aed; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -75,6 +76,8 @@
 
         .footer { margin-top: 30px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; padding-bottom: 10px; }
         .api-credits { font-size: 0.55rem; color: #cbd5e1; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 20px; text-align: center; font-weight: 500; }
+        
+        .captcha-container { display: flex; justify-content: center; margin: 15px 0; transform: scale(0.85); }
     </style>
 </head>
 <body>
@@ -145,6 +148,10 @@
             💡 <span id="tip-content">Cargando tip económico...</span>
         </div>
 
+        <div class="captcha-container">
+            <div class="g-recaptcha" data-sitekey="6Ld6idIqAAAAAI8Z4M9_Z9_fX4_X9_Z9_fX4_X9_Z9"></div>
+        </div>
+
         <div class="nav-buttons">
             <a href="unidades.html" class="nav-btn btn-cyan">⚖️ CONVERSOR UNIDADES</a>
             <a href="compras.html" class="nav-btn btn-blue">🛒 GASTOS Y TALLES</a>
@@ -156,7 +163,7 @@
         <span>Creado por Juan Cruz Bria <img src="https://flagcdn.com/w40/ar.png" style="width:18px;" alt="Argentina"></span>
     </div>
     <div class="api-credits">
-        APIs USADAS: Firebase • FlagCDN • Google Auth
+        APIs USADAS: Firebase • FlagCDN • Google Auth • reCAPTCHA
     </div>
 
     <div id="tripModal" class="modal">
@@ -252,35 +259,43 @@
             }
         });
 
-        // Lógica de Ajustes (Cambio de correo con verificación)
+        // Lógica de Ajustes
         window.updateEmail = async () => {
+            const response = grecaptcha.getResponse();
+            if (!response) { alert("Por favor, completa el reCAPTCHA."); return; }
+
             const newEmail = prompt("Ingresa el nuevo correo electrónico para verificar:");
             if (newEmail && newEmail !== currentUser.email && newEmail.includes("@")) {
                 try {
-                    // Envía correo de verificación al NUEVO correo antes de cambiarlo
                     await verifyBeforeUpdateEmail(currentUser, newEmail);
-                    alert("Se ha enviado un correo de verificación a " + newEmail + ". El cambio se aplicará automáticamente una vez que confirmes el enlace en tu bandeja de entrada.");
+                    alert("Se ha enviado un correo de verificación a " + newEmail + ". El cambio se aplicará automáticamente una vez que confirmes el enlace.");
                     toggleSettings();
+                    grecaptcha.reset();
                 } catch (e) { 
-                    alert("Error: Por seguridad, debes haber iniciado sesión recientemente para realizar esta acción."); 
+                    alert("Error: Por seguridad, debes haber iniciado sesión recientemente."); 
                 }
             } else if (newEmail) { alert("Correo inválido."); }
         };
 
         window.changePassword = async () => {
+            const response = grecaptcha.getResponse();
+            if (!response) { alert("Completa el reCAPTCHA primero."); return; }
             try {
                 await sendPasswordResetEmail(auth, currentUser.email);
                 alert("Correo de restablecimiento enviado a " + currentUser.email);
+                grecaptcha.reset();
             } catch (e) { alert("Error: " + e.message); }
         };
 
         window.deleteAccount = async () => {
-            if (confirm("¿ESTÁS SEGURO? Esta acción eliminará todos tus datos de forma permanente.")) {
+            const response = grecaptcha.getResponse();
+            if (!response) { alert("Completa el reCAPTCHA por seguridad."); return; }
+            if (confirm("¿ESTÁS SEGURO? Esta acción eliminará todos tus datos.")) {
                 try {
                     await deleteDoc(doc(db, "users", currentUser.uid));
                     await deleteUser(currentUser);
                     window.location.replace("login.html");
-                } catch (e) { alert("Error: Re-autenticación necesaria. Cierra sesión e ingresa de nuevo para eliminar la cuenta."); }
+                } catch (e) { alert("Error: Re-autenticación necesaria."); }
             }
         };
 
@@ -350,6 +365,9 @@
 
         // Lógica de Viaje
         window.saveTripSettings = async () => {
+            const response = grecaptcha.getResponse();
+            if (!response) { alert("Completa el reCAPTCHA para guardar cambios."); return; }
+            
             tripData = { 
                 destination: document.getElementById('input-destination').value || "Orlando", 
                 date: document.getElementById('input-date').value || "2027-01-01" 
@@ -357,6 +375,7 @@
             updateTripUI();
             closeTripModal();
             if(currentUser) await setDoc(doc(db, "users", currentUser.uid), { trip: tripData }, { merge: true });
+            grecaptcha.reset();
         };
 
         function updateTripUI() {
@@ -398,5 +417,5 @@
             document.getElementById('tip-content').innerText = econTips[Math.floor(Math.random() * econTips.length)];
         };
     </script>
-</body>
+</body> 
 </html>
