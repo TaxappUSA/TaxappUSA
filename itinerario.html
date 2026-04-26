@@ -137,6 +137,9 @@
                 { name: "🦁 Animal Kingdom", id: "ak", parkId: "8" },
                 { name: "📽️ Universal Studios", id: "us", parkId: "65" },
                 { name: "🦖 Islands of Adventure", id: "ioa", parkId: "64" },
+                { name: "🐬 SeaWorld Orlando", id: "sw", parkId: "61" },
+                { name: "🎢 Busch Gardens", id: "bg", parkId: "62" },
+                { name: "🧱 Legoland FL", id: "lego", parkId: "148" },
                 { name: "✨ Epic Universe", id: "epic", parkId: null, span: true }
             ],
             nyc: [
@@ -218,7 +221,6 @@
                 </div>
             `).join('');
 
-            // Agregar atribución si es Orlando (donde usamos la API)
             if (city === 'orlando') {
                 html += `<div class="api-attribution"><a href="https://queue-times.com/" target="_blank">Powered by Queue-Times.com</a></div>`;
             }
