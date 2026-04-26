@@ -26,6 +26,14 @@
         .tab { flex: 1; padding: 12px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; background: transparent; color: #64748b; font-size: 0.8rem; }
         .tab.active { background: var(--white); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
+        /* TABLA DE TALLES RESTAURADA COMPLETAMENTE */
+        .talles-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .talles-scroll::-webkit-scrollbar { display: none; }
+        .talle-col { min-width: 140px; background: #f8fafc; padding: 15px 10px; border-radius: 18px; border: 1px solid #e2e8f0; text-align: center; }
+        .talle-col small { color: var(--accent); font-weight: 800; font-size: 0.6rem; display: block; text-transform: uppercase; margin-bottom: 10px; }
+        .talle-row { display: flex; justify-content: space-between; padding: 5px 8px; border-bottom: 1px solid #f1f5f9; font-size: 0.75rem; font-weight: 600; color: #1e293b; }
+        .talle-row span:first-child { color: #64748b; font-weight: 800; }
+
         .input-group { margin-bottom: 1.2rem; text-align: left; }
         label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; text-transform: uppercase; margin-left: 5px; }
         input { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 1rem; font-weight: 600; outline: none; }
@@ -37,12 +45,7 @@
         .h-info span { font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
         .h-amount { font-weight: 900; color: var(--primary); font-size: 1rem; }
 
-        .talles-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .talle-col { background: #f8fafc; padding: 10px 5px; border-radius: 14px; border: 1px solid #e2e8f0; text-align: center; }
-        .talle-col small { color: var(--accent); font-weight: 800; font-size: 0.55rem; display: block; text-transform: uppercase; margin-bottom: 5px; }
-        .talle-item { font-weight: 700; font-size: 0.75rem; color: #1e293b; margin-bottom: 4px; display: block; line-height: 1.2; }
-        
-        .dato-clave { background: #f5f3ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--accent); margin-top: 10px; text-align: center; cursor: pointer; transition: all 0.2s ease; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
+        .dato-clave { background: #f5f3ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--accent); margin-top: 15px; text-align: center; cursor: pointer; transition: all 0.2s ease; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
         .dato-clave:active { transform: scale(0.98); }
 
         .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
@@ -82,31 +85,44 @@
                 <input type="number" id="valor" placeholder="0.00" inputmode="decimal">
             </div>
             <button class="btn-add" onclick="addGasto()">GUARDAR GASTO</button>
-            
             <div id="listaGastos" style="margin-top:20px;">
                 <p style="text-align:center; color:#94a3b8; font-size:0.8rem;">Sincronizando gastos...</p>
             </div>
         </div>
 
         <div id="sec-talles" style="display:none;">
-            <div class="talles-grid-3">
+            <div class="talles-scroll">
                 <div class="talle-col">
-                    <small>👟 Calzado</small>
-                    <span class="talle-item"><b>H:</b> 9.5 US</span>
-                    <span class="talle-item">42.5 ARG</span>
-                    <hr style="border:0; border-top:1px solid #e2e8f0; margin:5px 0;">
-                    <span class="talle-item"><b>M:</b> 8 US</span>
-                    <span class="talle-item">38 ARG</span>
+                    <small>👟 Calzado (ARG vs US)</small>
+                    <div class="talle-row"><span>35</span><span>5.0</span></div>
+                    <div class="talle-row"><span>36</span><span>6.0</span></div>
+                    <div class="talle-row"><span>37</span><span>6.5</span></div>
+                    <div class="talle-row"><span>38</span><span>7.5</span></div>
+                    <div class="talle-row"><span>39</span><span>8.5</span></div>
+                    <div class="talle-row"><span>40</span><span>9.0</span></div>
+                    <div class="talle-row"><span>41</span><span>9.5</span></div>
+                    <div class="talle-row"><span>42</span><span>10.5</span></div>
+                    <div class="talle-row"><span>43</span><span>11.5</span></div>
+                    <div class="talle-row"><span>44</span><span>12.0</span></div>
+                    <div class="talle-row"><span>45</span><span>13.0</span></div>
                 </div>
                 <div class="talle-col">
-                    <small>🧥 Buzos</small>
-                    <span class="talle-item">L (US)</span>
-                    <span class="talle-item">XL (ARG)</span>
+                    <small>🧥 Buzos (ARG vs US)</small>
+                    <div class="talle-row"><span>XS</span><span>XXS</span></div>
+                    <div class="talle-row"><span>S</span><span>XS</span></div>
+                    <div class="talle-row"><span>M</span><span>S</span></div>
+                    <div class="talle-row"><span>L</span><span>M</span></div>
+                    <div class="talle-row"><span>XL</span><span>L</span></div>
+                    <div class="talle-row"><span>XXL</span><span>XL</span></div>
                 </div>
                 <div class="talle-col">
-                    <small>👕 Remeras</small>
-                    <span class="talle-item">M (US)</span>
-                    <span class="talle-item">L (ARG)</span>
+                    <small>👕 Remeras (ARG vs US)</small>
+                    <div class="talle-row"><span>XS</span><span>XXS</span></div>
+                    <div class="talle-row"><span>S</span><span>XS</span></div>
+                    <div class="talle-row"><span>M</span><span>S</span></div>
+                    <div class="talle-row"><span>L</span><span>M</span></div>
+                    <div class="talle-row"><span>XL</span><span>L</span></div>
+                    <div class="talle-row"><span>XXL</span><span>XL</span></div>
                 </div>
             </div>
 
@@ -163,64 +179,46 @@
             onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('listaGastos');
                 let totalGastado = 0;
-                
                 if (snapshot.empty) {
                     container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.8rem;">No hay gastos registrados.</p>';
                     updateDisplay(0);
                     return;
                 }
-
                 container.innerHTML = snapshot.docs.map(docSnap => {
                     const d = docSnap.data();
                     const montoGasto = parseFloat(d.valor) || 0;
                     totalGastado += montoGasto;
-                    const fecha = new Date(d.createdAt).toLocaleDateString('es-AR');
-                    return `
-                        <div class="history-item">
-                            <div class="h-info"><b>${d.nombre || 'Sin nombre'}</b><span>${fecha}</span></div>
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <div class="h-amount">-$${montoGasto.toFixed(2)}</div>
-                                <div style="color:#ef4444; font-weight:900; cursor:pointer; font-size:1.2rem;" onclick="deleteGasto('${docSnap.id}')">×</div>
-                            </div>
-                        </div>`;
+                    return `<div class="history-item">
+                                <div class="h-info"><b>${d.nombre}</b><span>${new Date(d.createdAt).toLocaleDateString()}</span></div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div class="h-amount">-$${montoGasto.toFixed(2)}</div>
+                                    <div style="color:#ef4444; font-weight:900; cursor:pointer;" onclick="deleteGasto('${docSnap.id}')">×</div>
+                                </div>
+                            </div>`;
                 }).join('');
                 updateDisplay(totalGastado);
             });
         }
 
         function updateDisplay(gastado) {
-            const restante = presupuestoBase - gastado;
             const el = document.getElementById('disp-fondo');
+            const restante = presupuestoBase - gastado;
             el.innerText = 'USD ' + restante.toLocaleString('en-US', {minimumFractionDigits: 2});
             el.style.color = restante < 0 ? '#fecaca' : 'white';
         }
 
         window.updateFondo = async () => {
             const val = document.getElementById('input-fondo').value;
-            if(!val || !currentUser) return;
-            await setDoc(doc(db, "usuarios", currentUser.uid), { fondo: parseFloat(val) }, { merge: true });
-            document.getElementById('input-fondo').value = '';
+            if(val && currentUser) await setDoc(doc(db, "usuarios", currentUser.uid), { fondo: parseFloat(val) }, { merge: true });
         };
 
         window.addGasto = async () => {
-            const nombre = document.getElementById('nombre').value.trim();
-            const valor = document.getElementById('valor').value;
-            if(!nombre || !valor) return;
-            try {
-                await addDoc(collection(db, "compras"), {
-                    nombre: nombre,
-                    valor: parseFloat(valor),
-                    userId: currentUser.uid,
-                    createdAt: Date.now()
-                });
-                document.getElementById('nombre').value = '';
-                document.getElementById('valor').value = '';
-            } catch (e) { alert("Error: " + e.message); }
+            const n = document.getElementById('nombre').value;
+            const v = document.getElementById('valor').value;
+            if(n && v) await addDoc(collection(db, "compras"), { nombre: n, valor: parseFloat(v), userId: currentUser.uid, createdAt: Date.now() });
         };
 
-        window.deleteGasto = async (id) => {
-            if(confirm("¿Eliminar este gasto?")) await deleteDoc(doc(db, "compras", id));
-        };
+        window.deleteGasto = (id) => confirm("¿Borrar?") && deleteDoc(doc(db, "compras", id));
 
         window.showSec = (s) => {
             document.getElementById('sec-gastos').style.display = s === 'gastos' ? 'block' : 'none';
@@ -229,7 +227,6 @@
             document.getElementById('t-talles').classList.toggle('active', s === 'talles');
         };
 
-        // LÓGICA DE 50 TIPS DINÁMICOS
         const tips = [
             "Talles 'S' en USA suelen ser 'M' en Argentina.",
             "En Nike y Adidas, el talle USA suele ser un número menos que el ARG.",
@@ -295,4 +292,5 @@
         setInterval(window.nextTip, 8000);
     </script>
 </body>
+</html>
 </html>
