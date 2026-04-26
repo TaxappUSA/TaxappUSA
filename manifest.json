@@ -2,7 +2,7 @@
   "name": "TaxUSA - Calculadora de Viaje",
   "short_name": "TaxUSA",
   "description": "Calculadora de impuestos, propinas y conversor de unidades para viajes a EE.UU.",
-  "start_url": "./index.html",
+  "start_url": "./login.html",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#2563eb",
