@@ -3,7 +3,8 @@ const ASSETS = [
   '/',
   '/index.html',
   '/compras.html',
-  '/itinerario.html', // Agregamos el nuevo archivo aquí
+  '/itinerario.html',
+  '/unidades.html', // Agregamos unidades.html que estaba en tu menú
   '/manifest.json',
   '/sw.js'
 ];
