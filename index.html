@@ -12,7 +12,7 @@
         .card { background: var(--card); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; position: relative; }
         
         h1 { 
-            margin: 0 0 1rem 0; 
+            margin: 0 0 0.5rem 0; 
             font-size: 1.6rem; 
             font-weight: 800; 
             color: var(--primary); 
@@ -21,6 +21,19 @@
             justify-content: center; 
             gap: 10px; 
         }
+
+        /* Estilo del Contador */
+        .countdown-box {
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .countdown-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        #timer { font-size: 1.1rem; font-weight: 900; color: #1e3a8a; letter-spacing: 0.5px; }
         
         .input-group { margin-bottom: 1rem; text-align: left; }
         label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 0.4rem; text-transform: uppercase; margin-left: 5px; }
@@ -63,6 +76,11 @@
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
         <div id="sync-status">● En línea</div>
         <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
+        
+        <div class="countdown-box">
+            <span class="countdown-label">Faltan para Orlando ✈️</span>
+            <span id="timer">00d 00h 00m 00s</span>
+        </div>
         
         <div class="input-group">
             <label>Precio en Etiqueta (USD)</label>
@@ -257,8 +275,29 @@
             }, 300);
         };
 
+        // Función del Contador
+        function updateCountdown() {
+            const targetDate = new Date("January 1, 2027 00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                document.getElementById("timer").innerText = "¡Llegó el viaje! ✈️";
+                return;
+            }
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("timer").innerText = `${d}d ${h}h ${m}m ${s}s`;
+        }
+
         window.onload = () => {
             window.loadCities();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
             setInterval(window.nextTip, 8000);
         };
     </script>
