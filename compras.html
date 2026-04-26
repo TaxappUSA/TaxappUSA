@@ -31,12 +31,6 @@
         .budget-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; letter-spacing: 1px; }
         .budget-value { font-size: 2.2rem; font-weight: 900; margin: 8px 0; }
         
-        /* NUEVAS MÉTRICAS: FLEX Y POSICIÓN */
-        .budget-metrics { display: flex; gap: 10px; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; }
-        .metric-box { flex: 1; text-align: center; }
-        .metric-val { font-weight: 800; font-size: 1rem; display: block; }
-        .metric-lab { font-size: 0.55rem; text-transform: uppercase; opacity: 0.8; font-weight: 700; }
-
         .set-budget { display: flex; gap: 8px; margin-top: 12px; background: rgba(255,255,255,0.15); padding: 8px; border-radius: 15px; }
         .set-budget input { flex: 1; background: transparent; border: none; color: white; padding: 5px 10px; font-weight: 700; outline: none; width: 50px; }
         .set-budget input::placeholder { color: white; opacity: 0.8; }
@@ -52,6 +46,12 @@
         
         .history-item { background: #f8fafc; padding: 15px; border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
         .dato-clave { background: #f0fdf4; padding: 15px; border-radius: 16px; border: 1.5px solid var(--success); margin-bottom: 15px; text-align: center; cursor: pointer; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
+
+        /* NUEVOS ESTILOS COTIZACIONES */
+        .rates-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .rate-box { background: #f1f5f9; padding: 10px; border-radius: 14px; text-align: center; border: 1px solid #e2e8f0; }
+        .rate-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+        .rate-value { font-size: 0.9rem; font-weight: 800; color: var(--primary); }
         
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
         .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
@@ -62,7 +62,6 @@
         
         .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
 
-        /* ARREGLO DE TALLES PARA CELULAR */
         .talles-section { text-align: left; font-size: 0.85rem; }
         .talles-title { font-weight: 900; color: var(--primary); margin: 15px 0 8px; border-bottom: 2px solid #f1f5f9; padding-bottom: 3px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
         
@@ -76,7 +75,7 @@
             overflow: hidden; 
             border: 1px solid #e2e8f0; 
             margin-bottom: 15px;
-            table-layout: fixed; 
+            table-layout: fixed;
         }
         .talles-table th, .talles-table td { 
             padding: 8px 2px; 
@@ -87,32 +86,6 @@
         }
         .talles-table th { background: #e2e8f0; font-weight: 800; color: #475569; }
         .talles-table td { font-weight: 700; color: #1e293b; }
-
-        /* NUEVOS ESTILOS COTIZADOR AESTHETIC */
-        .converter-box { 
-            background: #ffffff; 
-            border-radius: 20px; 
-            padding: 18px; 
-            margin-top: 10px;
-            margin-bottom: 20px; 
-            border: 1px solid #eef2f6;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            width: 100%;
-            max-width: 450px;
-        }
-        .converter-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: #64748b; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .conv-input-group { display: flex; background: #f8fafc; border-radius: 14px; padding: 8px 12px; align-items: center; border: 2px solid #f1f5f9; margin-bottom: 10px; }
-        .conv-input-group input { background: transparent; border: none; padding: 5px; font-size: 1.1rem; font-weight: 800; color: #1e293b; width: 100%; outline: none; }
-        .currency-selector-wrapper { display: flex; align-items: center; gap: 10px; background: #ffffff; padding: 8px 12px; border-radius: 14px; border: 2px solid #f1f5f9; }
-        .flag-icon { width: 22px; height: 16px; object-fit: cover; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        #currency-select { border: none; background: transparent; font-weight: 700; font-size: 0.85rem; color: #334155; outline: none; width: 100%; cursor: pointer; }
-        
-        .result-badge { margin-top: 12px; background: var(--primary); color: white; padding: 12px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
-        .result-label { font-size: 0.6rem; text-transform: uppercase; opacity: 0.8; }
-        .result-amount { font-size: 1rem; }
-        
-        /* CARD EXTRA PARA ARS */
-        .ars-detail { margin-top: 10px; padding: 10px; background: #f1f5f9; border-radius: 12px; display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 700; color: #475569; }
     </style>
 </head>
 <body>
@@ -126,22 +99,7 @@
     <div class="budget-card">
         <div class="budget-label">Presupuesto Restante</div>
         <div class="budget-value" id="disp-fondo">USD 0.00</div>
-        
-        <div class="budget-metrics">
-            <div class="metric-box">
-                <span class="metric-val" id="disp-posicion">0%</span>
-                <span class="metric-lab">Posición</span>
-            </div>
-            <div class="metric-box">
-                <span class="metric-val" id="disp-flex">0.0</span>
-                <span class="metric-lab">Flexibilidad</span>
-            </div>
-        </div>
-
-        <div class="set-budget">
-            <input type="number" id="input-fondo" placeholder="TOTAL USD">
-            <button onclick="updateFondo()">SET</button>
-        </div>
+        <div class="set-budget"><input type="number" id="input-fondo" placeholder="TOTAL USD"><button onclick="updateFondo()">SET</button></div>
     </div>
 
     <div class="card">
@@ -155,6 +113,13 @@
         </div>
         
         <div id="sec-gastos">
+            <div class="rates-container">
+                <div class="rate-box"><div class="rate-label">Dólar Blue</div><div class="rate-value" id="rate-blue">...</div></div>
+                <div class="rate-box"><div class="rate-label">Tarjeta</div><div class="rate-value" id="rate-tarjeta">...</div></div>
+                <div class="rate-box"><div class="rate-label">Euro/USD</div><div class="rate-value" id="rate-eur">...</div></div>
+                <div class="rate-box"><div class="rate-label">Real/USD</div><div class="rate-value" id="rate-brl">...</div></div>
+            </div>
+
             <input type="text" id="nombre" placeholder="Producto" style="margin-bottom:10px;">
             <input type="number" id="valor" placeholder="Precio USD" style="margin-bottom:10px;">
             <button class="btn-add" onclick="addGasto()">GUARDAR GASTO</button>
@@ -200,35 +165,18 @@
                     <tr><td>2XL</td><td>3XL</td></tr>
                 </tbody>
             </table>
-        </div>
-    </div>
 
-    <div class="converter-box">
-        <div class="converter-header"><span>🔄 Convertidor de divisas</span></div>
-        <div class="conv-input-group">
-            <input type="number" id="conv-amount" value="1" oninput="convertCurrency()" placeholder="0.00">
-        </div>
-        <div class="currency-selector-wrapper">
-            <img id="current-flag" src="https://flagcdn.com/w40/eu.png" class="flag-icon">
-            <select id="currency-select" onchange="updateFlagAndConvert()">
-                <option value="EUR" data-flag="eu">EUR - Euro</option>
-                <option value="GBP" data-flag="gb">GBP - Libra Esterlina</option>
-                <option value="BRL" data-flag="br">BRL - Real Brasileño</option>
-                <option value="CLP" data-flag="cl">CLP - Peso Chileno</option>
-                <option value="UYU" data-flag="uy">UYU - Peso Uruguayo</option>
-                <option value="COP" data-flag="co">COP - Peso Colombiano</option>
-                <option value="MXN" data-flag="mx">MXN - Peso Mexicano</option>
-                <option value="PEN" data-flag="pe">PEN - Sol Peruano</option>
-                <option value="ARS" data-flag="ar">ARS - Peso Argentino</option>
-            </select>
-        </div>
-        <div class="result-badge">
-            <span class="result-label" id="cur-base-text">A Dólar (USD)</span>
-            <span class="result-amount" id="cur-result">...</span>
-        </div>
-        <div id="ars-card-detail" class="ars-detail" style="display:none;">
-            <span>Dólar Tarjeta (Est.):</span>
-            <span id="ars-card-val">$0.00</span>
+            <div class="talles-title">🧥 Buzos / Camperas</div>
+            <table class="talles-table" style="table-layout: auto;">
+                <thead><tr><th>ARG</th><th>US SIZE</th></tr></thead>
+                <tbody>
+                    <tr><td>S</td><td>XS/S</td></tr>
+                    <tr><td>M</td><td>S/M</td></tr>
+                    <tr><td>L</td><td>M/L</td></tr>
+                    <tr><td>XL</td><td>L/XL</td></tr>
+                    <tr><td>XXL</td><td>XL/XXL</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -256,47 +204,27 @@
         const db = getFirestore(app);
         let currentUser = null;
         let presupuestoBase = 0;
-        let rates = {};
 
-        // Lógica del Cotizador
-        window.updateFlagAndConvert = () => {
-            const select = document.getElementById('currency-select');
-            const flagCode = select.options[select.selectedIndex].getAttribute('data-flag');
-            document.getElementById('current-flag').src = `https://flagcdn.com/w40/${flagCode}.png`;
-            
-            // Mostrar/Ocultar Dólar Tarjeta si es ARS
-            document.getElementById('ars-card-detail').style.display = (select.value === 'ARS') ? 'flex' : 'none';
-            
-            window.convertCurrency();
-        };
+        // NUEVA FUNCIÓN DE COTIZACIONES
+        async function fetchRates() {
+            try {
+                // AR - DolarApi
+                const resArg = await fetch('https://dolarapi.com/v1/dolares');
+                const dataArg = await resArg.json();
+                const blue = dataArg.find(d => d.casa === 'blue')?.venta;
+                const tarjeta = dataArg.find(d => d.casa === 'tarjeta')?.venta;
+                document.getElementById('rate-blue').innerText = blue ? `$${blue}` : 'N/A';
+                document.getElementById('rate-tarjeta').innerText = tarjeta ? `$${tarjeta}` : 'N/A';
 
-        window.convertCurrency = () => {
-            const code = document.getElementById('currency-select').value;
-            const amount = parseFloat(document.getElementById('conv-amount').value) || 0;
-            const resVal = document.getElementById('cur-result');
-            const baseText = document.getElementById('cur-base-text');
-            
-            if (rates && rates[code]) {
-                const totalInUsd = amount / rates[code];
-                baseText.innerText = `${amount} ${code} =`;
-                resVal.innerText = `$${totalInUsd.toFixed(2)} USD`;
-                
-                // Cálculo de Dólar Tarjeta (aprox +60% impuestos sobre el oficial que devuelve la API)
-                if(code === 'ARS') {
-                    const tarjetaVal = amount / (rates['Oficial'] * 1.6); 
-                    document.getElementById('ars-card-val').innerText = `$${tarjetaVal.toFixed(2)} USD`;
-                }
-            }
-        };
-
-        // Fetch de DolarApi mejorado para capturar Oficial
-        fetch('https://dolarapi.com/v1/cotizaciones').then(r => r.json()).then(data => {
-            data.forEach(c => { 
-                rates[c.moneda] = c.venta; 
-                if(c.casa === 'oficial') rates['Oficial'] = c.venta;
-            });
-            window.convertCurrency();
-        });
+                // GLOBAL - Exchangerate API
+                const resGlob = await fetch('https://open.er-api.com/v6/latest/USD');
+                const dataGlob = await resGlob.json();
+                const eur = (1 / dataGlob.rates.EUR).toFixed(2);
+                const brl = dataGlob.rates.BRL.toFixed(2);
+                document.getElementById('rate-eur').innerText = `${eur} USD`;
+                document.getElementById('rate-brl').innerText = `${brl} BRL`;
+            } catch (e) { console.error("Error rates:", e); }
+        }
 
         window.updateFondo = async () => { 
             const val = document.getElementById('input-fondo').value; 
@@ -310,7 +238,6 @@
         };
 
         window.deleteGasto = (id) => confirm("¿Borrar?") && deleteDoc(doc(db, "compras", id));
-        
         window.showSec = (s) => { 
             document.getElementById('sec-gastos').style.display = s === 'gastos' ? 'block' : 'none'; 
             document.getElementById('sec-talles').style.display = s === 'talles' ? 'block' : 'none'; 
@@ -325,6 +252,22 @@
             o.style.display = d.classList.contains('open') ? 'block' : 'none'; 
         };
 
+        window.changePassword = () => {
+            if (currentUser && currentUser.email) {
+                sendPasswordResetEmail(auth, currentUser.email).then(() => alert("Correo enviado.")).catch((e) => alert(e.message));
+            }
+        };
+
+        window.deleteAccount = async () => {
+            if (confirm("¿Borrar cuenta permanentemente?")) {
+                try {
+                    await deleteDoc(doc(db, "usuarios", currentUser.uid));
+                    await deleteUser(currentUser);
+                    window.location.replace("login.html");
+                } catch (e) { alert("Re-autenticación necesaria."); }
+            }
+        };
+
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
 
         onAuthStateChanged(auth, (user) => {
@@ -336,42 +279,12 @@
                     presupuestoBase = docSnap.exists() ? (docSnap.data().fondo || 0) : 0; 
                     listenGastos(user.uid); 
                 }); 
+                fetchRates(); // Cargar monedas al entrar
             }
         });
 
-        function listenGastos(uid) {
-            const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
-            onSnapshot(q, (snapshot) => {
-                const container = document.getElementById('listaGastos');
-                let totalGastado = 0;
-                if (snapshot.empty) { 
-                    container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No hay gastos.</p>'; 
-                    updateDisplay(0); 
-                    return; 
-                }
-                container.innerHTML = snapshot.docs.map(docSnap => {
-                    const d = docSnap.data(); totalGastado += parseFloat(d.valor);
-                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${d.valor}</div><div onclick="deleteGasto('${docSnap.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">×</div></div></div>`;
-                }).join('');
-                updateDisplay(totalGastado);
-            });
-        }
-
-        function updateDisplay(gastado) { 
-            const restante = presupuestoBase - gastado;
-            document.getElementById('disp-fondo').innerText = 'USD ' + restante.toFixed(2); 
-            
-            // Lógica de Posición (qué % del total ya gastaste)
-            const posicion = presupuestoBase > 0 ? (gastado / presupuestoBase) * 100 : 0;
-            document.getElementById('disp-posicion').innerText = posicion.toFixed(1) + '%';
-            
-            // Lógica de Flexibilidad (cuántos USD te quedan por cada 1% de presupuesto total)
-            const flexibilidad = presupuestoBase > 0 ? (restante / (presupuestoBase * 0.01)) / 100 : 0;
-            document.getElementById('disp-flex').innerText = flexibilidad.toFixed(2);
-        }
-
         const shoppingTips = [
-            ""Orlando: Premium Outlets Vineland es mejor para lujo y marcas europeas.",
+            "Orlando: Premium Outlets Vineland es mejor para lujo y marcas europeas.",
             "Miami: Sawgrass Mills requiere un día entero. Llevá una valija vacía para las compras.",
             "Jersey Gardens (NJ): ¡Aprovechá! No pagás impuesto (Tax Free) en ropa y calzado.",
             "Ross/Marshalls: Los mejores días son los martes, cuando renuevan el stock más barato.",
@@ -400,9 +313,28 @@
         window.nextTip = () => { 
             currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
             const el = document.getElementById('tip-text');
-            el.innerText = shoppingTips[currentTipIndex];
+            el.style.opacity = 0;
+            setTimeout(() => {
+                el.innerText = shoppingTips[currentTipIndex];
+                el.style.opacity = 1;
+            }, 300);
         };
 
+        function listenGastos(uid) {
+            const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                const container = document.getElementById('listaGastos');
+                let totalGastado = 0;
+                if (snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No hay gastos.</p>'; updateDisplay(0); return; }
+                container.innerHTML = snapshot.docs.map(docSnap => {
+                    const d = docSnap.data(); totalGastado += parseFloat(d.valor);
+                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${d.valor}</div><div onclick="deleteGasto('${docSnap.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">×</div></div></div>`;
+                }).join('');
+                updateDisplay(totalGastado);
+            });
+        }
+        function updateDisplay(gastado) { document.getElementById('disp-fondo').innerText = 'USD ' + (presupuestoBase - gastado).toFixed(2); }
+        
         window.onload = () => { 
             document.getElementById('tip-text').innerText = shoppingTips[0]; 
             setInterval(window.nextTip, 8000); 
