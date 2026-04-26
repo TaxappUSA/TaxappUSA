@@ -11,18 +11,8 @@
         
         .card { background: var(--card); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; position: relative; }
         
-        h1 { 
-            margin: 0 0 0.5rem 0; 
-            font-size: 1.6rem; 
-            font-weight: 800; 
-            color: var(--primary); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-        }
+        h1 { margin: 0 0 0.5rem 0; font-size: 1.6rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        /* Estilo del Contador Dinámico */
         .countdown-box {
             background: #f1f5f9;
             padding: 12px;
@@ -31,12 +21,12 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
-            cursor: pointer; /* Indica que se puede hacer clic para editar */
+            cursor: pointer;
             position: relative;
-            border: 1px solid transparent;
+            border: 2px solid transparent;
             transition: 0.2s;
         }
-        .countdown-box:hover { border-color: var(--primary); }
+        .countdown-box:active { transform: scale(0.98); border-color: var(--primary); }
         .countdown-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
         #timer { font-size: 1.1rem; font-weight: 900; color: #1e3a8a; letter-spacing: 0.5px; }
         .edit-hint { position: absolute; top: 5px; right: 8px; font-size: 0.7rem; opacity: 0.5; }
@@ -47,29 +37,26 @@
         
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
         .cat-btn { padding: 15px 10px; border: 2px solid #f1f5f9; border-radius: 16px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .cat-btn i { font-style: normal; font-size: 1.2rem; }
-        .cat-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); box-shadow: 0 4px 10px rgba(37, 99, 235, 0.1); }
+        .cat-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
         
         .result-box { background: #eff6ff; padding: 1.2rem; border-radius: 20px; margin-top: 0.8rem; border: 2px dashed var(--primary); margin-bottom: 15px; }
         .result-value { font-size: 2.2rem; font-weight: 900; color: var(--primary); margin: 4px 0; }
         
-        .dato-clave { background: #f5f3ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--accent); margin-top: 10px; text-align: center; cursor: pointer; transition: all 0.2s ease; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
+        .dato-clave { background: #f5f3ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--accent); margin-top: 10px; text-align: center; cursor: pointer; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
 
         .nav-buttons { margin-top: 25px; display: flex; flex-direction: column; gap: 10px; }
         .nav-btn { text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; text-align: center; font-size: 0.9rem; transition: 0.2s; }
-        .btn-blue { background: #2563eb; color: white; }
+        .btn-blue { background: #2563eb; color: white; border: none; width: 100%; }
         .btn-purple { background: #7c3aed; color: white; }
 
-        /* Estilos del Modal de Configuración */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; text-align: left; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; }
 
         .settings-trigger { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
-        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
-        .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; }
+        .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
         .settings-drawer.open { right: 0; }
-        .drawer-btn { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; font-weight: 700; text-align: left; cursor: pointer; font-size: 0.85rem; }
-
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
+        
         .footer { margin-top: 30px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; padding-bottom: 20px; }
     </style>
 </head>
@@ -77,12 +64,12 @@
 
     <div class="card">
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
-        <div id="sync-status" style="font-size: 0.6rem; color: #10b981; font-weight: 800; margin-bottom: 5px;">● En línea</div>
+        <div style="font-size: 0.6rem; color: #10b981; font-weight: 800; margin-bottom: 5px;">● En línea</div>
         <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
         
-        <div class="countdown-box" onclick="openTripModal()">
+        <div class="countdown-box" id="box-trip" onclick="openTripModal()">
             <span class="edit-hint">✏️</span>
-            <span class="countdown-label" id="trip-label">Cargando viaje...</span>
+            <span class="countdown-label" id="trip-label">Calculando...</span>
             <span id="timer">00d 00h 00m 00s</span>
         </div>
         
@@ -93,10 +80,10 @@
 
         <label>Categoría de Compra</label>
         <div class="category-grid">
-            <button class="cat-btn active" id="btn-general" onclick="setCategory('general')"><i>🛍️</i>GENERAL</button>
-            <button class="cat-btn" id="btn-tech" onclick="setCategory('tech')"><i>💻</i>TECH / ELECTR.</button>
-            <button class="cat-btn" id="btn-food" onclick="setCategory('food')"><i>🍎</i>COMIDA</button>
-            <button class="cat-btn" id="btn-med" onclick="setCategory('med')"><i>💊</i>MEDICINA</button>
+            <button class="cat-btn active" id="btn-general" onclick="setCategory('general')">🛍️ GENERAL</button>
+            <button class="cat-btn" id="btn-tech" onclick="setCategory('tech')">💻 TECH</button>
+            <button class="cat-btn" id="btn-food" onclick="setCategory('food')">🍎 COMIDA</button>
+            <button class="cat-btn" id="btn-med" onclick="setCategory('med')">💊 MEDICINA</button>
         </div>
 
         <div class="input-group">
@@ -115,10 +102,8 @@
         </div>
 
         <div class="dato-clave" onclick="nextTip()">
-            <small style="color: var(--accent); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;">💡 Tip de Compra & Tax</small>
-            <div id="tip-text" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-top: 4px; transition: opacity 0.3s ease;">
-                En Florida, el tax general es 6.5%, pero puede variar según el condado.
-            </div>
+            <small style="color: var(--accent); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;">💡 Tip de Compra</small>
+            <div id="tip-text" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-top: 4px;">Toque para ver más consejos.</div>
         </div>
 
         <div class="nav-buttons">
@@ -132,14 +117,14 @@
             <h3 style="margin-top:0; color: var(--primary);">Mi Viaje</h3>
             <div class="input-group">
                 <label>¿A qué ciudad vas?</label>
-                <input type="text" id="input-destination" placeholder="Ej: New York">
+                <input type="text" id="input-destination" placeholder="Ej: Orlando">
             </div>
             <div class="input-group">
                 <label>Fecha del viaje</label>
                 <input type="date" id="input-date">
             </div>
-            <button class="nav-btn btn-blue" style="width:100%; border:none; cursor:pointer;" onclick="saveTripSettings()">GUARDAR</button>
-            <button onclick="closeTripModal()" style="width:100%; background:none; border:none; margin-top:10px; color:#64748b; font-weight:700; cursor:pointer;">Cancelar</button>
+            <button class="nav-btn btn-blue" onclick="saveTripSettings()">GUARDAR</button>
+            <button onclick="closeTripModal()" style="width:100%; background:none; border:none; margin-top:15px; color:#64748b; font-weight:700; cursor:pointer;">Cerrar</button>
         </div>
     </div>
 
@@ -148,27 +133,18 @@
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
         <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
         <button class="drawer-btn" onclick="changePass()">📧 Cambiar clave</button>
-        <button class="drawer-btn btn-delete-acc" onclick="eliminarCuenta()">🗑️ Eliminar Cuenta</button>
-        <button class="drawer-btn btn-logout" onclick="logout()">🚪 Cerrar Sesión</button>
+        <button class="drawer-btn" style="color:#ef4444;" onclick="eliminarCuenta()">🗑️ Eliminar Cuenta</button>
+        <button class="drawer-btn" style="margin-top:auto; background:#f1f5f9; border:none; text-align:center;" onclick="logout()">Cerrar Sesión</button>
     </div>
 
     <div class="footer">
-        <span>
-            Creado por Juan Cruz Bria 
-            <img src="https://flagcdn.com/w40/ar.png" class="flag-icon" alt="Argentina">
-        </span>
-        <div style="margin-top: 4px; opacity: 0.7;">© 2026 Todos los derechos reservados</div>
+        <span>Creado por Juan Cruz Bria <img src="https://flagcdn.com/w40/ar.png" style="width:18px;" alt="Argentina"></span>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-
-        // Importación corregida de firestore
-        import {  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-        import * as firestore from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-        const { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, deleteDoc } = firestore;
+        import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
@@ -191,7 +167,7 @@
             } else {
                 currentUser = user;
                 document.getElementById('userEmail').innerText = user.email;
-                const docRef = doc(db, "users", currentUser.uid);
+                const docRef = doc(db, "users", user.uid);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists() && docSnap.data().trip) {
                     tripData = docSnap.data().trip;
@@ -204,7 +180,6 @@
             const dest = document.getElementById('input-destination').value || "Orlando";
             const date = document.getElementById('input-date').value || "2027-01-01";
             tripData = { destination: dest, date: date };
-            
             await setDoc(doc(db, "users", currentUser.uid), { trip: tripData }, { merge: true });
             updateTripUI();
             closeTripModal();
@@ -212,31 +187,16 @@
 
         function updateTripUI() {
             document.getElementById('trip-label').innerText = `Faltan para ${tripData.destination} ✈️`;
-            updateCountdown();
         }
 
         window.openTripModal = () => document.getElementById('tripModal').style.display = 'flex';
         window.closeTripModal = () => document.getElementById('tripModal').style.display = 'none';
 
+        // LÓGICA DE IMPUESTOS
         const taxData = {
-            "Alabama": [{n:"Birmingham", t:10.0}], "Alaska": [{n:"Anchorage", t:0}], "Arizona": [{n:"Phoenix", t:8.6}],
-            "Arkansas": [{n:"Little Rock", t:9.375}], "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.625}],
-            "Colorado": [{n:"Denver", t:8.81}], "Connecticut": [{n:"Hartford", t:6.35}], "Delaware": [{n:"Wilmington", t:0}],
-            "Florida": [{n:"Orlando", t:6.5}, {n:"Miami", t:7.0}, {n:"Kissimmee", t:7.5}],
-            "Georgia": [{n:"Atlanta", t:8.9}], "Hawaii": [{n:"Honolulu", t:4.5}], "Idaho": [{n:"Boise", t:6.0}],
-            "Illinois": [{n:"Chicago", t:10.25}], "Indiana": [{n:"Indianapolis", t:7.0}], "Iowa": [{n:"Des Moines", t:7.0}],
-            "Kansas": [{n:"Wichita", t:7.5}], "Kentucky": [{n:"Louisville", t:6.0}], "Louisiana": [{n:"New Orleans", t:9.45}],
-            "Maine": [{n:"Portland", t:5.5}], "Maryland": [{n:"Baltimore", t:6.0}], "Massachusetts": [{n:"Boston", t:6.25}],
-            "Michigan": [{n:"Detroit", t:6.0}], "Minnesota": [{n:"Minneapolis", t:8.025}], "Mississippi": [{n:"Jackson", t:8.0}],
-            "Missouri": [{n:"St. Louis", t:9.679}], "Montana": [{n:"Billings", t:0}], "Nebraska": [{n:"Omaha", t:7.0}],
-            "Nevada": [{n:"Las Vegas", t:8.375}], "New Hampshire": [{n:"Manchester", t:0}], "New Jersey": [{n:"Jersey City", t:6.625}],
-            "New Mexico": [{n:"Albuquerque", t:7.875}], "New York": [{n:"NYC", t:8.875}], "North Carolina": [{n:"Charlotte", t:7.25}],
-            "North Dakota": [{n:"Fargo", t:7.5}], "Ohio": [{n:"Columbus", t:7.5}], "Oklahoma": [{n:"Oklahoma City", t:8.625}],
-            "Oregon": [{n:"Portland", t:0}], "Pennsylvania": [{n:"Philadelphia", t:8.0}], "Rhode Island": [{n:"Providence", t:7.0}],
-            "South Carolina": [{n:"Charleston", t:9.0}], "South Dakota": [{n:"Sioux Falls", t:6.5}], "Tennessee": [{n:"Nashville", t:9.25}],
-            "Texas": [{n:"Houston", t:8.25}, {n:"Dallas", t:8.25}], "Utah": [{n:"Salt Lake City", t:7.75}], "Vermont": [{n:"Burlington", t:7.0}],
-            "Virginia": [{n:"Virginia Beach", t:6.0}], "Washington": [{n:"Seattle", t:10.25}], "West Virginia": [{n:"Charleston", t:7.0}],
-            "Wisconsin": [{n:"Milwaukee", t:5.5}], "Wyoming": [{n:"Cheyenne", t:6.0}]
+            "Alabama": [{n:"Birmingham", t:10.0}], "Florida": [{n:"Orlando", t:6.5}, {n:"Miami", t:7.0}, {n:"Kissimmee", t:7.5}],
+            "New York": [{n:"NYC", t:8.875}], "New Jersey": [{n:"Jersey City", t:6.625}], "Texas": [{n:"Houston", t:8.25}, {n:"Dallas", t:8.25}],
+            "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.625}]
         };
 
         let currentCategory = 'general';
@@ -249,7 +209,7 @@
         });
 
         window.loadCities = () => {
-            const state = document.getElementById('state-select').value;
+            const state = stateSelect.value;
             const citySelect = document.getElementById('city-select');
             citySelect.innerHTML = "";
             taxData[state].forEach(city => {
@@ -284,65 +244,19 @@
         };
 
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
-
-        window.changePass = () => {
-            sendPasswordResetEmail(auth, currentUser.email)
-                .then(() => alert("Mail de cambio de clave enviado"))
-                .catch(e => alert(e.message));
-        };
-
-        window.eliminarCuenta = async () => {
-            if(!confirm("⚠️ ¿BORRAR TODO? Esta acción es irreversible.")) return;
-            try {
-                const qn = query(collection(db, "notas"), where("userId", "==", currentUser.uid));
-                const snn = await getDocs(qn);
-                for(let d of snn.docs) await deleteDoc(doc(db, "notas", d.id));
-                await deleteUser(currentUser);
-                window.location.replace("login.html");
-            } catch (e) {
-                alert("Re-autenticación necesaria: Cierra sesión y vuelve a entrar.");
-            }
-        };
-
-        const tips = [
-            "En Florida, el tax general es 6.5%, pero en Kissimmee suele ser 7.5%.",
-            "La mayoría de los alimentos básicos de supermercado NO pagan tax.",
-            "Medicamentos con receta y muchos de venta libre están exentos de impuestos.",
-            "Los precios en estanterías de USA NUNCA tienen el tax incluido.",
-            "En New Jersey, la ropa y el calzado NO pagan tax de ventas."
-        ];
-        let currentTipIndex = 0;
-        window.nextTip = () => {
-            const el = document.getElementById('tip-text');
-            el.style.opacity = 0;
-            setTimeout(() => {
-                currentTipIndex = (currentTipIndex + 1) % tips.length;
-                el.innerText = tips[currentTipIndex];
-                el.style.opacity = 1;
-            }, 300);
-        };
+        window.changePass = () => sendPasswordResetEmail(auth, currentUser.email).then(() => alert("Email enviado")).catch(e => alert(e.message));
 
         function updateCountdown() {
             const targetDate = new Date(tripData.date + "T00:00:00").getTime();
-            const now = new Date().getTime();
-            const diff = targetDate - now;
-
-            if (diff <= 0) {
-                document.getElementById("timer").innerText = "¡Llegó el viaje! ✈️";
-                return;
-            }
-
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            const diff = targetDate - new Date().getTime();
+            if (diff <= 0) { document.getElementById("timer").innerText = "¡Buen viaje! ✈️"; return; }
+            const d = Math.floor(diff / 864e5), h = Math.floor((diff % 864e5) / 36e5), m = Math.floor((diff % 36e5) / 6e4), s = Math.floor((diff % 6e4) / 1e3);
             document.getElementById("timer").innerText = `${d}d ${h}h ${m}m ${s}s`;
         }
 
         window.onload = () => {
             window.loadCities();
             setInterval(updateCountdown, 1000);
-            setInterval(window.nextTip, 8000);
         };
     </script>
 </body>
