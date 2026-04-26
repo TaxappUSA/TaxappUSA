@@ -90,6 +90,10 @@
             <div id="tax-detail" style="font-size: 0.8rem; color: #3b82f6; font-weight: bold;">Tax: 0%</div>
         </div>
 
+        <div id="dynamic-tip" style="background: #f0fdf4; padding: 10px; border-radius: 12px; font-size: 0.75rem; color: #166534; font-weight: 700; margin-bottom: 15px; border: 1px solid #bbf7d0;">
+            💡 <span id="tip-content">Cargando tip económico...</span>
+        </div>
+
         <div class="nav-buttons">
             <a href="compras.html" class="nav-btn btn-blue">🛒 GASTOS Y TALLES</a>
             <a href="itinerario.html" class="nav-btn btn-purple">📍 ITINERARIO</a>
@@ -143,6 +147,24 @@
         let currentUser = null;
         let tripData = { destination: "Orlando", date: "2027-01-01" };
 
+        const econTips = [
+            "Delaware y Oregon tienen 0% de Sales Tax. Ideal para comprar Apple o lujo.",
+            "En NYC, la ropa y calzado de menos de $110 están exentos de tax municipal.",
+            "New Jersey tiene 0% de tax en ropa. Ideal si estás cerca de NYC (Jersey Gardens).",
+            "En Miami, el tax es del 7%. Los outlets como Sawgrass rinden más por cupones.",
+            "Texas ofrece 'Tax Free Shopping' para turistas extranjeros en ciertos locales.",
+            "En California (LA/SF), el tax puede llegar al 10.25% en algunas zonas.",
+            "Las Vegas tiene un tax de 8.38%. Los hoteles cobran 'Resort Fees' aparte.",
+            "Boston: La ropa de menos de $175 no paga Sales Tax en Massachusetts.",
+            "Chicago tiene uno de los Sales Tax más altos de EE.UU. (10.25%).",
+            "Recuerda que en EE.UU. el precio de etiqueta NUNCA incluye el impuesto."
+        ];
+
+        function rotateTips() {
+            const el = document.getElementById('tip-content');
+            el.innerText = econTips[Math.floor(Math.random() * econTips.length)];
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) { 
                 window.location.replace("login.html"); 
@@ -161,27 +183,17 @@
             }
         });
 
-        // FUNCIÓN GUARDAR ACELERADA (OPTIMISTIC UPDATE)
         window.saveTripSettings = async () => {
             const dest = document.getElementById('input-destination').value || "Orlando";
             const date = document.getElementById('input-date').value || "2027-01-01";
-            
             if (!currentUser) return;
-            
-            // Paso 1: Actualizar UI al instante
             tripData = { destination: dest, date: date };
             updateTripUI();
             closeTripModal();
-            
             try {
-                // Paso 2: Guardar en Firebase en segundo plano
                 const userRef = doc(db, "users", currentUser.uid);
                 await setDoc(userRef, { trip: tripData }, { merge: true });
-                console.log("Sincronizado");
-            } catch (e) {
-                console.error("Error al guardar:", e);
-                alert("Error al sincronizar con la nube.");
-            }
+            } catch (e) { console.error(e); }
         };
 
         function updateTripUI() {
@@ -265,7 +277,12 @@
             document.getElementById("timer").innerText = `${d}d ${h}h ${m}m ${s}s`;
         }
 
-        window.onload = () => { window.loadCities(); setInterval(updateCountdown, 1000); };
+        window.onload = () => { 
+            window.loadCities(); 
+            setInterval(updateCountdown, 1000); 
+            rotateTips();
+            setInterval(rotateTips, 10000);
+        };
     </script>
 </body>
 </html>
