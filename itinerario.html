@@ -55,6 +55,7 @@
         <h2>📍 Itinerario</h2>
         <textarea id="noteInput" rows="4" placeholder="Vuelos, hoteles, recordatorios..."></textarea>
         <button class="btn-add" onclick="addNote()">AGREGAR AL HISTORIAL</button>
+        
         <div class="queues-box">
             <div class="queue-card"><div class="queue-name">🏰 Magic<br>Kingdom</div><div id="mk" class="queue-status">...</div></div>
             <div class="queue-card"><div class="queue-name">🚀 Epcot</div><div id="ep" class="queue-status">...</div></div>
@@ -64,16 +65,20 @@
             <div class="queue-card"><div class="queue-name">🦖 Islands of<br>Adventure</div><div id="ioa" class="queue-status">...</div></div>
             <div class="queue-card" style="grid-column: span 3; background: #f5f3ff; border-color: #c084fc;">
                 <div class="queue-name" style="color: #7c3aed; height: auto; margin-bottom: 6px;">✨ Epic Universe</div>
-                <div id="epic" class="queue-status">Abierto 🎡</div>
+                <div id="epic" class="queue-status">...</div>
             </div>
         </div>
+
         <div class="dato-itinerario" onclick="nextTip()">
             <small style="color: var(--blue); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;">✨ Tip de Viaje</small>
             <div id="tip-text" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-top: 4px; transition: opacity 0.3s ease;">Llegá a los parques 45 min antes de la apertura.</div>
         </div>
     </div>
+
     <div id="notesList" class="list-container"><p style="text-align:center; color:#94a3b8;">Cargando...</p></div>
+    
     <div class="footer"><span>Creado por Juan Cruz Bria <img src="https://flagcdn.com/w40/ar.png" style="width:18px;"></span></div>
+    
     <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
     <div id="settingsDrawer" class="settings-drawer">
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
@@ -98,23 +103,60 @@
         });
 
         async function updateQueueTimes() {
+            const now = new Date();
+            const hour = now.getHours();
+
             const parks = [
-                { id: '75ea4cdc-7d70-4ddd-901d-79da399081e7', el: 'mk' }, { id: '47f909e4-bc22-4462-9960-244030d9588c', el: 'ep' }, 
-                { id: '288747d1-8b4f-4a4a-9843-34b09355d5d6', el: 'hs' }, { id: '1c84a229-8861-4648-9f39-f53fe87d9c27', el: 'ak' }, 
-                { id: 'eb38b317-09cd-4bc7-95a2-f6735e2cf94b', el: 'us' }, { id: '207797e5-8777-400d-8549-041846ed3f79', el: 'ioa' }
+                { id: '75ea4cdc-7d70-4ddd-901d-79da399081e7', el: 'mk', open: 8, close: 22 }, 
+                { id: '47f909e4-bc22-4462-9960-244030d9588c', el: 'ep', open: 8, close: 22 }, 
+                { id: '288747d1-8b4f-4a4a-9843-34b09355d5d6', el: 'hs', open: 8, close: 22 }, 
+                { id: '1c84a229-8861-4648-9f39-f53fe87d9c27', el: 'ak', open: 8, close: 22 }, 
+                { id: 'eb38b317-09cd-4bc7-95a2-f6735e2cf94b', el: 'us', open: 9, close: 21 }, 
+                { id: '207797e5-8777-400d-8549-041846ed3f79', el: 'ioa', open: 9, close: 21 },
+                { id: '097973d4-b9b5-412e-9ad8-2b8474278912', el: 'epic', open: 10, close: 22 }
             ];
+
             for (const park of parks) {
                 const el = document.getElementById(park.el);
+                
+                // 1. Verificar Horario Fijo
+                if (hour < park.open || hour >= park.close) {
+                    el.innerText = "Cerrado 🌙";
+                    el.className = "queue-status q-off";
+                    continue;
+                }
+
+                // 2. Si está abierto, buscar filas
                 try {
                     const res = await fetch(`https://api.themeparks.wiki/v1/entity/${park.id}/live`);
                     const data = await res.json();
-                    const waits = data.liveData.filter(a => a.queue && a.queue.STANDBY && a.queue.STANDBY.waitTime !== null).map(a => a.queue.STANDBY.waitTime);
-                    if (waits.length === 0) { el.innerText = "Cerrado 🌙"; el.className = "queue-status q-off"; continue; }
+                    
+                    const waits = data.liveData
+                        .filter(a => a.queue && a.queue.STANDBY && a.queue.STANDBY.waitTime !== null)
+                        .map(a => a.queue.STANDBY.waitTime);
+                    
+                    if (waits.length === 0) {
+                        el.innerText = "Sin info 🚫";
+                        el.className = "queue-status q-off";
+                        continue;
+                    }
+
                     const avg = waits.reduce((a, b) => a + b, 0) / waits.length;
-                    if (avg < 20) { el.innerText = "BAJA 🟢"; el.className = "queue-status q-low"; }
-                    else if (avg < 45) { el.innerText = "MED 🟡"; el.className = "queue-status q-med"; }
-                    else { el.innerText = "ALTA 🔴"; el.className = "queue-status q-high"; }
-                } catch (e) { el.innerText = "Cerrado 🌙"; el.className = "queue-status q-off"; }
+
+                    if (avg < 20) {
+                        el.innerText = "BAJA 🟢";
+                        el.className = "queue-status q-low";
+                    } else if (avg < 45) {
+                        el.innerText = "MED 🟡";
+                        el.className = "queue-status q-med";
+                    } else {
+                        el.innerText = "ALTA 🔴";
+                        el.className = "queue-status q-high";
+                    }
+                } catch (e) {
+                    el.innerText = "Sin info 🚫";
+                    el.className = "queue-status q-off";
+                }
             }
         }
 
@@ -172,6 +214,8 @@
             document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
         };
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
+        
+        // Actualizar cada 5 minutos
         setInterval(updateQueueTimes, 300000);
         setInterval(window.nextTip, 8000);
     </script>
