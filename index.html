@@ -11,16 +11,9 @@
         
         .card { background: var(--card); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; position: relative; }
         
-        h1 { 
-            margin: 0 0 1rem 0; 
-            font-size: 1.6rem; 
-            font-weight: 800; 
-            color: var(--primary); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 10px; 
-        }
+        /* Estilo para que el logo se vea bien en el celu */
+        .logo-container { margin: 0 0 1rem 0; display: flex; justify-content: center; }
+        #main-logo { width: 280px; height: auto; display: block; }
         
         .input-group { margin-bottom: 1rem; text-align: left; }
         label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 0.4rem; text-transform: uppercase; margin-left: 5px; }
@@ -62,7 +55,10 @@
     <div class="card">
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
         <div id="sync-status">● En línea</div>
-        <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
+        
+        <div class="logo-container">
+            <img src="" id="main-logo" alt="TaxUSA Logo">
+        </div>
         
         <div class="input-group">
             <label>Precio en Etiqueta (USD)</label>
@@ -127,6 +123,11 @@
         import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
         import { getFirestore, collection, query, where, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
+        // --- PEGÁ TU LINK DE IMAGEN O TU BASE64 ACÁ ABAJO ---
+        const LINK_DE_IMAGEN = "https://i.ibb.co/WN9rQ6SG/Tax-USA-Logo.png"; 
+        document.getElementById('main-logo').src = LINK_DE_IMAGEN;
+        // ----------------------------------------------------
+
         const firebaseConfig = {
             apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
             authDomain: "viajes-db538.firebaseapp.com",
@@ -141,15 +142,6 @@
         const db = getFirestore(app);
         let currentUser = null;
 
-        // --- LÓGICA BASE64 (Pega tu código aquí) ---
-        window.toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-
-        // --- AUTH LOGIC ---
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.replace("login.html");
@@ -159,7 +151,6 @@
             }
         });
 
-        // --- TAX LOGIC ---
         const taxData = {
             "Alabama": [{n:"Birmingham", t:10.0}], "Alaska": [{n:"Anchorage", t:0}], "Arizona": [{n:"Phoenix", t:8.6}],
             "Arkansas": [{n:"Little Rock", t:9.375}], "California": [{n:"Los Angeles", t:9.5}, {n:"San Francisco", t:8.625}],
@@ -183,7 +174,6 @@
 
         let currentCategory = 'general';
 
-        // Inicializar estados
         const stateSelect = document.getElementById('state-select');
         Object.keys(taxData).sort().forEach(s => {
             let opt = document.createElement('option');
@@ -272,7 +262,6 @@
             window.loadCities();
             setInterval(window.nextTip, 8000);
         };
-
     </script>
 </body>
 </html>
