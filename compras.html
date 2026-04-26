@@ -7,37 +7,47 @@
     <style>
         :root { --primary: #2563eb; --accent: #7c3aed; --bg: #f8fafc; --white: #ffffff; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         
         .nav-bar { width: 100%; max-width: 450px; margin-bottom: 15px; display: flex; gap: 10px; }
         .btn-nav { flex: 1; padding: 12px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.8rem; border: 2px solid var(--primary); color: var(--primary); }
         
-        .card { background: var(--white); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px; position: relative; }
+        /* Bloque Presupuesto */
+        .budget-card { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; padding: 20px; border-radius: 24px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2); margin-bottom: 15px; }
+        .budget-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; letter-spacing: 1px; }
+        .budget-value { font-size: 2.2rem; font-weight: 900; margin: 8px 0; }
+        .set-budget { display: flex; gap: 8px; margin-top: 12px; background: rgba(255,255,255,0.15); padding: 8px; border-radius: 15px; }
+        .set-budget input { flex: 1; background: transparent; border: none; color: white; padding: 5px 10px; font-weight: 700; outline: none; }
+        .set-budget input::placeholder { color: rgba(255,255,255,0.6); }
+        .set-budget button { background: white; color: var(--primary); border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.7rem; cursor: pointer; }
+
+        .card { background: var(--white); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
         
-        /* Pestañas */
         .tab-container { display: flex; background: #f1f5f9; padding: 5px; border-radius: 16px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 10px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; background: transparent; color: #64748b; transition: 0.3s; }
-        .tab.active { background: var(--white); color: var(--primary); shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .tab { flex: 1; padding: 12px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; background: transparent; color: #64748b; font-size: 0.8rem; }
+        .tab.active { background: var(--white); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
-        .input-group { margin-bottom: 1rem; text-align: left; }
-        label { display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 5px; margin-left: 5px; }
-        input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 1rem; outline: none; }
+        .input-group { margin-bottom: 1.2rem; text-align: left; }
+        label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 5px; text-transform: uppercase; margin-left: 5px; }
+        input { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 1rem; font-weight: 600; outline: none; }
 
-        .btn-add { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; }
+        .btn-add { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
 
         /* Historial */
-        .history-item { background: white; padding: 15px; border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); border-left: 5px solid var(--primary); }
-        .history-info b { display: block; color: #1e293b; }
-        .history-info span { font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
-        .history-amount { font-weight: 800; color: var(--primary); }
+        .history-item { background: #f8fafc; padding: 15px; border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
+        .h-info b { display: block; font-size: 0.95rem; color: #1e293b; }
+        .h-info span { font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
+        .h-amount { font-weight: 900; color: var(--primary); font-size: 1rem; }
 
-        /* Talles */
-        .talles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .talle-box { background: #f8fafc; padding: 10px; border-radius: 12px; text-align: left; border: 1px solid #e2e8f0; }
-        .talle-box small { color: var(--accent); font-weight: 800; font-size: 0.65rem; display: block; margin-bottom: 2px; }
-        .talle-box span { font-weight: 700; color: #1e293b; }
+        /* Talles - Las 3 Divisiones */
+        .talles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .talle-box { background: #f8fafc; padding: 12px; border-radius: 14px; border: 1px solid #e2e8f0; }
+        .talle-box small { color: var(--accent); font-weight: 800; font-size: 0.6rem; display: block; text-transform: uppercase; margin-bottom: 3px; }
+        .talle-box span { font-weight: 700; font-size: 0.9rem; color: #1e293b; }
 
-        .footer { margin-top: 20px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
+        .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
+        .footer span { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .flag-icon { width: 18px; height: auto; border-radius: 2px; }
     </style>
 </head>
 <body>
@@ -45,6 +55,15 @@
     <div class="nav-bar">
         <a href="index.html" class="btn-nav">🏠 INICIO</a>
         <a href="itinerario.html" class="btn-nav">📍 ITINERARIO</a>
+    </div>
+
+    <div class="budget-card">
+        <div class="budget-label">Presupuesto Restante</div>
+        <div class="budget-value" id="disp-fondo">USD 0.00</div>
+        <div class="set-budget">
+            <input type="number" id="input-fondo" placeholder="Set Presupuesto (USD)" inputmode="decimal">
+            <button onclick="updateFondo()">SET</button>
+        </div>
     </div>
 
     <div class="card">
@@ -55,58 +74,47 @@
 
         <div id="sec-gastos">
             <div class="input-group">
-                <label>DESCRIPCIÓN (Ej: Uniqlo, Apple)</label>
-                <input type="text" id="desc" placeholder="¿Qué compraste?">
+                <label>Descripción</label>
+                <input type="text" id="desc" placeholder="Ej: Outlets Orlando">
             </div>
             <div class="input-group">
-                <label>MONTO EN USD</label>
-                <input type="number" id="monto" placeholder="0.00">
+                <label>Monto en USD</label>
+                <input type="number" id="monto" placeholder="0.00" inputmode="decimal">
             </div>
             <button class="btn-add" onclick="addGasto()">GUARDAR GASTO</button>
             
             <div id="listaGastos" style="margin-top:20px;">
-                <p style="text-align:center; color:#94a3b8; font-size:0.8rem;">Cargando historial...</p>
+                <p style="text-align:center; color:#94a3b8; font-size:0.8rem;">Sincronizando gastos...</p>
             </div>
         </div>
 
         <div id="sec-talles" style="display:none;">
-            <h3 style="font-size: 0.9rem; color: var(--accent); margin-bottom: 15px;">Millas y Referencias de Talles</h3>
-            
             <div class="talles-grid">
-                <div class="talle-box">
-                    <small>ZAPATILLAS (US MENS)</small>
-                    <span>9.5 US = 42.5 ARG</span>
-                </div>
-                <div class="talle-box">
-                    <small>ZAPATILLAS (US WOMENS)</small>
-                    <span>8 US = 38 ARG</span>
-                </div>
-                <div class="talle-box">
-                    <small>REMERAS / HOODIES</small>
-                    <span>M (US) es un L (ARG)</span>
-                </div>
-                <div class="talle-box">
-                    <small>PANTALONES (WAIST)</small>
-                    <span>32W = 42 ARG</span>
-                </div>
-                <div class="talle-box" style="grid-column: span 2;">
-                    <small>TIP PRO</small>
-                    <span>En Outlets, "M" suele ser más amplio.</span>
+                <div class="talle-box"><small>Zapatillas Hombre</small><span>9.5 US = 42.5 ARG</span></div>
+                <div class="talle-box"><small>Zapatillas Mujer</small><span>8 US = 38 ARG</span></div>
+                <div class="talle-box"><small>Remeras / Tops</small><span>M (US) = L (ARG)</span></div>
+                <div class="talle-box"><small>Pantalones</small><span>32W = 42 ARG</span></div>
+                <div class="talle-box" style="grid-column: span 2; border-color: var(--accent);">
+                    <small>Dato Clave</small>
+                    <span>Talles "S" en USA suelen ser "M" en Argentina.</span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <span>Creado por Juan Cruz Bria 🇦🇷</span>
-        <div>© 2026 Todos los derechos reservados</div>
+        <span>
+            Creado por Juan Cruz Bria 
+            <img src="https://flagcdn.com/w40/ar.png" class="flag-icon" alt="Argentina">
+        </span>
+        <div style="margin-top: 4px; opacity: 0.7;">© 2026 Todos los derechos reservados</div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
         import { 
-            getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc 
+            getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc, setDoc, getDoc 
         } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -123,57 +131,71 @@
         const db = getFirestore(app);
 
         let currentUser = null;
+        let presupuestoBase = 0;
 
         onAuthStateChanged(auth, (user) => {
             if (!user) window.location.replace("login.html");
             else {
                 currentUser = user;
-                listenGastos(user.uid);
+                // Escuchar presupuesto del usuario
+                onSnapshot(doc(db, "usuarios", user.uid), (docSnap) => {
+                    presupuestoBase = docSnap.exists() ? docSnap.data().fondo : 0;
+                    listenGastos(user.uid);
+                });
             }
         });
 
-        // --- HISTORIAL DE GASTOS (ARREGLADO) ---
         function listenGastos(uid) {
-            // Importante: createdAt debe existir en el documento para que orderBy funcione
             const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
-            
             onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('listaGastos');
+                let totalGastado = 0;
+                
                 if (snapshot.empty) {
-                    container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.8rem;">Aún no tienes gastos registrados.</p>';
+                    container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.8rem;">No hay gastos registrados.</p>';
+                    updateDisplay(0);
                     return;
                 }
 
                 container.innerHTML = snapshot.docs.map(docSnap => {
                     const d = docSnap.data();
+                    totalGastado += d.monto;
                     const fecha = new Date(d.createdAt).toLocaleDateString('es-AR');
                     return `
                         <div class="history-item">
-                            <div class="history-info">
-                                <b>${d.desc}</b>
-                                <span>${fecha}</span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <div class="history-amount">USD ${parseFloat(d.monto).toFixed(2)}</div>
-                                <div style="color:#ef4444; font-weight:900; cursor:pointer;" onclick="deleteGasto('${docSnap.id}')">×</div>
+                            <div class="h-info"><b>${d.desc}</b><span>${fecha}</span></div>
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="h-amount">-$${d.monto.toFixed(2)}</div>
+                                <div style="color:#ef4444; font-weight:900; cursor:pointer; font-size:1.2rem;" onclick="deleteGasto('${docSnap.id}')">×</div>
                             </div>
                         </div>`;
                 }).join('');
-            }, (error) => {
-                console.error("Error en historial:", error);
-                // Si sale error de índice, Firebase te dará un link en la consola para crearlo.
+                updateDisplay(totalGastado);
             });
         }
+
+        function updateDisplay(gastado) {
+            const restante = presupuestoBase - gastado;
+            const el = document.getElementById('disp-fondo');
+            el.innerText = 'USD ' + restante.toLocaleString('en-US', {minimumFractionDigits: 2});
+            el.style.color = restante < 0 ? '#fecaca' : 'white';
+        }
+
+        window.updateFondo = async () => {
+            const val = document.getElementById('input-fondo').value;
+            if(!val || !currentUser) return;
+            await setDoc(doc(db, "usuarios", currentUser.uid), { fondo: parseFloat(val) }, { merge: true });
+            document.getElementById('input-fondo').value = '';
+        };
 
         window.addGasto = async () => {
             const desc = document.getElementById('desc').value.trim();
             const monto = document.getElementById('monto').value;
+            if(!desc || !monto) return;
             
-            if(!desc || !monto || !currentUser) return;
-
             try {
                 await addDoc(collection(db, "compras"), {
-                    desc: desc,
+                    desc,
                     monto: parseFloat(monto),
                     userId: currentUser.uid,
                     createdAt: Date.now()
@@ -184,10 +206,9 @@
         };
 
         window.deleteGasto = async (id) => {
-            if(confirm("¿Borrar gasto?")) await deleteDoc(doc(db, "compras", id));
+            if(confirm("¿Eliminar este gasto?")) await deleteDoc(doc(db, "compras", id));
         };
 
-        // --- NAVEGACIÓN DE PESTAÑAS ---
         window.showSec = (s) => {
             document.getElementById('sec-gastos').style.display = s === 'gastos' ? 'block' : 'none';
             document.getElementById('sec-talles').style.display = s === 'talles' ? 'block' : 'none';
