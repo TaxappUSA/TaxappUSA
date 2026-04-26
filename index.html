@@ -37,9 +37,22 @@
         .tip-btn span { font-size: 0.55rem; font-weight: 600; opacity: 0.8; }
         .tip-btn.active { border-color: var(--accent); background: #f5f3ff; color: var(--accent); }
         
-        .custom-tip-container { display: flex; align-items: center; background: #f1f5f9; border-radius: 12px; padding: 5px 12px; }
-        .custom-tip-container span { font-weight: 800; color: #64748b; font-size: 0.8rem; }
-        #custom-tip-input { background: transparent; border: none; padding: 8px; text-align: right; font-size: 0.9rem; color: var(--accent); width: 100%; outline: none; font-weight: 800; }
+        /* Modificado para que el "OTRO" se vea como los botones de arriba */
+        .custom-tip-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            background: #f1f5f9; 
+            border-radius: 14px; 
+            padding: 8px 12px; 
+            border: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .custom-tip-container:focus-within { border-color: var(--accent); background: #f5f3ff; }
+        .custom-tip-header { display: flex; align-items: center; justify-content: center; width: 100%; gap: 5px; }
+        .custom-tip-header span { font-weight: 800; color: #64748b; font-size: 0.7rem; }
+        #custom-tip-input { background: transparent; border: none; padding: 0; text-align: center; font-size: 0.8rem; color: var(--accent); width: 40px; font-weight: 800; outline: none; }
+        #val-tip-custom { font-size: 0.55rem; font-weight: 600; color: var(--accent); opacity: 0.8; margin-top: 2px; }
 
         .result-box { background: #eff6ff; padding: 1.2rem; border-radius: 20px; margin-top: 0.8rem; border: 2px dashed var(--primary); margin-bottom: 10px; }
         .result-value { font-size: 2rem; font-weight: 900; color: var(--primary); margin: 2px 0; }
@@ -113,9 +126,14 @@
                 <button class="tip-btn active" id="tip-15" onclick="setTip(15)">15% <span id="val-tip-15">$0.00</span></button>
                 <button class="tip-btn" id="tip-20" onclick="setTip(20)">20% <span id="val-tip-20">$0.00</span></button>
             </div>
+            
             <div class="custom-tip-container">
-                <span>OTRO %</span>
-                <input type="number" id="custom-tip-input" placeholder="Ej: 18" oninput="setCustomTip()" inputmode="numeric">
+                <div class="custom-tip-header">
+                    <span>OTRO</span>
+                    <input type="number" id="custom-tip-input" placeholder="0" oninput="setCustomTip()" inputmode="numeric">
+                    <span>%</span>
+                </div>
+                <span id="val-tip-custom">$0.00</span>
             </div>
         </div>
 
@@ -262,11 +280,16 @@
             
             const subtotal = price + (price * (tax / 100));
             
-            // Actualizar montos en dólares de los botones de sugerencia
+            // Actualizar montos en USD de los botones fijos
             [0, 10, 15, 20].forEach(p => {
                 const amount = subtotal * (p / 100);
                 document.getElementById(`val-tip-${p}`).innerText = `$${amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             });
+
+            // Actualizar monto en USD del campo "OTRO"
+            const customVal = parseFloat(document.getElementById('custom-tip-input').value) || 0;
+            const customAmount = subtotal * (customVal / 100);
+            document.getElementById('val-tip-custom').innerText = `$${customAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
             const tipAmount = subtotal * (currentTipPercentage / 100);
             const finalTotal = subtotal + tipAmount;
@@ -290,7 +313,6 @@
             window.calculate();
         };
 
-        // Carga inicial de estados
         const stateSelect = document.getElementById('state-select');
         Object.keys(taxData).sort().forEach(s => {
             let opt = document.createElement('option');
