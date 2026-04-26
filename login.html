@@ -12,10 +12,62 @@
         button { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 800; cursor: pointer; }
         .toggle-link { margin-top: 20px; display: block; color: #64748b; font-size: 0.9rem; cursor: pointer; text-decoration: underline; }
         .reset-link { margin-top: 15px; display: block; color: #ef4444; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+
+        /* --- NUEVOS ESTILOS DEL LOGO AESTHETIC --- */
+        .logo-wrapper {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .logo-main {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo-main .tax {
+            color: #2563eb;
+        }
+        .logo-main .usa {
+            background: linear-gradient(
+                to bottom, 
+                #1e3a8a 0%, #1e3a8a 40%,
+                #ef4444 40%, #ef4444 60%,
+                #ffffff 60%, #ffffff 80%,
+                #ef4444 80%, #ef4444 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.05));
+            position: relative;
+        }
+        .logo-sub {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #94a3b8;
+            letter-spacing: 4px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+        /* Título original ajustado para que no compita */
+        #title {
+            font-size: 1.5rem;
+            margin-top: 0;
+            color: #1e293b;
+        }
     </style>
 </head>
 <body>
     <div class="login-card">
+        <div class="logo-wrapper">
+            <div class="logo-main">
+                <span class="tax">Tax</span><span class="usa">USA</span>
+            </div>
+            <div class="logo-sub">TRAVEL ASSISTANT</div>
+        </div>
+
         <h1 id="title">Bienvenido</h1>
         <input type="email" id="email" placeholder="Correo electrónico">
         <input type="password" id="password" placeholder="Contraseña">
