@@ -37,12 +37,14 @@
         .h-info span { font-size: 0.7rem; color: #94a3b8; font-weight: 700; }
         .h-amount { font-weight: 900; color: var(--primary); font-size: 1rem; }
 
-        /* Talles - Estilo 3 Columnas */
-        .talles-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .talle-col { background: #f8fafc; padding: 10px 5px; border-radius: 14px; border: 1px solid #e2e8f0; text-align: center; }
-        .talle-col small { color: var(--accent); font-weight: 800; font-size: 0.55rem; display: block; text-transform: uppercase; margin-bottom: 5px; }
-        .talle-item { font-weight: 700; font-size: 0.75rem; color: #1e293b; margin-bottom: 4px; display: block; line-height: 1.2; }
-        
+        /* Estilos Tabla de Talles */
+        .talle-section-title { font-size: 0.75rem; font-weight: 900; color: var(--primary); margin: 15px 0 8px 5px; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
+        .talle-table { width: 100%; border-collapse: collapse; background: #f8fafc; border-radius: 16px; overflow: hidden; margin-bottom: 20px; font-size: 0.85rem; }
+        .talle-table th { background: #e2e8f0; color: #475569; padding: 10px; font-size: 0.65rem; text-transform: uppercase; font-weight: 800; }
+        .talle-table td { padding: 10px; text-align: center; border-bottom: 1px solid #f1f5f9; color: #1e293b; font-weight: 700; }
+        .talle-table tr:last-child td { border-bottom: none; }
+        .highlight-talle { color: var(--accent); font-weight: 900; }
+
         .dato-clave { background: #f5f3ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--accent); margin-top: 10px; text-align: center; }
 
         .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
@@ -89,31 +91,52 @@
         </div>
 
         <div id="sec-talles" style="display:none;">
-            <div class="talles-grid-3">
-                <div class="talle-col">
-                    <small>👟 Calzado</small>
-                    <span class="talle-item"><b>H:</b> 9.5 US</span>
-                    <span class="talle-item">42.5 ARG</span>
-                    <hr style="border:0; border-top:1px solid #e2e8f0; margin:5px 0;">
-                    <span class="talle-item"><b>M:</b> 8 US</span>
-                    <span class="talle-item">38 ARG</span>
-                </div>
-                <div class="talle-col">
-                    <small>🧥 Buzos</small>
-                    <span class="talle-item">L (US)</span>
-                    <span class="talle-item">XL (ARG)</span>
-                </div>
-                <div class="talle-col">
-                    <small>👕 Remeras</small>
-                    <span class="talle-item">M (US)</span>
-                    <span class="talle-item">L (ARG)</span>
-                </div>
-            </div>
+            
+            <div class="talle-section-title">👟 Calzado (Hombre/Unisex)</div>
+            <table class="talle-table">
+                <thead><tr><th>ARG</th><th>USA</th><th>CM</th></tr></thead>
+                <tbody>
+                    <tr><td>35</td><td>4</td><td>22.5</td></tr>
+                    <tr><td>36</td><td>5</td><td>23.5</td></tr>
+                    <tr><td>37</td><td>6</td><td>24.5</td></tr>
+                    <tr><td>38</td><td>7</td><td>25.5</td></tr>
+                    <tr><td>40</td><td>8</td><td>26.5</td></tr>
+                    <tr style="background: #eff6ff;"><td class="highlight-talle">42.5</td><td class="highlight-talle">9.5</td><td>27.5</td></tr>
+                    <tr><td>43</td><td>10</td><td>28.0</td></tr>
+                    <tr><td>44</td><td>11</td><td>29.0</td></tr>
+                    <tr><td>45</td><td>12</td><td>30.0</td></tr>
+                </tbody>
+            </table>
+
+            <div class="talle-section-title">👕 Remeras</div>
+            <table class="talle-table">
+                <thead><tr><th>ARG</th><th>USA</th></tr></thead>
+                <tbody>
+                    <tr><td>XS</td><td>XXS</td></tr>
+                    <tr><td>S</td><td>XS</td></tr>
+                    <tr style="background: #eff6ff;"><td class="highlight-talle">M</td><td class="highlight-talle">S</td></tr>
+                    <tr><td>L</td><td>M</td></tr>
+                    <tr><td>XL</td><td>L</td></tr>
+                    <tr><td>XXL</td><td>XL</td></tr>
+                </tbody>
+            </table>
+
+            <div class="talle-section-title">🧥 Buzos y Camperas</div>
+            <table class="talle-table">
+                <thead><tr><th>ARG</th><th>USA</th></tr></thead>
+                <tbody>
+                    <tr><td>S</td><td>XS</td></tr>
+                    <tr><td>M</td><td>S</td></tr>
+                    <tr><td>L</td><td>M</td></tr>
+                    <tr style="background: #eff6ff;"><td class="highlight-talle">XL</td><td class="highlight-talle">L</td></tr>
+                    <tr><td>XXL</td><td>XL</td></tr>
+                </tbody>
+            </table>
 
             <div class="dato-clave">
                 <small style="color: var(--accent); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;">Dato Clave</small>
                 <div style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-top: 4px;">
-                    Talles "S" en USA suelen ser "M" en Argentina.
+                    En marcas como Nike/Adidas, el talle USA suele ser un número menos que el ARG.
                 </div>
             </div>
         </div>
@@ -163,13 +186,11 @@
             onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('listaGastos');
                 let totalGastado = 0;
-                
                 if (snapshot.empty) {
                     container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.8rem;">No hay gastos registrados.</p>';
                     updateDisplay(0);
                     return;
                 }
-
                 container.innerHTML = snapshot.docs.map(docSnap => {
                     const d = docSnap.data();
                     const montoGasto = parseFloat(d.valor) || 0;
