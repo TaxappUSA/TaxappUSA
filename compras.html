@@ -52,32 +52,32 @@
         .settings-drawer.open { right: 0; }
         
         .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-align: left; }
-        .btn-danger { color: #ef4444; border-color: #fecaca; }
-        
         .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
 
-        /* SECCIÓN COTIZADORES */
+        /* COTIZADOR DINÁMICO MEJORADO */
         .converter-box { background: #f1f5f9; border-radius: 18px; padding: 15px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
-        .converter-row { display: flex; flex-direction: column; gap: 10px; }
+        .converter-row { display: flex; flex-direction: column; gap: 8px; }
+        .converter-row input { background: white; border: 2px solid #cbd5e1; padding: 10px; text-align: center; font-size: 1.1rem; color: var(--primary); }
         .converter-row select { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #cbd5e1; font-weight: 700; font-size: 0.85rem; color: #1e293b; background: white; outline: none; }
         
         .currency-display { 
-            background: white; 
-            padding: 10px; 
-            border-radius: 12px; 
-            text-align: center; 
-            border: 1px dashed #2563eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            background: white; padding: 10px; border-radius: 12px; text-align: center; border: 1px dashed #2563eb;
+            display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px;
         }
-        .cur-text { font-weight: 800; font-size: 1rem; color: #1e293b; }
+        .cur-text { font-weight: 800; font-size: 0.95rem; color: #1e293b; }
         .cur-val { font-weight: 900; font-size: 1.1rem; color: #2563eb; }
 
         .arg-box { background: #eff6ff; border: 2px solid #3b82f6; border-radius: 18px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .arg-label { font-size: 0.7rem; font-weight: 800; color: #1e40af; text-transform: uppercase; margin-bottom: 2px; }
         .arg-value { font-size: 1.2rem; font-weight: 900; color: #1e3a8a; }
+
+        /* TALLES */
+        .talles-section { text-align: left; font-size: 0.85rem; }
+        .talles-title { font-weight: 900; color: var(--primary); margin: 15px 0 8px; border-bottom: 2px solid #f1f5f9; padding-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .talles-grid { display: flex; gap: 8px; margin-bottom: 20px; }
+        .talles-table { flex: 1; width: 100%; border-collapse: collapse; background: #f8fafc; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; table-layout: fixed; }
+        .talles-table th, .talles-table td { padding: 8px 2px; text-align: center; border: 1px solid #e2e8f0; font-size: 0.65rem; }
+        .talles-table th { background: #e2e8f0; font-weight: 800; }
     </style>
 </head>
 <body>
@@ -99,6 +99,7 @@
             <small style="color:var(--success); font-weight:800; font-size:0.6rem;">🛍️ GUÍA DE COMPRAS</small>
             <div id="tip-text">Cargando consejos...</div>
         </div>
+
         <div class="tab-container">
             <button class="tab active" onclick="showSec('gastos')" id="t-gastos">GASTOS</button>
             <button class="tab" onclick="showSec('talles')" id="t-talles">TALLES</button>
@@ -108,14 +109,15 @@
             <div class="arg-box">
                 <div>
                     <div class="arg-label">🇦🇷 Dólar Tarjeta</div>
-                    <div style="font-size: 0.55rem; color: #60a5fa; font-weight: 700; letter-spacing: 0.5px;">VALOR ACTUALIZADO</div>
+                    <div style="font-size: 0.55rem; color: #60a5fa; font-weight: 700; letter-spacing: 0.5px;">VALOR REAL DOLARAPI</div>
                 </div>
                 <div class="arg-value" id="dolar-tarjeta">...</div>
             </div>
 
             <div class="converter-box">
-                <div style="font-size: 0.65rem; font-weight: 800; color: #64748b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;">Comparativa de Moneda</div>
+                <div style="font-size: 0.65rem; font-weight: 800; color: #64748b; margin-bottom: 10px; text-transform: uppercase; text-align: center;">Convertidor Dinámico</div>
                 <div class="converter-row">
+                    <input type="number" id="conv-amount" value="1" oninput="convertCurrency()" placeholder="Cantidad">
                     <select id="currency-select" onchange="convertCurrency()">
                         <option value="EUR">🇪🇺 EUR - Euro</option>
                         <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
@@ -128,7 +130,7 @@
                         <option value="ARS">🇦🇷 ARS - Peso Argentino</option>
                     </select>
                     <div class="currency-display">
-                        <span class="cur-text" id="cur-base">1 EUR =</span>
+                        <span class="cur-text" id="cur-base">... =</span>
                         <span class="cur-val" id="cur-result">... USD</span>
                     </div>
                 </div>
@@ -140,14 +142,36 @@
             <div id="listaGastos" style="margin-top:20px;"><p style="text-align:center; color:#94a3b8;">Cargando...</p></div>
         </div>
 
-        <div id="sec-talles" style="display:none;">
+        <div id="sec-talles" style="display:none;" class="talles-section">
+            <div class="talles-title">👟 Calzado (ARG → US)</div>
+            <div class="talles-grid">
+                <table class="talles-table">
+                    <thead><tr><th>ARG</th><th>H</th><th>M</th></tr></thead>
+                    <tbody>
+                        <tr><td>35</td><td>-</td><td>5</td></tr><tr><td>37</td><td>-</td><td>7</td></tr><tr><td>39</td><td>7</td><td>9</td></tr>
+                    </tbody>
+                </table>
+                <table class="talles-table">
+                    <thead><tr><th>ARG</th><th>H</th><th>M</th></tr></thead>
+                    <tbody>
+                        <tr><td>41</td><td>9</td><td>11</td></tr><tr><td>43</td><td>11</td><td>-</td></tr><tr><td>45</td><td>13</td><td>-</td></tr>
+                    </tbody>
+                </table>
             </div>
+            <div class="talles-title">👕 Remeras / Buzos</div>
+            <table class="talles-table" style="table-layout: auto;">
+                <thead><tr><th>ARG</th><th>EQUIV. US</th></tr></thead>
+                <tbody>
+                    <tr><td>S</td><td>M (US)</td></tr><tr><td>M</td><td>L (US)</td></tr><tr><td>L</td><td>XL (US)</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
     <div id="settingsDrawer" class="settings-drawer">
         <h3 style="color:var(--primary); margin-top:0;">Ajustes</h3>
-        <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
+        <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px;"></p>
         <button class="drawer-btn" onclick="logout()">🚪 Cerrar Sesión</button>
     </div>
 
@@ -166,75 +190,74 @@
         let presupuestoBase = 0;
         let rates = {};
 
+        // 1. TASAS Y DOLARAPI
         async function fetchRates() {
             try {
-                // Obtener Dólar Tarjeta real de DolarApi
-                const resTarjeta = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
-                const dataTarjeta = await resTarjeta.json();
-                document.getElementById('dolar-tarjeta').innerText = `$${dataTarjeta.venta.toFixed(2)}`;
+                const resT = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
+                const dataT = await resT.json();
+                document.getElementById('dolar-tarjeta').innerText = `$${dataT.venta.toFixed(2)}`;
 
-                // Cotizaciones Regionales
-                const resOficial = await fetch('https://dolarapi.com/v1/dolares/oficial');
-                const dataOficial = await resOficial.json();
-                rates['ARS'] = dataOficial.venta;
+                const resAr = await fetch('https://dolarapi.com/v1/dolares/oficial');
+                const dataAr = await resAr.json(); rates['ARS'] = dataAr.venta;
 
                 const resCl = await fetch('https://dolarapi.com/v1/cotizaciones/clp');
-                const dataCl = await resCl.json();
-                rates['CLP'] = dataCl.venta;
+                const dataCl = await resCl.json(); rates['CLP'] = dataCl.venta;
 
                 const resUy = await fetch('https://dolarapi.com/v1/cotizaciones/uyu');
-                const dataUy = await resUy.json();
-                rates['UYU'] = dataUy.venta;
+                const dataUy = await resUy.json(); rates['UYU'] = dataUy.venta;
 
-                // Resto del mundo
-                const resGlobal = await fetch('https://open.er-api.com/v6/latest/USD');
-                const dataGlobal = await resGlobal.json();
-                rates = { ...dataGlobal.rates, ...rates };
-                
+                const resG = await fetch('https://open.er-api.com/v6/latest/USD');
+                const dataG = await resG.json();
+                rates = { ...dataG.rates, ...rates };
                 convertCurrency();
-            } catch (e) { console.error("Error en APIs", e); }
+            } catch (e) { console.error(e); }
         }
 
         window.convertCurrency = () => {
             const code = document.getElementById('currency-select').value;
+            const amount = parseFloat(document.getElementById('conv-amount').value) || 0;
             const resVal = document.getElementById('cur-result');
             const resBase = document.getElementById('cur-base');
-            
             if (rates[code]) {
-                if(code === 'ARS') {
-                    resBase.innerText = `1 USD =`;
-                    resVal.innerText = `$${rates[code].toFixed(2)} ARS`;
-                } else {
-                    const valInUsd = 1 / rates[code];
-                    resBase.innerText = `1 ${code} =`;
-                    resVal.innerText = `$${valInUsd.toFixed(2)} USD`;
-                }
+                const totalInUsd = amount / rates[code];
+                resBase.innerText = `${amount} ${code} =`;
+                resVal.innerText = `$${totalInUsd.toFixed(2)} USD`;
             }
         };
 
-        // El resto de tus funciones (updateFondo, addGasto, etc.) permanecen iguales...
+        // 2. TIPS DINÁMICOS
+        const shoppingTips = [
+            "Orlando: Premium Outlets Vineland es mejor para lujo.",
+            "Miami: Sawgrass Mills requiere un día entero de caminata.",
+            "Jersey Gardens (NJ): No pagás impuesto en ropa y calzado.",
+            "Ross/Marshalls: Los mejores días para encontrar stock son los martes."
+        ];
+        let tipIdx = 0;
+        window.nextTip = () => { tipIdx = (tipIdx + 1) % shoppingTips.length; document.getElementById('tip-text').innerText = shoppingTips[tipIdx]; };
+
+        // 3. FIREBASE Y GASTOS
         window.updateFondo = async () => { 
             const val = document.getElementById('input-fondo').value; 
             if(val && currentUser) await setDoc(doc(db, "usuarios", currentUser.uid), { fondo: parseFloat(val) }, { merge: true }); 
         };
         
         window.addGasto = async () => { 
-            const n = document.getElementById('nombre').value; 
-            const v = document.getElementById('valor').value; 
+            const n = document.getElementById('nombre').value; const v = document.getElementById('valor').value; 
             if(n && v && currentUser) { await addDoc(collection(db, "compras"), { nombre: n, valor: parseFloat(v), userId: currentUser.uid, createdAt: Date.now() }); document.getElementById('nombre').value = ""; document.getElementById('valor').value = ""; } 
         };
 
         window.deleteGasto = (id) => confirm("¿Borrar?") && deleteDoc(doc(db, "compras", id));
+
         window.showSec = (s) => { 
             document.getElementById('sec-gastos').style.display = s === 'gastos' ? 'block' : 'none'; 
+            document.getElementById('sec-talles').style.display = s === 'talles' ? 'block' : 'none'; 
             document.getElementById('t-gastos').className = s === 'gastos' ? 'tab active' : 'tab';
+            document.getElementById('t-talles').className = s === 'talles' ? 'tab active' : 'tab';
         };
 
         window.toggleSettings = () => { 
-            const d = document.getElementById('settingsDrawer'); 
-            const o = document.getElementById('menuOverlay');
-            d.classList.toggle('open'); 
-            o.style.display = d.classList.contains('open') ? 'block' : 'none'; 
+            const d = document.getElementById('settingsDrawer'); const o = document.getElementById('menuOverlay');
+            d.classList.toggle('open'); o.style.display = d.classList.contains('open') ? 'block' : 'none'; 
         };
 
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
@@ -243,6 +266,7 @@
             if (!user) window.location.replace("login.html");
             else { 
                 currentUser = user; 
+                document.getElementById('userEmail').innerText = user.email;
                 onSnapshot(doc(db, "usuarios", user.uid), (docSnap) => { 
                     presupuestoBase = docSnap.exists() ? (docSnap.data().fondo || 0) : 0; 
                     listenGastos(user.uid); 
@@ -252,19 +276,25 @@
 
         function listenGastos(uid) {
             const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
-            onSnapshot(q, (snapshot) => {
+            onSnapshot(q, (snap) => {
                 const container = document.getElementById('listaGastos');
-                let totalGastado = 0;
-                if (snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No hay gastos.</p>'; updateDisplay(0); return; }
-                container.innerHTML = snapshot.docs.map(docSnap => {
-                    const d = docSnap.data(); totalGastado += parseFloat(d.valor);
-                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${d.valor}</div><div onclick="deleteGasto('${docSnap.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">×</div></div></div>`;
+                let total = 0;
+                if (snap.empty) { container.innerHTML = '<p style="text-align:center; color:#94a3b8;">Sin gastos.</p>'; updateDisplay(0); return; }
+                container.innerHTML = snap.docs.map(docSnap => {
+                    const d = docSnap.data(); total += parseFloat(d.valor);
+                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;">-$${d.valor} <div onclick="deleteGasto('${docSnap.id}')" style="color:red; cursor:pointer; font-weight:bold;">×</div></div></div>`;
                 }).join('');
-                updateDisplay(totalGastado);
+                updateDisplay(total);
             });
         }
+
         function updateDisplay(gastado) { document.getElementById('disp-fondo').innerText = 'USD ' + (presupuestoBase - gastado).toFixed(2); }
-        window.onload = fetchRates;
+
+        window.onload = () => {
+            document.getElementById('tip-text').innerText = shoppingTips[0];
+            setInterval(window.nextTip, 8000);
+            fetchRates();
+        };
     </script>
 </body>
 </html>
