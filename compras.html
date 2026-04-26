@@ -41,7 +41,7 @@
         .tab { flex: 1; padding: 12px; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; background: transparent; color: #64748b; font-size: 0.8rem; }
         .tab.active { background: var(--white); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         
-        input { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 1rem; font-weight: 600; outline: none; transition: 0.2s; }
+        input, select { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 1rem; font-weight: 600; outline: none; transition: 0.2s; }
         input:focus { border-color: var(--primary); }
         .btn-add { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
         
@@ -62,10 +62,20 @@
             gap: 8px;
         }
         .rate-box.arg { border-top: 4px solid #7dd3fc; }
-        .rate-box.eur { border-top: 4px solid #3b82f6; }
-        .rate-box.brl { border-top: 4px solid #22c55e; }
+        .rate-box.multi { border-top: 4px solid var(--accent); }
 
-        .rate-label { font-size: 0.65rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+        .rate-label { font-size: 0.6rem; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; }
+        .currency-select { 
+            padding: 4px; 
+            font-size: 0.7rem; 
+            border: none; 
+            background: #f1f5f9; 
+            border-radius: 8px; 
+            font-weight: 800; 
+            color: var(--primary);
+            cursor: pointer;
+            margin-bottom: 4px;
+        }
         
         .rate-row { display: flex; align-items: center; gap: 6px; justify-content: center; }
         .rate-row span { font-size: 0.9rem; }
@@ -128,51 +138,38 @@
             <div class="rates-container">
                 <div class="rate-box arg">
                     <div class="rate-label">Dólar Oficial</div>
-                    <div class="rate-row">
-                        <span>🇺🇸</span>
-                        <input type="number" id="oficial-usd" value="1" oninput="convert('oficial', 'usd')">
-                    </div>
+                    <div class="rate-row"><span>🇺🇸</span><input type="number" id="oficial-usd" value="1" oninput="convert('oficial', 'usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row">
-                        <span>🇦🇷</span>
-                        <input type="number" id="oficial-local" oninput="convert('oficial', 'local')">
-                    </div>
+                    <div class="rate-row"><span>🇦🇷</span><input type="number" id="oficial-local" oninput="convert('oficial', 'local')"></div>
                 </div>
                 <div class="rate-box arg">
                     <div class="rate-label">Dólar Tarjeta</div>
-                    <div class="rate-row">
-                        <span>🇺🇸</span>
-                        <input type="number" id="tarjeta-usd" value="1" oninput="convert('tarjeta', 'usd')">
-                    </div>
+                    <div class="rate-row"><span>🇺🇸</span><input type="number" id="tarjeta-usd" value="1" oninput="convert('tarjeta', 'usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row">
-                        <span>🇦🇷</span>
-                        <input type="number" id="tarjeta-local" oninput="convert('tarjeta', 'local')">
-                    </div>
+                    <div class="rate-row"><span>🇦🇷</span><input type="number" id="tarjeta-local" oninput="convert('tarjeta', 'local')"></div>
                 </div>
-                <div class="rate-box eur">
-                    <div class="rate-label">Euro / USD</div>
-                    <div class="rate-row">
-                        <span>🇺🇸</span>
-                        <input type="number" id="eur-usd" value="1" oninput="convert('eur', 'usd')">
-                    </div>
+                <div class="rate-box multi">
+                    <select id="select-eur" class="currency-select" onchange="updateMulti('eur')">
+                        <option value="EUR">🇪🇺 Euro</option>
+                        <option value="GBP">🇬🇧 Libra</option>
+                        <option value="CHF">🇨🇭 F. Suizo</option>
+                    </select>
+                    <div class="rate-row"><span>🇺🇸</span><input type="number" id="eur-usd" value="1" oninput="convert('eur', 'usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row">
-                        <span>🇪🇺</span>
-                        <input type="number" id="eur-local" oninput="convert('eur', 'local')">
-                    </div>
+                    <div class="rate-row"><span id="flag-eur">🇪🇺</span><input type="number" id="eur-local" oninput="convert('eur', 'local')"></div>
                 </div>
-                <div class="rate-box brl">
-                    <div class="rate-label">Real / USD</div>
-                    <div class="rate-row">
-                        <span>🇺🇸</span>
-                        <input type="number" id="brl-usd" value="1" oninput="convert('brl', 'usd')">
-                    </div>
+                <div class="rate-box multi">
+                    <select id="select-brl" class="currency-select" onchange="updateMulti('brl')">
+                        <option value="BRL">🇧🇷 Real</option>
+                        <option value="CLP">🇨🇱 P. Chileno</option>
+                        <option value="UYU">🇺🇾 P. Uruguayo</option>
+                        <option value="MXN">🇲🇽 P. Mexicano</option>
+                        <option value="PEN">🇵🇪 Sol Peruano</option>
+                        <option value="COP">🇨🇴 P. Colombiano</option>
+                    </select>
+                    <div class="rate-row"><span>🇺🇸</span><input type="number" id="brl-usd" value="1" oninput="convert('brl', 'usd')"></div>
                     <div class="rate-divider">⇅</div>
-                    <div class="rate-row">
-                        <span>🇧🇷</span>
-                        <input type="number" id="brl-local" oninput="convert('brl', 'local')">
-                    </div>
+                    <div class="rate-row"><span id="flag-brl">🇧🇷</span><input type="number" id="brl-local" oninput="convert('brl', 'local')"></div>
                 </div>
             </div>
 
@@ -208,7 +205,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="talles-title">👕 Remeras / Tops</div>
             <table class="talles-table" style="table-layout: auto;">
                 <thead><tr><th>ARG</th><th>EQUIV. US</th></tr></thead>
@@ -221,7 +217,6 @@
                     <tr><td>2XL</td><td>3XL</td></tr>
                 </tbody>
             </table>
-
             <div class="talles-title">🧥 Buzos / Camperas</div>
             <table class="talles-table" style="table-layout: auto;">
                 <thead><tr><th>ARG</th><th>US SIZE</th></tr></thead>
@@ -260,7 +255,10 @@
         const db = getFirestore(app);
         let currentUser = null;
         let presupuestoBase = 0;
+        
+        let allRates = {}; // Guardaremos todas las monedas aquí
         let baseRates = { oficial: 0, tarjeta: 0, eur: 0, brl: 0 };
+        const flags = { EUR: "🇪🇺", GBP: "🇬🇧", CHF: "🇨🇭", BRL: "🇧🇷", CLP: "🇨🇱", UYU: "🇺🇾", MXN: "🇲🇽", PEN: "🇵🇪", COP: "🇨🇴" };
 
         async function fetchRates() {
             try {
@@ -271,8 +269,10 @@
 
                 const resGlob = await fetch('https://open.er-api.com/v6/latest/USD');
                 const dataGlob = await resGlob.json();
-                baseRates.eur = dataGlob.rates.EUR;
-                baseRates.brl = dataGlob.rates.BRL;
+                allRates = dataGlob.rates;
+                
+                baseRates.eur = allRates.EUR;
+                baseRates.brl = allRates.BRL;
 
                 document.getElementById('oficial-local').value = baseRates.oficial.toFixed(2);
                 document.getElementById('tarjeta-local').value = baseRates.tarjeta.toFixed(2);
@@ -280,6 +280,14 @@
                 document.getElementById('brl-local').value = baseRates.brl.toFixed(2);
             } catch (e) { console.error("Error rates:", e); }
         }
+
+        window.updateMulti = (type) => {
+            const code = document.getElementById(`select-${type}`).value;
+            baseRates[type] = allRates[code];
+            document.getElementById(`flag-${type}`).innerText = flags[code];
+            document.getElementById(`${type}-usd`).value = 1;
+            document.getElementById(`${type}-local`).value = baseRates[type].toFixed(2);
+        };
 
         window.convert = (type, direction) => {
             const usdInput = document.getElementById(`${type}-usd`);
