@@ -47,11 +47,23 @@
         .history-item { background: #f8fafc; padding: 15px; border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
         .dato-clave { background: #f0fdf4; padding: 15px; border-radius: 16px; border: 1.5px solid var(--success); margin-bottom: 15px; text-align: center; cursor: pointer; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
 
-        /* NUEVOS ESTILOS COTIZACIONES */
+        /* ESTILOS COTIZACIONES ACTUALIZADOS */
         .rates-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
         .rate-box { background: #f1f5f9; padding: 10px; border-radius: 14px; text-align: center; border: 1px solid #e2e8f0; }
-        .rate-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
-        .rate-value { font-size: 0.9rem; font-weight: 800; color: var(--primary); }
+        .rate-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+        .rate-input-group { display: flex; flex-direction: column; gap: 4px; }
+        .rate-input-group input { 
+            width: 100%; 
+            padding: 5px; 
+            font-size: 0.8rem; 
+            text-align: center; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            background: white;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .rate-divider { font-size: 0.6rem; color: #94a3b8; font-weight: 800; }
         
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
         .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
@@ -114,10 +126,38 @@
         
         <div id="sec-gastos">
             <div class="rates-container">
-                <div class="rate-box"><div class="rate-label">Dólar Blue</div><div class="rate-value" id="rate-blue">...</div></div>
-                <div class="rate-box"><div class="rate-label">Tarjeta</div><div class="rate-value" id="rate-tarjeta">...</div></div>
-                <div class="rate-box"><div class="rate-label">Euro/USD</div><div class="rate-value" id="rate-eur">...</div></div>
-                <div class="rate-box"><div class="rate-label">Real/USD</div><div class="rate-value" id="rate-brl">...</div></div>
+                <div class="rate-box">
+                    <div class="rate-label">Dólar Oficial</div>
+                    <div class="rate-input-group">
+                        <input type="number" id="oficial-usd" value="1" oninput="convert('oficial', 'usd')">
+                        <div class="rate-divider">USD = ARS</div>
+                        <input type="number" id="oficial-local" oninput="convert('oficial', 'local')">
+                    </div>
+                </div>
+                <div class="rate-box">
+                    <div class="rate-label">Dólar Tarjeta</div>
+                    <div class="rate-input-group">
+                        <input type="number" id="tarjeta-usd" value="1" oninput="convert('tarjeta', 'usd')">
+                        <div class="rate-divider">USD = ARS</div>
+                        <input type="number" id="tarjeta-local" oninput="convert('tarjeta', 'local')">
+                    </div>
+                </div>
+                <div class="rate-box">
+                    <div class="rate-label">Euro / USD</div>
+                    <div class="rate-input-group">
+                        <input type="number" id="eur-usd" value="1" oninput="convert('eur', 'usd')">
+                        <div class="rate-divider">USD = EUR</div>
+                        <input type="number" id="eur-local" oninput="convert('eur', 'local')">
+                    </div>
+                </div>
+                <div class="rate-box">
+                    <div class="rate-label">Real / USD</div>
+                    <div class="rate-input-group">
+                        <input type="number" id="brl-usd" value="1" oninput="convert('brl', 'usd')">
+                        <div class="rate-divider">USD = BRL</div>
+                        <input type="number" id="brl-local" oninput="convert('brl', 'local')">
+                    </div>
+                </div>
             </div>
 
             <input type="text" id="nombre" placeholder="Producto" style="margin-bottom:10px;">
@@ -204,27 +244,41 @@
         const db = getFirestore(app);
         let currentUser = null;
         let presupuestoBase = 0;
+        
+        // Objeto para guardar los rates base
+        let baseRates = { oficial: 0, tarjeta: 0, eur: 0, brl: 0 };
 
-        // NUEVA FUNCIÓN DE COTIZACIONES
         async function fetchRates() {
             try {
-                // AR - DolarApi
                 const resArg = await fetch('https://dolarapi.com/v1/dolares');
                 const dataArg = await resArg.json();
-                const blue = dataArg.find(d => d.casa === 'blue')?.venta;
-                const tarjeta = dataArg.find(d => d.casa === 'tarjeta')?.venta;
-                document.getElementById('rate-blue').innerText = blue ? `$${blue}` : 'N/A';
-                document.getElementById('rate-tarjeta').innerText = tarjeta ? `$${tarjeta}` : 'N/A';
+                baseRates.oficial = dataArg.find(d => d.casa === 'oficial')?.venta || 0;
+                baseRates.tarjeta = dataArg.find(d => d.casa === 'tarjeta')?.venta || 0;
 
-                // GLOBAL - Exchangerate API
                 const resGlob = await fetch('https://open.er-api.com/v6/latest/USD');
                 const dataGlob = await resGlob.json();
-                const eur = (1 / dataGlob.rates.EUR).toFixed(2);
-                const brl = dataGlob.rates.BRL.toFixed(2);
-                document.getElementById('rate-eur').innerText = `${eur} USD`;
-                document.getElementById('rate-brl').innerText = `${brl} BRL`;
+                baseRates.eur = dataGlob.rates.EUR;
+                baseRates.brl = dataGlob.rates.BRL;
+
+                // Inicializar inputs
+                document.getElementById('oficial-local').value = baseRates.oficial.toFixed(2);
+                document.getElementById('tarjeta-local').value = baseRates.tarjeta.toFixed(2);
+                document.getElementById('eur-local').value = baseRates.eur.toFixed(2);
+                document.getElementById('brl-local').value = baseRates.brl.toFixed(2);
             } catch (e) { console.error("Error rates:", e); }
         }
+
+        window.convert = (type, direction) => {
+            const usdInput = document.getElementById(`${type}-usd`);
+            const localInput = document.getElementById(`${type}-local`);
+            const rate = baseRates[type];
+
+            if (direction === 'usd') {
+                localInput.value = (usdInput.value * rate).toFixed(2);
+            } else {
+                usdInput.value = (localInput.value / rate).toFixed(2);
+            }
+        };
 
         window.updateFondo = async () => { 
             const val = document.getElementById('input-fondo').value; 
@@ -279,7 +333,7 @@
                     presupuestoBase = docSnap.exists() ? (docSnap.data().fondo || 0) : 0; 
                     listenGastos(user.uid); 
                 }); 
-                fetchRates(); // Cargar monedas al entrar
+                fetchRates();
             }
         });
 
