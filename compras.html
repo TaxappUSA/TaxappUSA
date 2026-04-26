@@ -54,7 +54,6 @@
         .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-align: left; }
         .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
 
-        /* COTIZADOR DINÁMICO MEJORADO */
         .converter-box { background: #f1f5f9; border-radius: 18px; padding: 15px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
         .converter-row { display: flex; flex-direction: column; gap: 8px; }
         .converter-row input { background: white; border: 2px solid #cbd5e1; padding: 10px; text-align: center; font-size: 1.1rem; color: var(--primary); }
@@ -71,7 +70,6 @@
         .arg-label { font-size: 0.7rem; font-weight: 800; color: #1e40af; text-transform: uppercase; margin-bottom: 2px; }
         .arg-value { font-size: 1.2rem; font-weight: 900; color: #1e3a8a; }
 
-        /* TALLES */
         .talles-section { text-align: left; font-size: 0.85rem; }
         .talles-title { font-weight: 900; color: var(--primary); margin: 15px 0 8px; border-bottom: 2px solid #f1f5f9; padding-bottom: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
         .talles-grid { display: flex; gap: 8px; margin-bottom: 20px; }
@@ -190,22 +188,17 @@
         let presupuestoBase = 0;
         let rates = {};
 
-        // 1. TASAS Y DOLARAPI
         async function fetchRates() {
             try {
                 const resT = await fetch('https://dolarapi.com/v1/dolares/tarjeta');
                 const dataT = await resT.json();
                 document.getElementById('dolar-tarjeta').innerText = `$${dataT.venta.toFixed(2)}`;
-
                 const resAr = await fetch('https://dolarapi.com/v1/dolares/oficial');
                 const dataAr = await resAr.json(); rates['ARS'] = dataAr.venta;
-
                 const resCl = await fetch('https://dolarapi.com/v1/cotizaciones/clp');
                 const dataCl = await resCl.json(); rates['CLP'] = dataCl.venta;
-
                 const resUy = await fetch('https://dolarapi.com/v1/cotizaciones/uyu');
                 const dataUy = await resUy.json(); rates['UYU'] = dataUy.venta;
-
                 const resG = await fetch('https://open.er-api.com/v6/latest/USD');
                 const dataG = await resG.json();
                 rates = { ...dataG.rates, ...rates };
@@ -225,17 +218,26 @@
             }
         };
 
-        // 2. TIPS DINÁMICOS
         const shoppingTips = [
             "Orlando: Premium Outlets Vineland es mejor para lujo.",
             "Miami: Sawgrass Mills requiere un día entero de caminata.",
             "Jersey Gardens (NJ): No pagás impuesto en ropa y calzado.",
-            "Ross/Marshalls: Los mejores días para encontrar stock son los martes."
+            "Ross/Marshalls: Los mejores días para encontrar stock son los martes.",
+            "Las Vegas: North Premium Outlets tiene mejores precios que los del Strip.",
+            "NYC: Woodbury Common es el outlet más famoso, a 1h de Manhattan.",
+            "Los Ángeles: Citadel Outlets es la mejor opción cerca del centro.",
+            "San Francisco: San Francisco Premium Outlets en Livermore es gigante.",
+            "Chicago: Fashion Outlets of Chicago está techado (ideal para el frío).",
+            "Houston: The Galleria es el shopping más grande de Texas.",
+            "San Diego: Las Americas Premium es ideal si buscás marcas deportivas.",
+            "NYC: B&H Photo es el paraíso de la tecnología (cerrado los sábados).",
+            "Tip: Bajate la app de Simon Premium Outlets para cupones extra.",
+            "Apple Store: Los precios son fijos, no busques ofertas en outlets.",
+            "Walmart/Target: Ideales para comprar valijas baratas si te excedés."
         ];
         let tipIdx = 0;
         window.nextTip = () => { tipIdx = (tipIdx + 1) % shoppingTips.length; document.getElementById('tip-text').innerText = shoppingTips[tipIdx]; };
 
-        // 3. FIREBASE Y GASTOS
         window.updateFondo = async () => { 
             const val = document.getElementById('input-fondo').value; 
             if(val && currentUser) await setDoc(doc(db, "usuarios", currentUser.uid), { fondo: parseFloat(val) }, { merge: true }); 
