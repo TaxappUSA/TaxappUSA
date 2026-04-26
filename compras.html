@@ -3,43 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gastos y Cotizaciones</title>
+    <title>Calculadora de Gastos</title>
     <style>
-        :root { --primary: #7c3aed; --bg: #f8fafc; --white: #ffffff; --blue: #2563eb; --success: #10b981; --danger: #ef4444; }
+        :root { --primary: #0ea5e9; --bg: #f8fafc; --white: #ffffff; --text: #1e293b; --accent: #f59e0b; --danger: #ef4444; --success: #10b981; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--text); }
         
-        /* Navegación */
         .nav-bar { width: 100%; max-width: 450px; margin-bottom: 15px; display: flex; gap: 10px; }
-        .btn-nav { flex: 1; padding: 12px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.8rem; border: 2px solid var(--blue); color: var(--blue); }
-        .btn-nav-cyan { border-color: #0ea5e9; color: #0ea5e9; }
+        .btn-nav { flex: 1; padding: 12px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.8rem; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-nav-purple { border-color: #7c3aed; color: #7c3aed; }
 
-        /* Banner Presupuesto */
-        .total-banner { background: linear-gradient(135deg, #4f46e5, #9333ea); color: white; width: 100%; max-width: 450px; padding: 25px; border-radius: 24px; margin-bottom: 15px; text-align: center; box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2); }
-        .total-label { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; opacity: 0.9; }
-        .total-amount { font-size: 2.2rem; font-weight: 900; margin: 5px 0; }
-        .budget-input-group { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
-        .budget-input-group input { width: 110px; padding: 8px; border-radius: 10px; border: none; font-size: 0.8rem; outline: none; }
-        .btn-set { padding: 8px 15px; border-radius: 10px; border: none; background: white; color: #4f46e5; font-weight: 800; cursor: pointer; }
-
-        /* Panel de Cotizaciones */
-        .forex-panel { width: 100%; max-width: 450px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .forex-card { background: white; padding: 12px; border-radius: 18px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .fx-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 2px; }
-        .fx-value { font-size: 1.1rem; font-weight: 900; color: #1e293b; }
-        .fx-sub { font-size: 0.55rem; color: var(--danger); background: #fee2e2; padding: 2px 6px; border-radius: 6px; font-weight: 700; display: inline-block; margin-top: 4px; }
-        .currency-select { width: 100%; margin-top: 8px; padding: 6px; border-radius: 8px; border: 1px solid #f1f5f9; font-size: 0.75rem; font-weight: 700; background: #f8fafc; color: #475569; outline: none; }
-
-        /* Contenedor de Gastos / Guía */
         .card { background: var(--white); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        h2 { color: var(--primary); margin: 0 0 15px 0; text-align: center; font-size: 1.3rem; }
+        h2 { color: var(--primary); margin: 0 0 15px 0; text-align: center; font-size: 1.4rem; }
         
-        .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-        .expense-info { display: flex; flex-direction: column; }
-        .expense-name { font-weight: 700; color: #1e293b; font-size: 0.95rem; }
-        .expense-date { font-size: 0.7rem; color: #94a3b8; }
-        .expense-val { font-weight: 800; color: var(--danger); }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; margin-bottom: 5px; text-transform: uppercase; margin-left: 5px; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 1rem; font-weight: 600; outline: none; transition: 0.3s; background: #f8fafc; }
+        input:focus { border-color: var(--primary); background: white; }
 
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+        
+        .dato-itinerario { background: #f0f9ff; padding: 15px; border-radius: 16px; border: 1.5px solid var(--primary); margin-top: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        
+        .list-container { width: 100%; max-width: 450px; }
+        .expense-item { background: var(--white); padding: 15px; border-radius: 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border-left: 5px solid var(--primary); }
+        .expense-info { display: flex; flex-direction: column; }
+        .expense-name { font-weight: 700; font-size: 0.95rem; }
+        .expense-date { font-size: 0.65rem; color: #94a3b8; font-weight: 600; }
+        .expense-amount { text-align: right; }
+        .val-usd { font-weight: 800; color: var(--text); }
+        .val-ars { font-size: 0.75rem; color: var(--success); font-weight: 700; display: block; }
+        
+        .total-banner { background: var(--text); color: white; width: 100%; max-width: 450px; padding: 20px; border-radius: 24px; margin-bottom: 15px; text-align: center; }
+        .total-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; opacity: 0.7; letter-spacing: 1px; }
+        .total-amount { font-size: 2rem; font-weight: 900; margin: 5px 0; }
+        
+        .btn-delete { color: var(--danger); font-size: 1.2rem; margin-left: 15px; cursor: pointer; opacity: 0.3; }
         .footer { margin-top: auto; padding: 20px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
     </style>
 </head>
@@ -47,133 +46,159 @@
 
     <div class="nav-bar">
         <a href="index.html" class="btn-nav">🏠 INICIO</a>
-        <a href="itinerario.html" class="btn-nav">📍 ITINERARIO</a>
-        <a href="unidades.html" class="btn-nav btn-nav-cyan">秤 UNIDADES</a>
+        <a href="itinerario.html" class="btn-nav btn-nav-purple">📍 ITINERARIO</a>
+        <a href="unidades.html" class="btn-nav">⚖️ UNIDADES</a>
     </div>
 
     <div class="total-banner">
-        <div class="total-label">Presupuesto Restante</div>
-        <div class="total-amount" id="budgetDisplay">USD 0.00</div>
-        <div class="budget-input-group">
-            <input type="number" id="setBudgetInput" placeholder="Monto USD">
-            <button class="btn-set" onclick="updateBudget()">SET</button>
-        </div>
-    </div>
-
-    <div class="forex-panel">
-        <div class="forex-card">
-            <span class="fx-label">🇦🇷 Dólar Oficial (BNA)</span>
-            <div class="fx-value" id="valOficial">...</div>
-            <span class="fx-sub" id="labelTarjeta">Tarjeta: ...</span>
-        </div>
-        <div class="forex-card">
-            <span class="fx-label">🌍 Conversión de 1 USD</span>
-            <div class="fx-value" id="valConvert">...</div>
-            <select class="currency-select" id="targetCurrency" onchange="convertCurrency()">
-                <optgroup label="Más Usadas">
-                    <option value="ARS">Peso Argentino (Blue)</option>
-                    <option value="EUR">Euro (Europa)</option>
-                    <option value="BRL">Real (Brasil)</option>
-                </optgroup>
-                <optgroup label="Latinoamérica">
-                    <option value="CLP">Peso Chileno</option>
-                    <option value="UYU">Peso Uruguayo</option>
-                    <option value="PEN">Sol Peruano</option>
-                    <option value="COP">Peso Colombiano</option>
-                    <option value="MXN">Peso Mexicano</option>
-                    <option value="PYG">Guaraní (Paraguay)</option>
-                    <option value="BOB">Boliviano</option>
-                </optgroup>
-                <optgroup label="Europa & Otros">
-                    <option value="GBP">Libra Esterlina</option>
-                    <option value="CHF">Franco Suizo</option>
-                    <option value="JPY">Yen Japonés</option>
-                </optgroup>
-            </select>
-        </div>
+        <div class="total-label">Gasto Total Acumulado</div>
+        <div class="total-amount" id="totalUSD">u$s 0</div>
+        <div id="totalARS" style="color: var(--success); font-weight: 700; font-size: 0.9rem;">$0 ARS</div>
     </div>
 
     <div class="card">
-        <h2>🛍️ Mis Gastos</h2>
-        <div id="expenseList">
-            <p style="text-align: center; color: #94a3b8; font-size: 0.8rem;">No hay gastos registrados aún.</p>
+        <h2>🛍️ Nuevo Gasto</h2>
+        <div class="input-group">
+            <label>Descripción</label>
+            <input type="text" id="desc" placeholder="Ej: Zapatillas Nike, Cena...">
+        </div>
+        <div class="input-group" style="display: flex; gap: 10px;">
+            <div style="flex: 2;">
+                <label>Monto (USD)</label>
+                <input type="number" id="monto" placeholder="0.00" step="0.01">
+            </div>
+            <div style="flex: 1;">
+                <label>Tax %</label>
+                <input type="number" id="tax" value="6.5">
+            </div>
+        </div>
+        <button class="btn-calc" onclick="addExpense()">GUARDAR GASTO</button>
+
+        <div class="dato-itinerario" onclick="nextTip()">
+            <small style="color: var(--primary); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;">💰 Tip de Ahorro</small>
+            <div id="tip-text" style="font-weight: 700; font-size: 0.85rem; color: #1e293b; margin-top: 4px; transition: opacity 0.3s ease;">Cargando tips...</div>
         </div>
     </div>
+
+    <div id="expenseList" class="list-container"></div>
 
     <div class="footer"><span>Creado por Juan Cruz Bria <img src="https://flagcdn.com/w40/ar.png" style="width:18px;"></span></div>
 
     <script type="module">
-        // Variables de estado
-        let rates = { oficial: 0, blue: 0, tarjeta: 0 };
-        let currentBudget = 1318.40; // Valor inicial ejemplo
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-        // Función para obtener cotizaciones reales
-        async function fetchRates() {
-            try {
-                // Obtenemos datos de Argentina (Oficial de BNA y Blue)
-                const res = await fetch('https://dolarapi.com/v1/dolares');
-                const data = await res.json();
-                
-                const oficialData = data.find(d => d.casa === 'oficial');
-                const blueData = data.find(d => d.casa === 'blue');
+        const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.app", messagingSenderId: "237311739178", appId: "1:237311739178:web:333e468b184c0402a98a53" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
+        let dolarBlue = 1200; 
 
-                rates.oficial = oficialData.venta;
-                rates.blue = blueData.venta;
-                // Dólar Tarjeta: Oficial + 60% (30% PAIS + 30% Ganancias aprox en 2026)
-                rates.tarjeta = rates.oficial * 1.60;
+        // Obtener cotización real
+        fetch('https://dolarapi.com/v1/dolares/blue').then(r => r.json()).then(d => { if(d.venta) dolarBlue = d.venta; });
 
-                document.getElementById('valOficial').innerText = `$${rates.oficial.toFixed(2)}`;
-                document.getElementById('labelTarjeta').innerText = `Tarjeta: $${rates.tarjeta.toFixed(0)}`;
-                
-                convertCurrency(); // Actualizar la conversión del selector
-            } catch (e) {
-                console.error("Error cargando cotizaciones", e);
-            }
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.replace("login.html");
+            else { currentUser = user; listenExpenses(user.uid); }
+        });
+
+        window.addExpense = async () => {
+            const desc = document.getElementById('desc').value;
+            const monto = parseFloat(document.getElementById('monto').value);
+            const tax = parseFloat(document.getElementById('tax').value) || 0;
+            
+            if (!desc || !monto) return;
+            const finalAmount = monto + (monto * (tax / 100));
+
+            await addDoc(collection(db, "gastos"), {
+                desc,
+                amount: finalAmount,
+                userId: currentUser.uid,
+                createdAt: Date.now()
+            });
+
+            document.getElementById('desc').value = '';
+            document.getElementById('monto').value = '';
+        };
+
+        function listenExpenses(uid) {
+            const q = query(collection(db, "gastos"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+            onSnapshot(q, (sn) => {
+                let total = 0;
+                const container = document.getElementById('expenseList');
+                container.innerHTML = sn.docs.map(docSnap => {
+                    const d = docSnap.data();
+                    total += d.amount;
+                    const ars = (d.amount * dolarBlue).toLocaleString('es-AR');
+                    return `
+                        <div class="expense-item">
+                            <div class="expense-info">
+                                <span class="expense-name">${d.desc}</span>
+                                <span class="expense-date">${new Date(d.createdAt).toLocaleDateString()}</span>
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <div class="expense-amount">
+                                    <span class="val-usd">u$s ${d.amount.toFixed(2)}</span>
+                                    <span class="val-ars">$${ars}</span>
+                                </div>
+                                <span class="btn-delete" onclick="deleteExpense('${docSnap.id}')">×</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('totalUSD').innerText = `u$s ${total.toFixed(2)}`;
+                document.getElementById('totalARS').innerText = `$${(total * dolarBlue).toLocaleString('es-AR')} ARS`;
+            });
         }
 
-        // Función para convertir USD a la moneda elegida
-        window.convertCurrency = async () => {
-            const target = document.getElementById('targetCurrency').value;
-            const display = document.getElementById('valConvert');
-            
-            if (target === 'ARS') {
-                display.innerText = `$${rates.blue.toFixed(0)}`;
-            } else {
-                try {
-                    // API para el resto del mundo
-                    const res = await fetch(`https://open.er-api.com/v6/latest/USD`);
-                    const data = await res.json();
-                    const rate = data.rates[target];
-                    
-                    if (target === 'EUR' || target === 'GBP') {
-                        display.innerText = `${rate.toFixed(2)} ${target}`;
-                    } else {
-                        display.innerText = `${target} ${rate.toLocaleString('es-AR', {minimumFractionDigits: 0})}`;
-                    }
-                } catch (e) {
-                    display.innerText = "Error";
-                }
-            }
+        window.deleteExpense = async (id) => {
+            if(confirm('¿Eliminar gasto?')) await deleteDoc(doc(db, "gastos", id));
         };
 
-        // Función para actualizar presupuesto visualmente
-        window.updateBudget = () => {
-            const input = document.getElementById('setBudgetInput');
-            if (input.value) {
-                currentBudget = parseFloat(input.value);
-                document.getElementById('budgetDisplay').innerText = `USD ${currentBudget.toFixed(2)}`;
-                input.value = '';
-            }
+        // --- SISTEMA DE TIPS EXPANDIDO ---
+        const comprasTips = [
+            "Tax Free: En EE.UU. el precio de etiqueta NO tiene impuestos. Sumale entre 6% y 10% al llegar a la caja.",
+            "Cupones: Bajá la app de 'RetailMeNot' o 'Rakuten' para encontrar descuentos de último minuto en tiendas.",
+            "Marshalls/TJ Maxx: Ropa de marca a precio de outlet. Revisá bien las costuras antes de comprar.",
+            "Apple Store: Los precios son fijos, pero podés comprar 'Refurbished' en su web con garantía oficial.",
+            "Premium Outlets: Registrate en su 'VIP Club' online para recibir un libro de cupones digitales gratis.",
+            "Walmart: Es el mejor lugar para comprar snacks y valijas baratas si te quedaste sin espacio.",
+            "Best Buy: Si encontrás un precio más bajo en Amazon, pedí el 'Price Match' y te lo igualan en el momento.",
+            "Amazon Hub: Si no tenés hotel fijo, mandá tus compras a un Amazon Locker en un 7-Eleven.",
+            "Ropa: En algunos estados como New Jersey, la ropa y el calzado no pagan impuestos (Sales Tax).",
+            "Tarjetas: Siempre elegí pagar en 'USD' si el posnet te ofrece la conversión a Pesos; el banco local es más barato.",
+            "Cosméticos: CVS y Walgreens tienen ofertas de 'Buy 1 Get 1 50% Off' muy frecuentes en maquillaje.",
+            "Electrónica: No compres en tiendas de aeropuertos o de Times Square; los precios están inflados.",
+            "Ross/Burlington: Son más baratos que los Outlets, pero requieren paciencia para revolver percheros.",
+            "Devoluciones: Casi todo en EE.UU. se puede devolver con el ticket (Receipt) si no te gustó.",
+            "Black Friday: Las ofertas reales suelen empezar el lunes anterior al Día de Acción de Gracias.",
+            "Celulares: Verificá que el iPhone sea 'Unlocked' y tenga banda para Argentina antes de pagar.",
+            "Equipaje: Pesá tu valija antes de ir al aeropuerto; el exceso de peso cuesta más que una valija nueva.",
+            "Five Below: Todo cuesta 5 dólares o menos. Ideal para regalitos, fundas de celular y chucherías.",
+            "Disney Springs: La entrada es gratis y tenés la tienda de Disney más grande del mundo sin pagar ticket de parque.",
+            "Dollar Tree: Todo a 1.25 USD. Ideal para artículos de higiene, globos o decoración descartable.",
+            "Macy's: Buscá el centro de visitantes y pedí el 'Visitor Savings Pass' del 10% para extranjeros.",
+            "Nike/Adidas: Los talles de niños (Grade School) suelen llegar hasta el 38/39 y son mucho más baratos.",
+            "Supermercado: Registrate con tu número (inventá uno de EE.UU.) para acceder a los precios 'Member Only' de Publix o Kroger.",
+            "Fragancias: Los 'Testers' en tiendas de perfumes de Outlets son originales y mucho más económicos.",
+            "Consumo: Bajá la app de Starbucks; podés cargar 5 USD y usar el Wi-Fi o refill de café en algunos locales."
+        ];
+
+        let currentTipIndex = 0;
+        window.nextTip = () => {
+            const el = document.getElementById('tip-text');
+            el.style.opacity = 0;
+            setTimeout(() => {
+                currentTipIndex = (currentTipIndex + 1) % comprasTips.length;
+                el.innerText = comprasTips[currentTipIndex];
+                el.style.opacity = 1;
+            }, 300);
         };
 
-        // Carga inicial
-        window.onload = () => {
-            document.getElementById('budgetDisplay').innerText = `USD ${currentBudget.toFixed(2)}`;
-            fetchRates();
-        };
-
-        // Auto-actualizar cotizaciones cada 5 minutos
-        setInterval(fetchRates, 300000);
+        setInterval(window.nextTip, 10000);
+        window.onload = () => { document.getElementById('tip-text').innerText = comprasTips[0]; };
 
     </script>
 </body>
