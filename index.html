@@ -143,7 +143,7 @@
         </div>
 
         <div id="dynamic-tip" style="background: #f0fdf4; padding: 10px; border-radius: 12px; font-size: 0.75rem; color: #166534; font-weight: 700; margin-bottom: 15px; border: 1px solid #bbf7d0;">
-            💡 <span id="tip-content">Cargando tip económico...</span>
+            💡 <span id="tip-content" style="transition: opacity 0.4s ease;">Cargando tip económico...</span>
         </div>
 
         <div class="nav-buttons">
@@ -247,10 +247,14 @@
         const econTips = [
             "Delaware y Oregon tienen 0% de Sales Tax. Ideal para comprar Apple o lujo.",
             "En NYC, la ropa y calzado de menos de $110 están exentos de tax municipal.",
-            "New Jersey tiene 0% de tax en ropa. Ideal si estás cerca de NYC (Jersey Gardens).",
-            "En Miami, el tax es del 7%. Los outlets como Sawgrass rinden más por cupones.",
-            "Texas ofrece 'Tax Free Shopping' para turistas extranjeros en ciertos locales.",
-            "Recuerda que en EE.UU. el precio de etiqueta NUNCA incluye el impuesto."
+            "New Jersey tiene 0% de tax en ropa. Ideal si vas al Jersey Gardens desde NY.",
+            "En Miami (7%), los outlets como Sawgrass rinden más si usás su libro de cupones.",
+            "Texas ofrece 'Tax Free Shopping' para turistas extranjeros en locales adheridos.",
+            "Recuerda: en EE.UU. el precio de etiqueta NUNCA incluye el impuesto de venta.",
+            "Minnesota y Pennsylvania no cobran impuestos en la mayoría de la ropa y calzado.",
+            "Ahorra: los estados con 'Tax Holidays' (como Florida en agosto) eliminan taxes en útiles.",
+            "Si comprás online y retirás en tienda (Store Pickup), pagás el tax de esa ubicación.",
+            "Las propinas (Tips) se calculan sobre el valor total CON impuestos en muchos tickets."
         ];
 
         onAuthStateChanged(auth, async (user) => {
@@ -410,7 +414,22 @@
         window.onload = () => { 
             window.loadCities(); 
             setInterval(updateCountdown, 1000); 
-            document.getElementById('tip-content').innerText = econTips[Math.floor(Math.random() * econTips.length)];
+
+            // Rotación automática de tips cada 8 segundos
+            const tipElement = document.getElementById('tip-content');
+            let tipIndex = 0;
+            
+            const rotateTip = () => {
+                tipIndex = (tipIndex + 1) % econTips.length;
+                tipElement.style.opacity = 0;
+                setTimeout(() => {
+                    tipElement.innerText = econTips[tipIndex];
+                    tipElement.style.opacity = 1;
+                }, 400);
+            };
+
+            tipElement.innerText = econTips[0];
+            setInterval(rotateTip, 8000);
         };
     </script>
 </body> 
