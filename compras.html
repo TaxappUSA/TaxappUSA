@@ -40,14 +40,18 @@
         .size-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; text-align: center; margin-bottom: 10px; }
         .size-header { font-weight: 800; color: #64748b; font-size: 0.6rem; background: #f8fafc; padding: 5px; border-radius: 4px; border: 1px solid #e2e8f0; }
         .size-row { padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; font-weight: 600; color: #334155; }
+
+        .footer-links { margin-top: 20px; display: flex; flex-direction: column; gap: 5px; text-align: center; }
+        .logout-btn { background: none; border: none; color: #94a3b8; font-weight: 700; cursor: pointer; text-decoration: underline; font-size: 0.75rem; }
+        .change-pass-btn { background: none; border: none; color: #64748b; font-weight: 600; cursor: pointer; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
     <div class="nav-bar" style="display: flex; gap: 10px; width: 100%; max-width: 450px; margin-bottom: 15px;">
-    <a href="index.html" class="btn-tax" style="flex: 1; font-size: 0.8rem;">🏠 INICIO</a>
-    <a href="itinerario.html" class="btn-tax" style="flex: 1; font-size: 0.8rem; border-color: #7c3aed; color: #7c3aed;">📍 ITINERARIO</a>
-</div>
+        <a href="index.html" class="btn-tax" style="flex: 1; font-size: 0.8rem;">🏠 INICIO</a>
+        <a href="itinerario.html" class="btn-tax" style="flex: 1; font-size: 0.8rem; border-color: #7c3aed; color: #7c3aed;">📍 ITINERARIO</a>
+    </div>
 
     <div class="dolar-container">
         <div class="dolar-box">
@@ -86,7 +90,6 @@
 
     <div id="sec-talles" class="card" style="display:none;">
         <h3 style="text-align:center; color: var(--primary); margin: 0 0 10px 0;">Guía US vs AR</h3>
-        
         <div class="size-section-title">👟 Zapatillas</div>
         <div class="size-grid">
             <div class="size-header">AR</div><div class="size-header">US HOMBRE</div><div class="size-header">US MUJER</div>
@@ -101,7 +104,6 @@
             <div class="size-row">43</div><div class="size-row">10</div><div class="size-row">11.5</div>
             <div class="size-row">44</div><div class="size-row">11</div><div class="size-row">12.5</div>
         </div>
-
         <div class="size-section-title">👕 Remeras y Buzos</div>
         <div class="size-grid">
             <div class="size-header">Talle AR</div><div class="size-header">US Hombre</div><div class="size-header">US Mujer</div>
@@ -111,7 +113,6 @@
             <div class="size-row">XL</div><div class="size-row">XL</div><div class="size-row">16-18</div>
             <div class="size-row">XXL</div><div class="size-row">XXL</div><div class="size-row">20+</div>
         </div>
-
         <div class="size-section-title">👖 Pantalones</div>
         <div class="size-grid">
             <div class="size-header">AR (Talle)</div><div class="size-header">US Hombre</div><div class="size-header">US Mujer</div>
@@ -123,12 +124,48 @@
         </div>
     </div>
 
-    <script>
+    <div class="footer-links">
+        <button class="change-pass-btn" onclick="changePass()">Cambiar mi contraseña</button>
+        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
+            authDomain: "viajes-db538.firebaseapp.com",
+            projectId: "viajes-db538",
+            storageBucket: "viajes-db538.firebasestorage.app",
+            messagingSenderId: "237311739178",
+            appId: "1:237311739178:web:333e468b184c0402a98a53",
+            measurementId: "G-WYF0L0YSYJ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
         let balance = parseFloat(localStorage.getItem('tripBal')) || 0;
         let compras = JSON.parse(localStorage.getItem('tripCompras')) || [];
         let usdTarjeta = 0;
 
-        async function fetchDolar() {
+        // --- Lógica de Protección y Sesión ---
+        onAuthStateChanged(auth, (user) => { 
+            if (!user) window.location.replace("login.html"); 
+        });
+
+        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
+
+        window.changePass = () => {
+            const userEmail = auth.currentUser.email;
+            sendPasswordResetEmail(auth, userEmail).then(() => {
+                alert("Te enviamos un mail a " + userEmail + " para que cambies tu clave.");
+            }).catch((e) => alert("Error: " + e.message));
+        };
+
+        // --- Lógica de la App (Dólar, Gastos, UI) ---
+        window.fetchDolar = async () => {
             try {
                 const rOf = await fetch('https://dolarapi.com/v1/dolares/oficial');
                 const dOf = await rOf.json();
@@ -140,14 +177,14 @@
                 document.getElementById('val-tarjeta').innerText = '$' + usdTarjeta.toFixed(2);
                 updateUI();
             } catch (e) { console.error(e); }
-        }
+        };
 
-        function setBase() {
+        window.setBase = () => {
             const v = document.getElementById('input-base').value;
             if(v) { balance = parseFloat(v); document.getElementById('input-base').value = ''; updateUI(); }
-        }
+        };
 
-        function addGasto() {
+        window.addGasto = () => {
             const nom = document.getElementById('g-nom').value || 'Compra';
             const val = document.getElementById('g-val').value;
             if(val) { 
@@ -158,9 +195,9 @@
                 document.getElementById('g-nom').value = '';
                 updateUI(); 
             }
-        }
+        };
 
-        function updateUI() {
+        window.updateUI = () => {
             document.getElementById('disp-usd').innerText = 'USD ' + balance.toLocaleString('en-US', {minimumFractionDigits:2});
             if(usdTarjeta > 0) {
                 const ars = balance * usdTarjeta;
@@ -170,16 +207,17 @@
             lista.innerHTML = compras.map(c => `<div class="history-item"><span class="item-name">${c.nombre}</span><span class="item-price">- USD ${c.precio.toFixed(2)}</span></div>`).join('');
             localStorage.setItem('tripBal', balance);
             localStorage.setItem('tripCompras', JSON.stringify(compras));
-        }
+        };
 
-        function showSec(s) {
+        window.showSec = (s) => {
             document.getElementById('sec-gastos').style.display = s==='gastos'?'block':'none';
             document.getElementById('sec-talles').style.display = s==='talles'?'block':'none';
             document.getElementById('t-gastos').classList.toggle('active', s==='gastos');
             document.getElementById('t-talles').classList.toggle('active', s==='talles');
-        }
+        };
 
-        function borrar() { if(confirm("¿Borrar todo el historial?")) { balance = 0; compras = []; updateUI(); } }
+        window.borrar = () => { if(confirm("¿Borrar todo el historial?")) { balance = 0; compras = []; updateUI(); } };
+        
         fetchDolar();
     </script>
 </body>
