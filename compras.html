@@ -413,7 +413,7 @@
 
         const video = document.getElementById('video-preview'), canvas = document.getElementById('ocr-canvas');
         let stream = null;
-        const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS", "AMAZON"];
+        const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS", "AMAZON", "COSTCO"];
 
         window.startScanner = async () => {
             document.getElementById('scanner-ui').style.display = 'block';
@@ -448,7 +448,7 @@
         function parseTicketText(text) {
             const lines = text.toUpperCase().split('\n');
             let detectedStore = "Compra";
-            let totalGeneral = 0;
+            let candidatosTotal = [];
             let voucherRedeem = 0;
 
             for (let store of knownStores) { if (text.toUpperCase().includes(store)) { detectedStore = store; break; } }
@@ -457,8 +457,11 @@
                 const priceMatch = line.match(/\d+\.\d{2}\b/);
                 if (priceMatch) {
                     const price = parseFloat(priceMatch[0]);
-                    if (line.includes("TOTAL") && !line.includes("SUBTOTAL") && !line.includes("CHANGE")) {
-                        totalGeneral = price;
+                    
+                    // Lógica inteligente: Agarra el monto mayor que diga "TOTAL" 
+                    // pero ignora los que digan "TAX", "SUBTOTAL" o "CHANGE"
+                    if (line.includes("TOTAL") && !line.includes("TAX") && !line.includes("SUBTOTAL") && !line.includes("CHANGE")) {
+                        candidatosTotal.push(price);
                     }
                     if (line.includes("VOUCHER REDEEM")) {
                         voucherRedeem = price;
@@ -466,6 +469,8 @@
                 }
             });
 
+            // Si encontró candidatos a total, se queda con el monto más grande (el final del ticket)
+            let totalGeneral = candidatosTotal.length > 0 ? Math.max(...candidatosTotal) : 0;
             const finalSpend = totalGeneral - voucherRedeem;
 
             document.getElementById('nombre').value = detectedStore;
