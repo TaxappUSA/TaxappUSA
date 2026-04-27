@@ -6,6 +6,48 @@
     <title>Itinerario - TaxUSA</title>
     <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw"></script>
     <style>
+        /* NAV BAR INTEGRADA ARRIBA (ESTILO INDEX) */
+.nav-bar {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    background: var(--bg); /* Usa el fondo gris suave */
+    border-radius: 18px;
+    padding: 8px 4px;
+    margin-bottom: 20px;
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+}
+
+.btn-nav {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 9px; 
+    font-weight: 800;
+    gap: 3px;
+    transition: opacity 0.2s;
+    background: none !important;
+    border: none !important;
+}
+
+.btn-nav span:first-child { font-size: 18px; }
+.btn-nav.active { color: var(--primary); }
+
+.settings-trigger-nav {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 10px;
+    color: var(--text-main);
+}
         :root { 
             --primary: #7c3aed; 
             --bg: #f8fafc; 
@@ -76,12 +118,43 @@
     </style>
 </head>
 <body>
-    <div class="nav-bar">
-        <a href="index.html" class="btn-nav">🏠 INICIO</a>
-        <a href="compras.html" class="btn-nav">🛍️ GASTOS</a>
-        <a href="#" class="btn-nav" onclick="avisoProximamente(event)">🔍 COMPARADOR</a>
-        <a href="unidades.html" class="btn-nav">⚖️ UNIDADES</a>
-    </div>
+    <div class="card">
+        <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
+        <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
+
+        <div class="nav-bar">
+            <a href="index.html" class="btn-nav">
+                <span>🏠</span>
+                <span>INICIO</span>
+            </a>
+            <a href="compras.html" class="btn-nav active">
+                <span>🛍️</span>
+                <span>GASTOS</span>
+            </a>
+            <a href="javascript:void(0)" class="btn-nav" onclick="avisoProximamente(event)">
+                <span>🔍</span>
+                <span>COMPARAR</span>
+            </a>
+            <a href="unidades.html" class="btn-nav">
+                <span>⚖️</span>
+                <span>UNIDADES</span>
+            </a>
+            <button class="settings-trigger-nav" onclick="toggleSettings()">⚙️</button>
+        </div>
+
+        <select id="city-select" class="city-picker" onchange="loadNotes()">
+            <option value="General">📍 Notas Generales</option>
+            </select>
+        
+        ```
+
+### 3. Ajuste en el Botón de Ajustes (⚙️)
+Como ahora el engranaje está dentro de la barra de navegación, busca el botón viejo que dice `<button class="settings-trigger" ...>` que estaba arriba a la derecha y **bórralo**. El nuevo botón en la barra ya cumple esa función.
+
+**Nota técnica:**
+* He puesto el botón de **ITINERARIO** como `active` (en violeta).
+* He cambiado el botón de **INICIO** por el de **GASTOS** para seguir la lógica de las otras pantallas, pero si prefieres el de Inicio, solo cambia el emoji y el link a `index.html`.
+* El diseño ahora es 100% consistente: todos los recuadros miden lo mismo de ancho.
 
     <div class="card">
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
