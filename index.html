@@ -227,7 +227,7 @@
             <a href="compras.html" class="nav-btn btn-blue">🛒 GASTOS Y TALLES</a>
             <a href="itinerario.html" class="nav-btn btn-purple">📍 ITINERARIO</a>
             <a href="unidades.html" class="nav-btn btn-cyan">⚖️ CONVERSOR UNIDADES</a>
-            <a href="comparador.html" class="nav-btn btn-emerald">🔍 COMPARADOR</a>
+            <a href="#" class="btn-nav" onclick="avisoProximamente(event)">🔍 COMPARADOR</a>
         </div>
     </div>
 
@@ -540,5 +540,14 @@
             setInterval(rotateTip, 8000);
         };
     </script>
+    <script>
+    function avisoProximamente(event) {
+        // Evita que la página intente recargarse al tocar el link
+        event.preventDefault();
+        
+        // Muestra el mensaje
+        alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
+    }
+</script>
 </body> 
 </html>
