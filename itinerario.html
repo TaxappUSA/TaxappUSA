@@ -303,10 +303,15 @@
         };
 
         async function updateQueueTimes() {
-            const now = new Date();
-            const hour = now.getHours();
             const city = document.getElementById('citySelector').value;
             if (city !== 'orlando') return;
+
+            // Obtener hora actual en Orlando (ET)
+            const orlandoHour = parseInt(new Intl.DateTimeFormat("en-US", {
+                timeZone: "America/New_York",
+                hour: "numeric",
+                hour12: false
+            }).format(new Date()));
 
             const parks = citiesConfig.orlando.filter(p => p.parkId);
             for (const park of parks) {
@@ -327,7 +332,8 @@
                     }
                     const average = count > 0 ? totalWait / count : 0;
                     if (count === 0) {
-                        el.innerText = (hour < 8 || hour > 22) ? "CERRADO 🌙" : "SIN INFO 🔄";
+                        // Basado en hora real de Orlando
+                        el.innerText = (orlandoHour < 8 || orlandoHour >= 22) ? "CERRADO 🌙" : "SIN INFO 🔄";
                         el.className = "queue-status q-off";
                     } else if (average <= 20) {
                         el.innerText = "BAJA 🟢"; el.className = "queue-status q-low";
