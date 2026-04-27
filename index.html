@@ -14,12 +14,43 @@
     <link rel="apple-touch-icon" href="icon-512.png">
 
     <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw"></script>
+    
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --accent: #7c3aed; }
+        /* VARIABLES DINÁMICAS (NUEVO) */
+        :root { 
+            --primary: #2563eb; 
+            --bg: #f8fafc; 
+            --card: #ffffff; 
+            --accent: #7c3aed; 
+            --text-main: #1e293b; 
+            --text-sub: #64748b;
+            --input-border: #f1f5f9;
+            --input-bg: #ffffff;
+            --box-bg: #f1f5f9;
+            --timer-text: #1e3a8a;
+        }
+
+        /* COLORES MODO OSCURO (AÑADIDO) */
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-sub: #94a3b8;
+            --input-border: #334155;
+            --input-bg: #1e293b;
+            --box-bg: #334155;
+            --timer-text: #60a5fa;
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: background 0.3s ease, color 0.3s ease; color: var(--text-main); }
         
-        /* Estilos Banner Instalación (AÑADIDO) */
         #install-banner {
             display: none;
             position: fixed;
@@ -28,7 +59,7 @@
             transform: translateX(-50%);
             width: 90%;
             max-width: 400px;
-            background: white;
+            background: var(--card);
             padding: 15px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -39,55 +70,74 @@
         @keyframes slideUp { from { bottom: -100px; } to { bottom: 20px; } }
         .install-flex { display: flex; align-items: center; gap: 12px; }
         .install-text { flex: 1; text-align: left; }
-        .install-text p { margin: 0; font-size: 0.8rem; font-weight: 700; color: #1e293b; }
-        .install-text span { font-size: 0.7rem; color: #64748b; }
+        .install-text p { margin: 0; font-size: 0.8rem; font-weight: 700; color: var(--text-main); }
+        .install-text span { font-size: 0.7rem; color: var(--text-sub); }
         .install-btns { display: flex; gap: 8px; margin-top: 10px; }
         .btn-install-now { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 800; font-size: 0.75rem; cursor: pointer; flex: 1; }
-        .btn-later { background: #f1f5f9; color: #64748b; border: none; padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
+        .btn-later { background: var(--box-bg); color: var(--text-sub); border: none; padding: 8px 15px; border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
 
-        .card { background: var(--card); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; position: relative; }
+        .card { background: var(--card); padding: 1.5rem; border-radius: 24px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; position: relative; transition: background 0.3s ease; }
         h1 { margin: 0 0 0.5rem 0; font-size: 1.6rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .countdown-box { background: #f1f5f9; padding: 12px; border-radius: 16px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 2px; cursor: pointer; position: relative; border: 2px solid transparent; transition: 0.2s; }
+        
+        .countdown-box { background: var(--box-bg); padding: 12px; border-radius: 16px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 2px; cursor: pointer; position: relative; border: 2px solid transparent; transition: 0.2s; }
         .countdown-box:active { transform: scale(0.98); border-color: var(--primary); }
-        .countdown-label { font-size: 0.6rem; font-weight: 800; color: #64748b; text-transform: uppercase; }
-        #timer { font-size: 1.1rem; font-weight: 900; color: #1e3a8a; letter-spacing: 0.5px; }
+        .countdown-label { font-size: 0.6rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; }
+        #timer { font-size: 1.1rem; font-weight: 900; color: var(--timer-text); letter-spacing: 0.5px; }
+        
         .edit-hint { position: absolute; top: 5px; right: 8px; font-size: 0.7rem; opacity: 0.5; }
         .input-group { margin-bottom: 1rem; text-align: left; }
-        label { display: block; font-size: 0.7rem; font-weight: 800; color: #64748b; margin-bottom: 0.4rem; text-transform: uppercase; margin-left: 5px; }
-        input, select { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; font-size: 0.9rem; outline: none; background: white; font-weight: 600; }
+        label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-sub); margin-bottom: 0.4rem; text-transform: uppercase; margin-left: 5px; }
+        
+        input, select { width: 100%; padding: 14px; border: 2px solid var(--input-border); border-radius: 14px; font-size: 0.9rem; outline: none; background: var(--input-bg); color: var(--text-main); font-weight: 600; transition: 0.3s; }
+        
         .category-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
-        .cat-btn { padding: 15px 10px; border: 2px solid #f1f5f9; border-radius: 16px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .cat-btn { padding: 15px 10px; border: 2px solid var(--input-border); border-radius: 16px; background: var(--input-bg); font-size: 0.7rem; font-weight: 800; color: var(--text-sub); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .cat-btn.active { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+        [data-theme="dark"] .cat-btn.active { background: #1e3a8a; border-color: var(--primary); color: white; }
+
         .tip-section { margin-bottom: 1.2rem; text-align: left; }
         .tip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }
-        .tip-btn { padding: 10px 2px; border: 2px solid #f1f5f9; border-radius: 12px; background: white; font-size: 0.7rem; font-weight: 800; color: #64748b; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; }
+        .tip-btn { padding: 10px 2px; border: 2px solid var(--input-border); border-radius: 12px; background: var(--input-bg); font-size: 0.7rem; font-weight: 800; color: var(--text-sub); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; }
         .tip-btn span { font-size: 0.55rem; font-weight: 600; opacity: 0.8; }
         .tip-btn.active { border-color: var(--accent); background: #f5f3ff; color: var(--accent); }
-        .custom-tip-container { display: flex; flex-direction: column; align-items: center; background: #f1f5f9; border-radius: 14px; padding: 8px 12px; border: 2px solid transparent; transition: 0.2s; }
-        .custom-tip-container:focus-within { border-color: var(--accent); background: #f5f3ff; }
+        [data-theme="dark"] .tip-btn.active { background: #4c1d95; color: white; }
+
+        .custom-tip-container { display: flex; flex-direction: column; align-items: center; background: var(--box-bg); border-radius: 14px; padding: 8px 12px; border: 2px solid transparent; transition: 0.2s; }
+        .custom-tip-container:focus-within { border-color: var(--accent); }
         .custom-tip-header { display: flex; align-items: center; justify-content: center; width: 100%; gap: 5px; }
-        .custom-tip-header span { font-weight: 800; color: #64748b; font-size: 0.7rem; }
+        .custom-tip-header span { font-weight: 800; color: var(--text-sub); font-size: 0.7rem; }
         #custom-tip-input { background: transparent; border: none; padding: 0; text-align: center; font-size: 0.8rem; color: var(--accent); width: 40px; font-weight: 800; outline: none; }
         #val-tip-custom { font-size: 0.55rem; font-weight: 600; color: var(--accent); opacity: 0.8; margin-top: 2px; }
-        .result-box { background: #eff6ff; padding: 1.2rem; border-radius: 20px; margin-top: 0.8rem; border: 2px dashed var(--primary); margin-bottom: 10px; }
+        
+        .result-box { background: rgba(37, 99, 235, 0.1); padding: 1.2rem; border-radius: 20px; margin-top: 0.8rem; border: 2px dashed var(--primary); margin-bottom: 10px; }
         .result-value { font-size: 2rem; font-weight: 900; color: var(--primary); margin: 2px 0; }
+        #tax-detail { font-size: 0.8rem; color: var(--primary); font-weight: bold; }
+
         .final-box { background: var(--primary); padding: 1.2rem; border-radius: 20px; color: white; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
         .final-value { font-size: 2.2rem; font-weight: 900; margin: 4px 0; }
+
         .nav-buttons { margin-top: 25px; display: flex; flex-direction: column; gap: 10px; }
         .nav-btn { text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 800; text-align: center; font-size: 0.9rem; transition: 0.2s; border: none; cursor: pointer; }
         .btn-blue { background: #2563eb; color: white; width: 100%; }
         .btn-purple { background: #7c3aed; color: white; }
         .btn-cyan { background: #0ea5e9; color: white; }
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal-content { background: white; padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; }
-        .settings-trigger { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
-        .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: white; z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        .modal-content { background: var(--card); padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; color: var(--text-main); }
+        
+        .settings-trigger { position: absolute; top: 15px; right: 15px; background: var(--box-bg); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; color: var(--text-main); }
+        
+        .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); color: var(--text-main); }
         .settings-drawer.open { right: 0; }
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
-        .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-align: left; }
+        .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--input-border); background: var(--input-bg); cursor: pointer; font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-align: left; color: var(--text-main); }
         .btn-danger { color: #ef4444; border-color: #fecaca; }
-        .footer { margin-top: 30px; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; padding-bottom: 10px; }
-        .api-credits { font-size: 0.55rem; color: #cbd5e1; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 20px; text-align: center; font-weight: 500; }
+        
+        .footer { margin-top: 30px; text-align: center; font-size: 0.75rem; color: var(--text-sub); font-weight: 600; padding-bottom: 10px; }
+        .api-credits { font-size: 0.55rem; color: var(--text-sub); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 20px; text-align: center; font-weight: 500; opacity: 0.6; }
+        
+        #dynamic-tip { background: rgba(34, 197, 94, 0.1); padding: 10px; border-radius: 12px; font-size: 0.75rem; color: #166534; font-weight: 700; margin-bottom: 15px; border: 1px solid rgba(34, 197, 94, 0.3); }
+        [data-theme="dark"] #dynamic-tip { color: #4ade80; border-color: #064e3b; }
     </style>
 </head>
 <body>
@@ -141,7 +191,7 @@
 
         <div class="result-box">
             <div class="result-value" id="total-with-tax">USD 0.00</div>
-            <div id="tax-detail" style="font-size: 0.8rem; color: #3b82f6; font-weight: bold;">Tax Aplicado: 0%</div>
+            <div id="tax-detail">Tax Aplicado: 0%</div>
         </div>
 
         <div class="tip-section">
@@ -168,7 +218,7 @@
             <div class="final-value" id="final-total">USD 0.00</div>
         </div>
 
-        <div id="dynamic-tip" style="background: #f0fdf4; padding: 10px; border-radius: 12px; font-size: 0.75rem; color: #166534; font-weight: 700; margin-bottom: 15px; border: 1px solid #bbf7d0;">
+        <div id="dynamic-tip">
             💡 <span id="tip-content" style="transition: opacity 0.4s ease;">Cargando tip económico...</span>
         </div>
 
@@ -198,14 +248,16 @@
                 <input type="date" id="input-date">
             </div>
             <button class="nav-btn btn-blue" onclick="saveTripSettings()">GUARDAR</button>
-            <button onclick="closeTripModal()" style="width:100%; background:none; border:none; margin-top:15px; color:#64748b; font-weight:700; cursor:pointer;">Cerrar</button>
+            <button onclick="closeTripModal()" style="width:100%; background:none; border:none; margin-top:15px; color:var(--text-sub); font-weight:700; cursor:pointer;">Cerrar</button>
         </div>
     </div>
 
     <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
     <div id="settingsDrawer" class="settings-drawer">
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
-        <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
+        <p id="userEmail" style="font-size:0.75rem; color:var(--text-sub); margin-bottom:20px; font-weight:700;"></p>
+        
+        <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Cambiar Modo Oscuro/Claro</button>
         
         <button class="drawer-btn" onclick="updateEmail()">📧 Cambiar Correo (Verificación)</button>
         <button class="drawer-btn" onclick="changePassword()">🔑 Cambiar Contraseña</button>
@@ -237,14 +289,22 @@
         let tripData = { destination: "Orlando", date: "2027-01-01" };
         let currentTipPercentage = 15;
 
-        // Registro de Service Worker (AÑADIDO)
+        // --- LÓGICA DARK MODE (NUEVO) ---
+        window.toggleDarkMode = () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        };
+
+        // Registro de Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error', err));
             });
         }
 
-        // Lógica de Banner PWA (AÑADIDO)
+        // Lógica de Banner PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -268,7 +328,7 @@
             localStorage.setItem('pwa_banner_dismissed', Date.now());
         };
 
-        // Función para obtener token reCAPTCHA v3
+        // Función reCAPTCHA
         async function getRecaptchaToken(actionName) {
             return new Promise((resolve) => {
                 grecaptcha.ready(() => {
@@ -329,9 +389,7 @@
                     await verifyBeforeUpdateEmail(currentUser, newEmail);
                     alert("Se ha enviado un correo de verificación. Token verificado.");
                     toggleSettings();
-                } catch (e) { 
-                    alert("Error: Por seguridad, debes haber iniciado sesión recientemente."); 
-                }
+                } catch (e) { alert("Error: Por seguridad, debes haber iniciado sesión recientemente."); }
             } else if (newEmail) { alert("Correo inválido."); }
         };
 
