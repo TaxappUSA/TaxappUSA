@@ -85,6 +85,14 @@
             color: var(--header-color); 
             transition: color 0.3s ease;
         }
+        /* Esto hace que el emoji se comporte como un texto y no como una imagen gigante */
+img.emoji {
+    height: 1.2em;
+    width: 1.2em;
+    margin: 0 .05em 0 .1em;
+    vertical-align: -0.1em;
+    display: inline-block;
+}
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--text-main); }
@@ -170,6 +178,7 @@
         .scanner-warning { background: rgba(255, 193, 7, 0.1); border: 2px solid #ffc107; padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center; color: #f59e0b; font-weight: 700; font-size: 0.85rem; }
     </style>
 </head>
+    <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <body>
     <div class="card">
         <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
@@ -721,6 +730,7 @@
             const el = document.getElementById('tip-text');
             if(el) el.innerText = shoppingTips[0]; 
             updateEmojis(); setInterval(window.nextTip, 8000); 
+            twemoji.parse(document.body)
         };
     </script>
     <script>
@@ -731,6 +741,23 @@
         // Muestra el mensaje
         alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
     }
+</script>
+        <script>
+<script>
+  // Función para procesar los emojis
+  function aplicarTwemoji() {
+    twemoji.parse(document.body, {
+      folder: 'svg',
+      ext: '.svg'
+    });
+  }
+
+  // Se ejecuta al cargar y cada vez que cambies de pestaña (Gastos/Talles)
+  window.addEventListener('load', aplicarTwemoji);
+  
+  // Si tenés funciones que cambian el contenido (como showSec), 
+  // asegurate de llamarla al final de esas funciones también.
+</script>
 </script>
 </body>
 </html>
