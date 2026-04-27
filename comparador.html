@@ -460,17 +460,19 @@
             if (results && results.length > 0) {
                 results.slice(0, 10).forEach(item => {
                     
-                    // --- CORRECCIÓN QUIRÚRGICA: Limpiar el enlace para evitar error 404 ---
-                    let urlFinal = item.link;
-                    if (urlFinal && urlFinal.includes("/url?q=")) {
+                    // 1. Limpieza de URL para evitar el error de redirección de Google
+                    let rawUrl = item.link;
+                    let cleanLink = rawUrl;
+
+                    if (rawUrl.includes("url?q=")) {
                         try {
-                            const params = new URLSearchParams(urlFinal.split('?')[1]);
-                            urlFinal = params.get('q') || urlFinal;
+                            // Extraemos el link real que está después de 'q='
+                            const urlParams = new URLSearchParams(rawUrl.split('?')[1]);
+                            cleanLink = urlParams.get('q');
                         } catch(e) {
-                            console.log("Error extrayendo URL");
+                            cleanLink = rawUrl; // Si falla, dejamos el original
                         }
                     }
-                    // -------------------------------------------------------------------
 
                     const card = document.createElement('div');
                     card.className = 'result-card';
@@ -481,7 +483,10 @@
                             <div style="font-size:0.85rem; font-weight:700; margin-bottom:4px;">${item.title}</div>
                             <div class="result-price">${item.price || 'Ver precio'}</div>
                         </div>
-                        <a href="${urlFinal}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:1.2rem;">🚀</a>
+                        <button onclick="window.open('${cleanLink}', '_blank', 'noopener,noreferrer')" 
+                                style="background:none; border:none; cursor:pointer; font-size:1.2rem; padding:10px;">
+                            🚀
+                        </button>
                     `;
                     resultsArea.appendChild(card);
                 });
