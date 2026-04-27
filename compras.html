@@ -30,12 +30,12 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--text-main); transition: background 0.3s, color 0.3s; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--text-main); }
         
         img.emoji { height: 1em; width: 1em; margin: 0 .05em 0 .1em; vertical-align: -0.1em; }
 
         .nav-bar { width: 100%; max-width: 450px; margin-bottom: 15px; display: flex; gap: 5px; align-items: center; }
-        .btn-nav { flex: 1; padding: 10px 4px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.65rem; border: 2px solid var(--primary); color: var(--primary); white-space: nowrap; }
+        .btn-nav { flex: 1; padding: 10px 4px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.65rem; border: 2px solid var(--card-border); color: var(--text-muted); transition: 0.2s; }
         .btn-nav-cyan { border-color: #0ea5e9; color: #0ea5e9; }
 
         .settings-trigger { 
@@ -52,7 +52,7 @@
             flex-shrink: 0;
         }
 
-        .budget-card { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; padding: 20px; border-radius: 24px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2); margin-bottom: 15px; }
+        .budget-card { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; padding: 20px; border-radius: 24px; width: 100%; max-width: 450px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
         .budget-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; letter-spacing: 1px; }
         .budget-value { font-size: 2.2rem; font-weight: 900; margin: 8px 0; }
         
@@ -74,11 +74,11 @@
         .btn-scan { background: #0ea5e9; margin-bottom: 10px; border: none; width: 100%; padding: 12px; border-radius: 14px; color: white; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #scanner-ui { display: none; margin-bottom: 15px; border-radius: 20px; overflow: hidden; background: #000; position: relative; width: 100%; max-width: 450px; }
         #video-preview { width: 100%; display: block; }
-        .ocr-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; display: none; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; text-align: center; padding: 20px; z-index: 10; }
-        .close-scanner { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 20; border: 1px solid rgba(255,255,255,0.5); }
+        .ocr-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; border-radius: 20px; }
+        .close-scanner { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: 800; z-index: 20; }
 
         .history-item { background: var(--bg); padding: 15px; border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
-        .dato-clave { background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 16px; border: 1.5px solid var(--success); margin-bottom: 15px; text-align: center; cursor: pointer; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
+        .dato-clave { background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 16px; border: 1.5px solid var(--success); margin-bottom: 15px; text-align: center; cursor: pointer; min-height: 60px; display: flex; flex-direction: column; justify-content: center; }
 
         .rates-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
         .rate-box { background: var(--white); padding: 12px; border-radius: 20px; text-align: center; border: 1px solid var(--card-border); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 8px; }
@@ -95,16 +95,16 @@
         .rate-divider { font-size: 0.7rem; color: var(--text-muted); font-weight: 800; margin: -2px 0; }
         
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
-        .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--white); z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
+        .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--white); z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; }
         .settings-drawer.open { right: 0; }
-        .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--white); color: var(--text-main); cursor: pointer; font-weight: 700; margin-bottom: 10px; font-size: 0.8rem; text-align: left; }
+        .drawer-btn { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--white); color: var(--text-main); cursor: pointer; font-weight: 700; margin-bottom: 10px; }
         .btn-danger { color: #ef4444; border-color: #fecaca; }
         
         .footer { margin-top: auto; padding: 20px 0; text-align: center; display: flex; flex-direction: column; gap: 5px; }
         .footer-name { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
 
         .talles-section { text-align: left; font-size: 0.85rem; }
-        .talles-title { font-weight: 900; color: var(--primary); margin: 15px 0 8px; border-bottom: 2px solid var(--input-bg); padding-bottom: 3px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
+        .talles-title { font-weight: 900; color: var(--primary); margin: 15px 0 8px; border-bottom: 2px solid var(--input-bg); padding-bottom: 3px; display: flex; justify-content: space-between; text-transform: uppercase; }
         .talles-grid { display: flex; gap: 8px; margin-bottom: 20px; }
         .talles-table { flex: 1; width: 100%; border-collapse: collapse; background: var(--bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); margin-bottom: 15px; table-layout: fixed; }
         .talles-table th, .talles-table td { padding: 8px 2px; text-align: center; border: 1px solid var(--card-border); font-size: 0.65rem; color: var(--text-main); }
@@ -133,10 +133,10 @@
         <div class="close-scanner" onclick="stopScanner()">✕</div>
         <div id="ocr-loader" class="ocr-loading">
             <span id="ocr-status-text">Analizando ticket... 🧐</span>
-            <small style="margin-top:10px; font-weight:400; opacity:0.8;">Detectando Totales y Vouchers</small>
+            <small style="margin-top:10px; font-weight:400; opacity:0.8;">Detectando Totales y Taxes</small>
         </div>
         <video id="video-preview" autoplay playsinline></video>
-        <button onclick="captureTicket()" style="position:absolute; bottom:15px; left:50%; transform:translateX(-50%); width:60px; height:60px; border-radius:50%; border:4px solid white; background:rgba(255,255,255,0.3); z-index:5;"></button>
+        <button onclick="captureTicket()" style="position:absolute; bottom:15px; left:50%; transform:translateX(-50%); width:60px; height:60px; border-radius:50%; border:4px solid white; background:rgba(255,255,255,0.3); color:white; font-size:1.5rem; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:5;">📸</button>
     </div>
     <canvas id="ocr-canvas" style="display:none;"></canvas>
 
@@ -275,7 +275,7 @@
         import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
         import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.app", messagingSenderId: "237311739178", appId: "1:237311739178:web:333e468b184c0402a98a53" };
+        const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.googleapis.com", messagingSenderId: "1053003173098", appId: "1:1053003173098:web:ecf5cdc31b9cca17e2151f" };
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -413,7 +413,7 @@
 
         const video = document.getElementById('video-preview'), canvas = document.getElementById('ocr-canvas');
         let stream = null;
-        const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS", "AMAZON", "COSTCO"];
+        const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS", "AMAZON", "COSTCO", "FOOT LOCKER", "JD SPORTS", "BATH & BODY WORKS"];
 
         window.startScanner = async () => {
             document.getElementById('scanner-ui').style.display = 'block';
@@ -446,39 +446,76 @@
         };
 
         function parseTicketText(text) {
-            const lines = text.toUpperCase().split('\n');
+            const lines = text.toUpperCase().split('\n').map(l => l.trim()).filter(l => l);
             let detectedStore = "Compra";
-            let candidatosTotal = [];
-            let voucherRedeem = 0;
+            let totalAmount = 0;
+            let taxAmount = 0;
 
-            for (let store of knownStores) { if (text.toUpperCase().includes(store)) { detectedStore = store; break; } }
+            // Detectar tienda
+            for (let store of knownStores) { 
+                if (text.toUpperCase().includes(store)) { 
+                    detectedStore = store; 
+                    break; 
+                } 
+            }
 
-            lines.forEach(line => {
-                const priceMatch = line.match(/\d+\.\d{2}\b/);
-                if (priceMatch) {
-                    const price = parseFloat(priceMatch[0]);
-                    
-                    // Lógica inteligente: Agarra el monto mayor que diga "TOTAL" 
-                    // pero ignora los que digan "TAX", "SUBTOTAL" o "CHANGE"
-                    if (line.includes("TOTAL") && !line.includes("TAX") && !line.includes("SUBTOTAL") && !line.includes("CHANGE")) {
-                        candidatosTotal.push(price);
-                    }
-                    if (line.includes("VOUCHER REDEEM")) {
-                        voucherRedeem = price;
-                    }
+            // Patrones inteligentes para encontrar TOTAL y TAX
+            let totalLine = null;
+            let taxLine = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const priceMatch = line.match(/\$?\s*(\d+[\.,]\d{2})/);
+                
+                if (!priceMatch) continue;
+                
+                const price = parseFloat(priceMatch[1].replace(/,/g, "."));
+
+                // Buscar línea de TOTAL (la más específica)
+                // Patrones: "TOTAL", "Total USD", "Total Tender", "Amount Paid"
+                if (!totalLine && (
+                    line.includes("TOTAL") && !line.includes("SUBTOTAL") && !line.includes("TOTAL TAX") && !line.includes("TOTAL #") ||
+                    line.includes("AMOUNT PAID") ||
+                    line.includes("TOTAL TENDER")
+                )) {
+                    totalLine = price;
                 }
-            });
 
-            // Si encontró candidatos a total, se queda con el monto más grande (el final del ticket)
-            let totalGeneral = candidatosTotal.length > 0 ? Math.max(...candidatosTotal) : 0;
-            const finalSpend = totalGeneral - voucherRedeem;
+                // Buscar línea de TAX
+                if (!taxLine && (line.includes("TAX") && !line.includes("TOTAL TAX"))) {
+                    taxLine = price;
+                }
+            }
+
+            // Lógica alternativa: si no encontró TOTAL claro, buscar el número más grande
+            if (!totalLine) {
+                let allPrices = [];
+                lines.forEach(line => {
+                    const priceMatch = line.match(/\$?\s*(\d+[\.,]\d{2})/);
+                    if (priceMatch) {
+                        allPrices.push(parseFloat(priceMatch[1].replace(/,/g, ".")));
+                    }
+                });
+                if (allPrices.length > 0) {
+                    totalLine = Math.max(...allPrices);
+                }
+            }
+
+            totalAmount = totalLine || 0;
+
+            // Si encontró tax pero no está incluido en el total, sumar
+            if (taxAmount > 0 && totalAmount && totalAmount < 50) {
+                totalAmount += taxAmount;
+            }
 
             document.getElementById('nombre').value = detectedStore;
-            if (finalSpend > 0) {
+            if (totalAmount > 0) {
                 const input = document.getElementById('valor');
-                input.value = (finalSpend * 100).toFixed(0); 
+                input.value = (totalAmount * 100).toFixed(0); 
                 window.formatVisual(input);
-            } else { alert("No se detectó el precio final neto."); }
+            } else { 
+                alert("No se detectó el total del ticket. Por favor cargalo manualmente."); 
+            }
         }
 
         const shoppingTips = [
@@ -514,7 +551,7 @@
                 if (snapshot.empty) { container.innerHTML = '<p style="text-align:center;">No hay gastos.</p>'; updateDisplay(0); return; }
                 container.innerHTML = snapshot.docs.map(docSnap => {
                     const d = docSnap.data(); totalGastado += parseFloat(d.valor);
-                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${formatNumber(d.valor)}</div><div onclick="deleteGasto('${docSnap.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">×</div></div></div>`;
+                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${formatNumber(d.valor)}</div><button onclick="deleteGasto('${docSnap.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button></div></div>`;
                 }).join('');
                 updateDisplay(totalGastado); updateEmojis();
             });
