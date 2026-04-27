@@ -366,33 +366,52 @@ h1 {
         let currentTipPercentage = 15;
 
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                
-                // Si está logueado pero no eligió perfil, mandarlo a elegir
-                if (!perfilId) {
-                    window.location.replace("profiles.html");
-                    return;
-                }
+    if (user) {
+        currentUser = user;
+        
+        // 1. Verificamos que haya un perfil en el navegador
+        if (!perfilId) {
+            window.location.replace("profiles.html");
+            return;
+        }
 
-                // Inyectar foto de perfil en el botón de ajustes
-                if (perfilFoto) {
-                    const trigger = document.querySelector('.settings-trigger-bar');
-                    if (trigger) {
-                        trigger.style.backgroundImage = `url(${perfilFoto})`;
-                        trigger.style.backgroundSize = "cover";
-                        trigger.style.backgroundPosition = "center";
-                        trigger.style.borderRadius = "50%";
-                        trigger.style.border = "2px solid var(--primary)";
-                        trigger.innerText = ""; // Limpiamos el texto para que se vea la foto
-                    }
-                }
-
-                loadTripData(); // Tu función de carga de datos
-            } else {
-                window.location.replace("login.html");
+        // 2. Inyectamos la foto en el botón de ajustes
+        if (perfilFoto) {
+            const trigger = document.querySelector('.settings-trigger-bar');
+            if (trigger) {
+                trigger.style.backgroundImage = `url(${perfilFoto})`;
+                trigger.style.backgroundSize = "cover";
+                trigger.style.backgroundPosition = "center";
+                trigger.style.borderRadius = "50%";
+                trigger.style.border = "2px solid var(--primary)";
+                trigger.innerText = ""; 
             }
-        });
+        }
+
+        // 3. CARGA DE DATOS DEL PERFIL (Reemplaza a loadTripData)
+        try {
+            const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
+            const snap = await getDoc(profileRef);
+
+            if (snap.exists() && snap.data().trip) {
+                // Si el perfil ya tiene datos de viaje guardados
+                tripData = snap.data().trip;
+            } else {
+                // Si es un perfil nuevo, usamos los valores por defecto
+                tripData = { destination: "Orlando", date: "2027-01-01" };
+            }
+            
+            // Actualizamos la interfaz (el contador y el texto del destino)
+            updateTripUI();
+
+        } catch (e) {
+            console.error("Error cargando perfil:", e);
+        }
+
+    } else {
+        window.location.replace("login.html");
+    }
+});
 
         // --- 3. FUNCIONES DE AJUSTES (Agregadas) ---
         window.changeProfile = () => {
@@ -591,15 +610,36 @@ h1 {
         };
 
         window.saveTripSettings = async () => {
-            await getRecaptchaToken('save_trip');
-            tripData = { 
-                destination: document.getElementById('input-destination').value || "Orlando", 
-                date: document.getElementById('input-date').value || "2027-01-01" 
-            };
-            updateTripUI();
-            closeTripModal();
-            if(currentUser) await setDoc(doc(db, "users", currentUser.uid), { trip: tripData }, { merge: true });
-        };
+    await getRecaptchaToken('save_trip');
+    
+    // 1. Recolectamos los datos del modal
+    const destination = document.getElementById('input-destination').value || "Orlando";
+    const date = document.getElementById('input-date').value || "2027-01-01";
+    
+    tripData = { destination, date };
+
+    // 2. Actualizamos la interfaz (Contador y textos)
+    updateTripUI();
+    closeTripModal();
+
+    // 3. GUARDADO CLAVE: 
+    // Si hay un usuario y un perfil seleccionado, guardamos en la subcolección del perfil
+    if (currentUser && perfilId) {
+        try {
+            const profileRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId);
+            
+            // Guardamos los datos específicos de ESTE perfil
+            await setDoc(profileRef, { 
+                trip: tripData,
+                lastUpdate: Date.now() 
+            }, { merge: true });
+            
+            console.log("Datos guardados en el perfil:", perfilId);
+        } catch (e) {
+            console.error("Error al guardar en el perfil:", e);
+        }
+    }
+};
 
         function updateTripUI() {
             document.getElementById('trip-label').innerText = `Faltan para ${tripData.destination} ✈️`;
