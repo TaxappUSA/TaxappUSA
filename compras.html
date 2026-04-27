@@ -109,6 +109,8 @@
         .talles-table { flex: 1; width: 100%; border-collapse: collapse; background: var(--bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); margin-bottom: 15px; table-layout: fixed; }
         .talles-table th, .talles-table td { padding: 8px 2px; text-align: center; border: 1px solid var(--card-border); font-size: 0.65rem; color: var(--text-main); }
         .talles-table th { background: var(--input-bg); font-weight: 800; color: var(--text-muted); }
+
+        .scanner-warning { background: rgba(255, 193, 7, 0.1); border: 2px solid #ffc107; padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center; color: #f59e0b; font-weight: 700; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -151,6 +153,9 @@
         </div>
         
         <div id="sec-gastos">
+            <div id="scanner-warning" class="scanner-warning" style="display:none;">
+                ⚠️ El escáner está en desarrollo y puede cometer errores. Verifica siempre el monto detectado.
+            </div>
             <button class="btn-scan" onclick="startScanner()">📷 ESCANEAR TICKET</button>
 
             <div class="rates-container">
@@ -413,6 +418,7 @@
 
         const video = document.getElementById('video-preview'), canvas = document.getElementById('ocr-canvas');
         let stream = null;
+        let scannerStarted = false;
         const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS", "AMAZON", "COSTCO", "FOOT LOCKER", "JD SPORTS", "BATH & BODY WORKS"];
 
         window.startScanner = async () => {
@@ -420,6 +426,12 @@
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 video.srcObject = stream;
+                
+                // Mostrar aviso después de que la cámara se abre
+                if (!scannerStarted) {
+                    scannerStarted = true;
+                    document.getElementById('scanner-warning').style.display = 'block';
+                }
             } catch (err) { alert("Cámara no disponible."); stopScanner(); }
         };
 
@@ -449,7 +461,6 @@
             const lines = text.toUpperCase().split('\n').map(l => l.trim()).filter(l => l);
             let detectedStore = "Compra";
             let totalAmount = 0;
-            let taxAmount = 0;
 
             // Detectar tienda
             for (let store of knownStores) { 
@@ -459,54 +470,50 @@
                 } 
             }
 
-            // Patrones inteligentes para encontrar TOTAL y TAX
+            // Patrones específicos para encontrar TOTAL
             let totalLine = null;
-            let taxLine = null;
+            let allPrices = [];
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i];
-                const priceMatch = line.match(/\$?\s*(\d+[\.,]\d{2})/);
                 
-                if (!priceMatch) continue;
-                
-                const price = parseFloat(priceMatch[1].replace(/,/g, "."));
+                // Busca números con formato: 123.45 o 123,45
+                const priceMatches = line.match(/(\d+[\.,]\d{2})/g);
+                if (!priceMatches) continue;
 
-                // Buscar línea de TOTAL (la más específica)
-                // Patrones: "TOTAL", "Total USD", "Total Tender", "Amount Paid"
-                if (!totalLine && (
-                    line.includes("TOTAL") && !line.includes("SUBTOTAL") && !line.includes("TOTAL TAX") && !line.includes("TOTAL #") ||
-                    line.includes("AMOUNT PAID") ||
-                    line.includes("TOTAL TENDER")
-                )) {
-                    totalLine = price;
-                }
+                priceMatches.forEach(match => {
+                    const price = parseFloat(match.replace(/,/g, "."));
+                    allPrices.push({ price, line, index: i });
+                });
 
-                // Buscar línea de TAX
-                if (!taxLine && (line.includes("TAX") && !line.includes("TOTAL TAX"))) {
-                    taxLine = price;
+                // Patrones específicos de TOTAL (funciona bien para Costco, Foot Locker, JD Sports, etc.)
+                if (!totalLine) {
+                    // Buscar línea que contenga TOTAL sin SUBTOTAL, TOTAL TAX, etc.
+                    if (line.match(/^\*{0,4}\s*TOTAL\s*\*{0,4}/) || 
+                        (line.includes("TOTAL") && !line.includes("SUBTOTAL") && !line.includes("TOTAL TAX") && !line.includes("TOTAL #")) ||
+                        line.includes("AMOUNT PAID") ||
+                        line.includes("TOTAL TENDER")) {
+                        
+                        const match = line.match(/(\d+[\.,]\d{2})/);
+                        if (match) {
+                            totalLine = parseFloat(match[0].replace(/,/g, "."));
+                        }
+                    }
                 }
             }
 
-            // Lógica alternativa: si no encontró TOTAL claro, buscar el número más grande
-            if (!totalLine) {
-                let allPrices = [];
-                lines.forEach(line => {
-                    const priceMatch = line.match(/\$?\s*(\d+[\.,]\d{2})/);
-                    if (priceMatch) {
-                        allPrices.push(parseFloat(priceMatch[1].replace(/,/g, ".")));
-                    }
-                });
-                if (allPrices.length > 0) {
-                    totalLine = Math.max(...allPrices);
+            // Si no encontró TOTAL explícito, busca el número más grande que sea razonable (típicamente $1-$1000)
+            if (!totalLine && allPrices.length > 0) {
+                const validPrices = allPrices
+                    .filter(p => p.price >= 0.50 && p.price <= 5000)
+                    .sort((a, b) => b.price - a.price);
+                
+                if (validPrices.length > 0) {
+                    totalLine = validPrices[0].price;
                 }
             }
 
             totalAmount = totalLine || 0;
-
-            // Si encontró tax pero no está incluido en el total, sumar
-            if (taxAmount > 0 && totalAmount && totalAmount < 50) {
-                totalAmount += taxAmount;
-            }
 
             document.getElementById('nombre').value = detectedStore;
             if (totalAmount > 0) {
