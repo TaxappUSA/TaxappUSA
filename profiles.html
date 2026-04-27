@@ -222,19 +222,45 @@
         }
 
         window.abrirGaleria = () => {
-            const grid = document.getElementById('gridFotos');
-            grid.innerHTML = "";
-            // Generamos 16 opciones de fotos reales aleatorias
-            for(let i=0; i<16; i++) {
-                const url = `https://i.pravatar.cc/150?u=${Math.random()}`;
-                const img = document.createElement('img');
-                img.src = url;
-                img.className = 'img-option';
-                img.onclick = () => crearNuevoPerfil(url);
-                grid.appendChild(img);
-            }
-            document.getElementById('galeria').classList.add('show');
-        };
+    const grid = document.getElementById('gridFotos');
+    grid.innerHTML = "";
+
+    // Lista curada de personajes famosos
+    const personajes = [
+        { name: "Mickey", url: "https://i.pinimg.com/originals/83/10/ab/8310ab709058763ef8bdf9ca82664ef5.jpg" },
+        { name: "Stitch", url: "https://i.pinimg.com/originals/2c/13/21/2c1321703666f9175a74e50257e8d46e.jpg" },
+        { name: "Buzz Lightyear", url: "https://i.pinimg.com/736x/8d/86/e1/8d86e109d722d3e4210080806145325c.jpg" },
+        { name: "Woody", url: "https://i.pinimg.com/originals/50/60/7b/50607b308433367500115e4f451f2868.jpg" },
+        { name: "Spider-Man", url: "https://i.pinimg.com/originals/a1/38/2a/a1382a859e359218d6a6230588656643.jpg" },
+        { name: "Iron Man", url: "https://i.pinimg.com/originals/24/76/01/24760100787e930f367469792e353270.jpg" },
+        { name: "Elsa", url: "https://i.pinimg.com/originals/10/7b/25/107b2521d0a51965f3d3258525f0e34c.jpg" },
+        { name: "Baby Yoda", url: "https://i.pinimg.com/originals/60/9a/99/609a9979727402660d03251c6a282f1b.jpg" },
+        { name: "Darth Vader", url: "https://i.pinimg.com/originals/26/5a/88/265a882e379659b20757a701980315ce.jpg" },
+        { name: "Mike Wazowski", url: "https://i.pinimg.com/originals/61/8b/6e/618b6e63286395353724c9472304959a.jpg" },
+        { name: "Simba", url: "https://i.pinimg.com/originals/4d/93/86/4d9386348d4239e07834927f8045952c.jpg" },
+        { name: "Minion", url: "https://i.pinimg.com/originals/93/38/85/933885f8f53396599b50302b1134015f.jpg" },
+        { name: "Shrek", url: "https://i.pinimg.com/originals/77/8e/7e/778e7e1723f5b72e5058428807d81232.jpg" },
+        { name: "Jack Sparrow", url: "https://i.pinimg.com/originals/05/2a/d8/052ad83f2187a4f783267597f742f891.jpg" },
+        { name: "Harry Potter", url: "https://i.pinimg.com/originals/b3/66/83/b366838a101b0b561c28c68832a831e5.jpg" },
+        { name: "Batman", url: "https://i.pinimg.com/originals/81/25/3c/81253c61309d949219e2f592237d6e4f.jpg" },
+        { name: "Wall-E", url: "https://i.pinimg.com/originals/92/7e/3e/927e3e7f457788440538a83427771746.jpg" },
+        { name: "Sully", url: "https://i.pinimg.com/originals/83/91/42/839142823869792942488a0902640248.jpg" },
+        { name: "Lightning McQueen", url: "https://i.pinimg.com/originals/0d/18/69/0d18698188169994c6439e6a6442650b.jpg" },
+        { name: "Yoda", url: "https://i.pinimg.com/originals/24/09/96/2409968430e7041793740920d3674488.jpg" }
+    ];
+
+    personajes.forEach(p => {
+        const img = document.createElement('img');
+        img.src = p.url;
+        img.alt = p.name;
+        img.className = 'img-option';
+        img.title = p.name; // Al pasar el mouse se ve el nombre
+        img.onclick = () => crearNuevoPerfil(p.url);
+        grid.appendChild(img);
+    });
+    
+    document.getElementById('galeria').classList.add('show');
+};
 
         window.cerrarGaleria = () => {
             document.getElementById('galeria').classList.remove('show');
