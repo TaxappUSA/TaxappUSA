@@ -79,7 +79,7 @@
     <div class="nav-bar">
         <a href="index.html" class="btn-nav">🏠 INICIO</a>
         <a href="compras.html" class="btn-nav">🛍️ GASTOS</a>
-        <a href="comparador.html" class="btn-nav">🔍 COMPARADOR</a>
+        <a href="#" class="btn-nav" onclick="avisoProximamente(event)">🔍 COMPARADOR</a>
         <a href="unidades.html" class="btn-nav">⚖️ UNIDADES</a>
     </div>
 
@@ -318,5 +318,14 @@
         
         setInterval(() => { if(currentUser) renderCityData(); }, 120000);
     </script>
+    <script>
+    function avisoProximamente(event) {
+        // Evita que la página intente recargarse al tocar el link
+        event.preventDefault();
+        
+        // Muestra el mensaje
+        alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
+    }
+</script>
 </body>
 </html>
