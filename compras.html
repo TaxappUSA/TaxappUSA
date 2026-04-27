@@ -89,9 +89,14 @@
 img.emoji {
     height: 1.2em !important;
     width: 1.2em !important;
-    margin: 0 .05em 0 .1em !important;
-    vertical-align: -0.1em !important;
     display: inline-block !important;
+    vertical-align: middle !important;
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -402,8 +407,18 @@ img.emoji {
     });
 }
 
-        function updateEmojis() { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }
-
+function updateEmojis(element = document.body) {
+    if (typeof twemoji !== 'undefined') {
+        twemoji.parse(element, { 
+            folder: 'svg', 
+            ext: '.svg',
+            callback: function(icon, options, variant) {
+                // Esto asegura que usemos la versión más compatible
+                return ''.concat(options.base, options.size, '/', icon, options.ext);
+            }
+        });
+    }
+}
         async function fetchRates() {
             try {
                 const resArg = await fetch('https://dolarapi.com/v1/dolares');
@@ -702,10 +717,20 @@ img.emoji {
 
         let currentTipIndex = 0;
         window.nextTip = () => { 
-            currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
-            const el = document.getElementById('tip-text');
-            if(el) { el.style.opacity = 0; setTimeout(() => { el.innerText = shoppingTips[currentTipIndex]; el.style.opacity = 1; updateEmojis(); }, 300); }
-        };
+    currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
+    const el = document.getElementById('tip-text');
+    if(el) { 
+        el.style.opacity = 0; 
+        setTimeout(() => { 
+            // 1. Cambiamos el texto
+            el.innerText = shoppingTips[currentTipIndex]; 
+            // 2. Aplicamos Twemoji SOLO a este pequeño elemento
+            updateEmojis(el); 
+            // 3. Mostramos
+            el.style.opacity = 1; 
+        }, 300); 
+    }
+};
 
         function listenGastos(uid) {
             const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
