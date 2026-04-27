@@ -310,7 +310,7 @@
         import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
         import { getFirestore, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.app", messagingSenderId: "237311739178", appId: "1:237311739178:web:333e468b184c0402a98a53" };
+        const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.googleapis.com", messagingSenderId: "1053003173098", appId: "1:1053003173098:web:ecf5cdc31b9cca17e2151f" };
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -448,6 +448,14 @@
             return;
         }
 
+        function openProduct(url) {
+            if (!url || url === '#' || url.includes('google.com/url?q=')) {
+                alert('⚠️ Enlace no disponible para este producto');
+                return;
+            }
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
         function renderResults(data, keyType) {
             const resultsArea = document.getElementById('resultsArea');
             document.getElementById('loading').style.display = "none";
@@ -460,17 +468,16 @@
             if (results && results.length > 0) {
                 results.slice(0, 10).forEach(item => {
                     
-                    // 1. Limpieza de URL para evitar el error de redirección de Google
+                    // Limpieza de URL para evitar el error de redirección de Google
                     let rawUrl = item.link;
                     let cleanLink = rawUrl;
 
-                    if (rawUrl.includes("url?q=")) {
+                    if (rawUrl && rawUrl.includes("url?q=")) {
                         try {
-                            // Extraemos el link real que está después de 'q='
                             const urlParams = new URLSearchParams(rawUrl.split('?')[1]);
-                            cleanLink = urlParams.get('q');
+                            cleanLink = decodeURIComponent(urlParams.get('q') || rawUrl);
                         } catch(e) {
-                            cleanLink = rawUrl; // Si falla, dejamos el original
+                            cleanLink = rawUrl;
                         }
                     }
 
@@ -483,7 +490,7 @@
                             <div style="font-size:0.85rem; font-weight:700; margin-bottom:4px;">${item.title}</div>
                             <div class="result-price">${item.price || 'Ver precio'}</div>
                         </div>
-                        <button onclick="window.open('${cleanLink}', '_blank', 'noopener,noreferrer')" 
+                        <button onclick="openProduct('${cleanLink}')" 
                                 style="background:none; border:none; cursor:pointer; font-size:1.2rem; padding:10px;">
                             🚀
                         </button>
