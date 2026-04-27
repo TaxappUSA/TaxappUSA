@@ -145,16 +145,6 @@
         <select id="city-select" class="city-picker" onchange="loadNotes()">
             <option value="General">📍 Notas Generales</option>
             </select>
-        
-        ```
-
-### 3. Ajuste en el Botón de Ajustes (⚙️)
-Como ahora el engranaje está dentro de la barra de navegación, busca el botón viejo que dice `<button class="settings-trigger" ...>` que estaba arriba a la derecha y **bórralo**. El nuevo botón en la barra ya cumple esa función.
-
-**Nota técnica:**
-* He puesto el botón de **ITINERARIO** como `active` (en violeta).
-* He cambiado el botón de **INICIO** por el de **GASTOS** para seguir la lógica de las otras pantallas, pero si prefieres el de Inicio, solo cambia el emoji y el link a `index.html`.
-* El diseño ahora es 100% consistente: todos los recuadros miden lo mismo de ancho.
 
     <div class="card">
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
