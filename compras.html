@@ -86,17 +86,20 @@
             transition: color 0.3s ease;
         }
         /* Esto hace que el emoji se comporte como un texto y no como una imagen gigante */
+/* Bloqueo de parpadeo de emojis y configuración de tamaño */
 img.emoji {
     height: 1.2em !important;
     width: 1.2em !important;
     display: inline-block !important;
     vertical-align: middle !important;
-    animation: fadeIn 0.2s ease-in;
+    margin: 0 0.1em 0.2em 0.1em !important;
+    /* Animación para ocultar el cambio visual */
+    animation: fadeInEmoji 0.3s ease-in-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes fadeInEmoji {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
 }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -407,16 +410,49 @@ img.emoji {
     });
 }
 
+// 1. Función de parseo refinada
 function updateEmojis(element = document.body) {
     if (typeof twemoji !== 'undefined') {
         twemoji.parse(element, { 
             folder: 'svg', 
-            ext: '.svg',
-            callback: function(icon, options, variant) {
-                // Esto asegura que usemos la versión más compatible
-                return ''.concat(options.base, options.size, '/', icon, options.ext);
-            }
+            ext: '.svg' 
         });
+    }
+}
+
+// 2. EL VIGILANTE (MutationObserver)
+// Detecta cualquier cambio de texto (como cuando carga Firebase) 
+// y lo convierte a emoji al instante.
+const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+            mutation.addedNodes.forEach((node) => {
+                // Si el nodo es un elemento, lo parseamos
+                if (node.nodeType === 1) {
+                    // Evitamos bucles infinitos no parseando imágenes de emoji ya puestas
+                    if (!node.classList.contains('emoji')) {
+                        updateEmojis(node);
+                    }
+                }
+            });
+        }
+    });
+});
+
+// Iniciamos la vigilancia en todo el documento
+observer.observe(document.body, { childList: true, subtree: true });
+
+// 3. Modificación del window.onload
+window.onload = () => { 
+    const el = document.getElementById('tip-text');
+    if(el) {
+        el.innerText = shoppingTips[0]; 
+        updateEmojis(el);
+    }
+    
+    // El setInterval se encarga del resto
+    setInterval(window.nextTip, 8000); 
+};
     }
 }
         async function fetchRates() {
@@ -732,40 +768,40 @@ function updateEmojis(element = document.body) {
     }
 };
 
-        function listenGastos(uid) {
-            const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
-            
-            onSnapshot(q, (snapshot) => {
-                const container = document.getElementById('listaGastos');
-                let totalGastado = 0;
-                
-                if (snapshot.empty) { 
-                    container.innerHTML = '<p style="text-align:center;">No hay gastos.</p>'; 
-                    updateDisplay(0); 
-                    return; 
-                }
-
-                container.innerHTML = snapshot.docs.map(docSnap => {
-                    const d = docSnap.data(); 
-                    const valorNum = parseFloat(d.valor) || 0;
-                    totalGastado += valorNum;
-                    
-                    return `<div class="history-item">
-                                <div><b>${d.nombre}</b></div>
-                                <div style="display:flex; align-items:center; gap:12px;">
-                                    <div class="h-amount">-$${formatNumber(valorNum)}</div>
-                                    <button onclick="deleteGasto('${docSnap.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
-                                </div>
-                            </div>`;
-                }).join('');
-
-                updateDisplay(totalGastado);
-                // Forzamos el render de emojis después de actualizar el DOM
-                setTimeout(updateEmojis, 100); 
-            }, (error) => {
-                console.error("Error en Snapshot: ", error);
-            });
+       function listenGastos(uid) {
+    const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+    
+    onSnapshot(q, (snapshot) => {
+        const container = document.getElementById('listaGastos');
+        let totalGastado = 0;
+        
+        if (snapshot.empty) { 
+            container.innerHTML = '<p style="text-align:center;">No hay gastos.</p>'; 
+            updateDisplay(0); 
+            return; 
         }
+
+        // Al asignar el innerHTML, el MutationObserver detectará el cambio 
+        // y aplicará Twemoji instantáneamente.
+        container.innerHTML = snapshot.docs.map(docSnap => {
+            const d = docSnap.data(); 
+            const valorNum = parseFloat(d.valor) || 0;
+            totalGastado += valorNum;
+            
+            return `<div class="history-item">
+                        <div><b>${d.nombre}</b></div>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="h-amount">-$${formatNumber(valorNum)}</div>
+                            <button onclick="deleteGasto('${docSnap.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
+                        </div>
+                    </div>`;
+        }).join('');
+
+        updateDisplay(totalGastado);
+    }, (error) => {
+        console.error("Error en Snapshot: ", error);
+    });
+}
 
         function updateDisplay(gastado) { 
             const saldo = presupuestoBase - gastado;
