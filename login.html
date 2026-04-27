@@ -12,7 +12,18 @@
     <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw"></script>
 
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; --text-main: #1e293b; --accent: #1e3a8a; }
+        /* Colores fijados en Modo Oscuro Obligatorio */
+        :root { 
+            --primary: #3b82f6; 
+            --bg: #0f172a; 
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9; 
+            --text-sec: #94a3b8;
+            --input-bg: #334155;
+            --input-border: #475569;
+            --accent: #1e3a8a; 
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { 
@@ -25,13 +36,14 @@
             height: 100vh; 
             margin: 0; 
             padding: 20px;
+            color: var(--text-main);
         }
 
         .login-card { 
-            background: white; 
+            background: var(--card-bg); 
             padding: 2.5rem; 
             border-radius: 28px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.03);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             width: 100%; 
             max-width: 400px; 
             text-align: center; 
@@ -40,28 +52,55 @@
         
         #title { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin: 0 0 1.5rem 0; }
         
-        input { width: 100%; padding: 16px; border: 2px solid #f1f5f9; border-radius: 16px; margin-bottom: 15px; font-size: 1rem; font-weight: 600; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); background: #fdfdfd; }
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--input-bg);
+            border: 2px solid var(--input-border); 
+            border-radius: 16px; 
+            margin-bottom: 15px; 
+            font-size: 1rem; 
+            font-weight: 600; 
+            box-sizing: border-box; 
+            outline: none; 
+            transition: 0.3s; 
+            color: white;
+        }
+        input:focus { border-color: var(--primary); background: #3d4b5f; }
+        input::placeholder { color: #94a3b8; }
         
-        button { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 1rem; letter-spacing: 1px; transition: 0.3s; }
+        button { 
+            width: 100%; 
+            padding: 18px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 16px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            letter-spacing: 1px; 
+            transition: 0.3s; 
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
         button:active { transform: scale(0.98); }
 
         .verification-notice {
             display: none;
-            background: #eff6ff;
-            color: #1e40af;
+            background: #1e3a8a;
+            color: #bfdbfe;
             padding: 12px;
             border-radius: 12px;
             font-size: 0.8rem;
             font-weight: 600;
             margin-bottom: 15px;
             line-height: 1.4;
-            border: 1px solid #dbeafe;
+            border: 1px solid #2563eb;
         }
 
         .links-container { margin-top: 25px; display: flex; flex-direction: column; gap: 12px; }
-        .reset-link { color: #ef4444; font-size: 0.8rem; cursor: pointer; font-weight: 700; text-decoration: none; }
-        .toggle-link { color: #64748b; font-size: 0.85rem; cursor: pointer; text-decoration: none; font-weight: 600; }
+        .reset-link { color: #f87171; font-size: 0.8rem; cursor: pointer; font-weight: 700; text-decoration: none; }
+        .toggle-link { color: var(--text-sec); font-size: 0.85rem; cursor: pointer; text-decoration: none; font-weight: 600; }
         .toggle-link:hover { color: var(--primary); }
 
         /* Aseguramos que el badge sea visible */
@@ -115,7 +154,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // 2. FORZAR MODO DEBUG (Esto ayuda a que aparezca si hay errores de bloqueo previos)
+        // 2. FORZAR MODO DEBUG
         self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 
         const appCheck = initializeAppCheck(app, {
