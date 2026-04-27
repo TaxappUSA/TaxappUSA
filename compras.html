@@ -304,10 +304,14 @@
         window.formatVisual = (input) => {
             let val = input.value.replace(/\D/g, ""); 
             if (val === "") { input.value = ""; return; }
+            // Formateador estándar AR para miles
             input.value = new Intl.NumberFormat('es-AR').format(val);
         };
 
-        function cleanVal(str) { return parseFloat(str.toString().replace(/\./g, "").replace(/,/g, ".")) || 0; }
+        function cleanVal(str) { 
+            // Limpieza estricta: quita puntos de miles AR y pasa coma a punto para cálculo real
+            return parseFloat(str.toString().replace(/\./g, "").replace(/,/g, ".")) || 0; 
+        }
         function formatNumber(num) { return Number(num).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
         function updateEmojis() { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }
 
@@ -439,12 +443,12 @@
         };
 
         function parseTicketText(text) {
-            // LÓGICA USA ANTIFALLO
+            // MODO USA PURO: Ignoramos todo separador que no cumpla con ser decimal final
             const cleanText = text.toUpperCase().replace(/:/g, " ").replace(/[;=]/g, " ").replace(/\s+/g, " ");
             const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
             let detectedStore = "Compra";
-            let detectedPrice = null;
+            let finalPrice = null;
 
             for (let store of knownStores) {
                 if (cleanText.includes(store)) { detectedStore = store; break; }
@@ -454,40 +458,42 @@
             
             for (let i = lines.length - 1; i >= 0; i--) {
                 const line = lines[i];
-                const hasTotalWord = totalKeywords.some(k => line.includes(k));
+                // Buscamos cualquier número que parezca precio USA (ej: 55.57 o 1,008.00)
+                // Buscamos específicamente el patrón de decimales .XX al final
+                const matches = line.match(/\d+[\.,]\d{2}(?!\d)/g);
                 
-                // Regex: Detecta número con exactamente 2 decimales (estilo USA)
-                const priceMatch = line.match(/(\d+[\.\,]\d{2})(?!\d)/g);
-                
-                if (priceMatch) {
-                    let rawPriceStr = priceMatch[priceMatch.length - 1].replace(',', '.');
-                    if (hasTotalWord) {
-                        detectedPrice = parseFloat(rawPriceStr);
-                        break; 
-                    } 
-                    if (!detectedPrice) detectedPrice = parseFloat(rawPriceStr);
+                if (matches) {
+                    let candidate = matches[matches.length - 1];
+                    // Convertimos a número limpio: eliminamos todo lo que NO sea dígito al final (centavos)
+                    let digitsOnly = candidate.replace(/\D/g, "");
+                    // Los últimos dos SIEMPRE son centavos en USA
+                    let dollars = digitsOnly.slice(0, -2);
+                    let cents = digitsOnly.slice(-2);
+                    let val = parseFloat(dollars + "." + cents);
+
+                    if (totalKeywords.some(k => line.includes(k))) {
+                        finalPrice = val;
+                        break;
+                    }
+                    if (!finalPrice) finalPrice = val;
                 }
             }
 
             document.getElementById('nombre').value = detectedStore;
-            if (detectedPrice) {
+            
+            if (finalPrice) {
                 const inputValor = document.getElementById('valor');
+                // IMPORTANTE: Le pasamos el número "sucio" al input para que el formateador visual AR
+                // lo trate como si nosotros hubiéramos escrito los números seguidos.
+                // Ej: si finalPrice es 55.57, le pasamos "5557".
+                let rawValue = Math.round(finalPrice * 100).toString();
+                inputValor.value = rawValue;
                 
-                // SOLUCIÓN AL PROBLEMA 5.557:
-                // 1. Convertimos a string de centavos puros (ej: 55.57 -> "5557")
-                let cents = Math.round(detectedPrice * 100).toString();
-                
-                // 2. Seteamos el valor al input
-                inputValor.value = cents;
-                
-                // 3. Forzamos el formateo visual AR que ya tenés:
-                // Al poner "5557", formatVisual lo convertirá en "5.557" (miles AR)
-                // Pero como tu función cleanVal(str) borra los puntos, 
-                // "5.557" en el input se leerá como "5557" / 100 = 55,57.
+                // Ejecutamos manualmente el formateador visual AR para que el usuario vea "55,57" (o 5.557 si es mil)
+                // Pero como nuestra función cleanVal() quita puntos, el cálculo será siempre correcto.
                 window.formatVisual(inputValor);
-
             } else {
-                alert("No detecté un precio claro (ej: 55.57). Probá acercar más el TOTAL.");
+                alert("No detecté un precio claro (formato USA XX.XX).");
             }
         }
 
