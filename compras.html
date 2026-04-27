@@ -407,7 +407,7 @@ img.emoji {
     });
 }
 
-// 1. Función de parseo
+// 1. Tu función de parseo
 function updateEmojis(element = document.body) {
     if (typeof twemoji !== 'undefined') {
         twemoji.parse(element, { 
@@ -420,21 +420,32 @@ function updateEmojis(element = document.body) {
     }
 }
 
-// 2. Vigilante optimizado (detecta cambios de texto e hijos)
-const emojiObserver = new MutationObserver(() => {
-    updateEmojis(); // En lugar de filtrar nodos, parseamos lo nuevo que aparezca
+// 2. Vigilante de "Fuerza Bruta"
+// Si algo cambia el HTML, lo volvemos a convertir al instante
+const emojiObserver = new MutationObserver((mutations) => {
+    // Desconectamos un segundo para evitar bucles infinitos
+    emojiObserver.disconnect();
+    
+    updateEmojis();
+    
+    // Volvemos a conectar
+    startObserving();
 });
 
-// Iniciamos la vigilancia apenas el script corre
-emojiObserver.observe(document.body, { 
-    childList: true, 
-    subtree: true,
-    characterData: true // Esto detecta cambios de texto dentro de elementos ya creados
-});
+function startObserving() {
+    emojiObserver.observe(document.body, { 
+        childList: true, 
+        subtree: true,
+        characterData: true 
+    });
+}
 
-// 3. Ejecución inmediata al cargar la ventana
-window.addEventListener('DOMContentLoaded', updateEmojis);
-window.addEventListener('load', updateEmojis);
+// Iniciar vigilancia
+startObserving();
+
+// Disparo inicial
+window.onload = updateEmojis;
+        
         async function fetchRates() {
             try {
                 const resArg = await fetch('https://dolarapi.com/v1/dolares');
