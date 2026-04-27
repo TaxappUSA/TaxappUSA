@@ -28,7 +28,6 @@
             --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
-        /* ARREGLO DE EMOJIS GIGANTES */
         img.emoji {
             height: 1em;
             width: 1em;
@@ -238,6 +237,7 @@
             border-radius: 12px; border: 1px solid var(--border-color);
             background: var(--bg); color: var(--text-main); font-weight: 600; cursor: pointer; text-align: left;
         }
+        .btn-danger { color: #ef4444; border-color: #fecaca; }
     </style>
 </head>
 <body>
@@ -278,16 +278,80 @@
     </div>
 
     <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-    <div class="settings-drawer" id="settingsDrawer">
-        <h3 style="margin-top:0;">Ajustes</h3>
+    <div id="settingsDrawer" class="settings-drawer">
+        <h3 style="color:var(--primary); margin-top:0;">Ajustes</h3>
+        <p id="userEmail" style="font-size:0.75rem; color:var(--text-muted); margin-bottom:20px; font-weight:700;"></p>
         <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Modo Oscuro / Claro</button>
         <button class="drawer-btn" onclick="location.reload()">🔄 Actualizar App</button>
-        <div style="margin-top:auto; font-size:0.6rem; color:var(--text-muted); text-align:center;">
-            Shopping USA v2.1 • 2026
+        <button class="drawer-btn" onclick="changeEmail()">📧 Cambiar Correo</button>
+        <button class="drawer-btn" onclick="changePassword()">🔑 Cambiar Contraseña</button>
+        <button class="drawer-btn" onclick="logout()">🚪 Cerrar Sesión</button>
+        <div style="margin-top: auto; padding-top: 20px;">
+            <button class="drawer-btn btn-danger" onclick="deleteAccount()">⚠️ Eliminar Cuenta</button>
         </div>
     </div>
 
     <canvas id="photoCanvas" style="display:none;"></canvas>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+        import { getFirestore, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.app", messagingSenderId: "237311739178", appId: "1:237311739178:web:333e468b184c0402a98a53" };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.replace("login.html");
+            } else {
+                currentUser = user;
+                document.getElementById('userEmail').innerText = user.email;
+            }
+        });
+
+        // Funciones de Usuario
+        window.changeEmail = async () => {
+            if (currentUser) {
+                const nuevoEmail = prompt("Ingresa el nuevo correo electrónico:", currentUser.email);
+                if (nuevoEmail && nuevoEmail !== currentUser.email) {
+                    try {
+                        await verifyBeforeUpdateEmail(currentUser, nuevoEmail);
+                        alert("Se ha enviado un correo de verificación a " + nuevoEmail + ". El cambio se aplicará tras confirmar el enlace.");
+                    } catch (e) { 
+                        alert("Error: Reautenticación requerida para cambios sensibles."); 
+                    }
+                }
+            }
+        };
+
+        window.changePassword = () => { 
+            if (currentUser) {
+                sendPasswordResetEmail(auth, currentUser.email)
+                    .then(() => alert("Se ha enviado un correo para restablecer tu contraseña."))
+                    .catch(() => alert("Error al enviar el correo."));
+            } 
+        };
+
+        window.deleteAccount = async () => { 
+            if (confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")) { 
+                try {
+                    await deleteDoc(doc(db, "usuarios", currentUser.uid)); 
+                    await deleteUser(currentUser); 
+                    window.location.replace("login.html"); 
+                } catch (e) {
+                    alert("Reautenticación requerida para eliminar la cuenta.");
+                }
+            } 
+        };
+
+        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
+    </script>
 
     <script>
         const video = document.getElementById('webcam');
@@ -316,6 +380,7 @@
             const overlay = document.getElementById('menuOverlay');
             drawer.classList.toggle('open');
             overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
+            twemoji.parse(document.body);
         }
 
         function toggleDarkMode() {
