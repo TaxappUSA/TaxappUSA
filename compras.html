@@ -148,7 +148,29 @@
     </style>
 </head>
 <body>
-
+<h1>
+    <div class="card">
+        <div class="card">
+    TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
+    <div class="nav-bar">
+        <a href="compras.html" class="btn-nav active">
+            <span>🏠</span>
+            <span>GASTOS</span>
+        </a>
+        <a href="itinerario.html" class="btn-nav">
+            <span>📍</span>
+            <span>ITINERARIO</span>
+        </a>
+        <a href="javascript:void(0)" class="btn-nav" onclick="avisoProximamente(event)">
+            <span>🔍</span>
+            <span>COMPARAR</span>
+        </a>
+        <a href="unidades.html" class="btn-nav">
+            <span>⚖️</span>
+            <span>UNIDADES</span>
+        </a>
+        <button class="settings-trigger-nav" onclick="toggleSettings()">⚙️</button>
+    </div>
    <div class="budget-card">
     <div class="budget-label">Presupuesto Restante</div>
     <div class="budget-value" id="disp-fondo">USD 0.00</div>
@@ -171,27 +193,6 @@
 
     <div class="card">
         <div class="card">
-    <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
-
-    <div class="nav-bar">
-        <a href="compras.html" class="btn-nav active">
-            <span>🏠</span>
-            <span>GASTOS</span>
-        </a>
-        <a href="itinerario.html" class="btn-nav">
-            <span>📍</span>
-            <span>ITINERARIO</span>
-        </a>
-        <a href="javascript:void(0)" class="btn-nav" onclick="avisoProximamente(event)">
-            <span>🔍</span>
-            <span>COMPARAR</span>
-        </a>
-        <a href="unidades.html" class="btn-nav">
-            <span>⚖️</span>
-            <span>UNIDADES</span>
-        </a>
-        <button class="settings-trigger-nav" onclick="toggleSettings()">⚙️</button>
-    </div>
 
     <div class="dato-clave" onclick="nextTip()">
         <small style="color:var(--success); font-weight:800; font-size:0.6rem;">🛍️ GUÍA DE COMPRAS</small>
