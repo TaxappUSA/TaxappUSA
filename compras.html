@@ -439,56 +439,55 @@
         };
 
         function parseTicketText(text) {
-            // LÓGICA USA MEJORADA
-            // 1. Limpiamos caracteres que suelen romper la detección de números (dos puntos, signos raros)
+            // LÓGICA USA ANTIFALLO
             const cleanText = text.toUpperCase().replace(/:/g, " ").replace(/[;=]/g, " ").replace(/\s+/g, " ");
             const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
             let detectedStore = "Compra";
             let detectedPrice = null;
 
-            // Detección de Tienda
             for (let store of knownStores) {
                 if (cleanText.includes(store)) { detectedStore = store; break; }
             }
 
             const totalKeywords = ["TOTAL", "DUE", "BALANCE", "AMOUNT", "PAID", "USD", "FINAL", "PAY"];
             
-            // Búsqueda del precio (Formato USA estricto)
             for (let i = lines.length - 1; i >= 0; i--) {
                 const line = lines[i];
                 const hasTotalWord = totalKeywords.some(k => line.includes(k));
                 
-                // Regex: Busca un número que termine en un punto/coma seguido de EXACTAMENTE dos dígitos (centavos)
-                // Ignora puntos que tengan 3 números después (que serían miles en formato AR)
+                // Regex: Detecta número con exactamente 2 decimales (estilo USA)
                 const priceMatch = line.match(/(\d+[\.\,]\d{2})(?!\d)/g);
                 
                 if (priceMatch) {
-                    // Tomamos el último encontrado que suele ser el TOTAL real
-                    let rawPrice = priceMatch[priceMatch.length - 1].replace(',', '.');
-                    
+                    let rawPriceStr = priceMatch[priceMatch.length - 1].replace(',', '.');
                     if (hasTotalWord) {
-                        detectedPrice = parseFloat(rawPrice);
+                        detectedPrice = parseFloat(rawPriceStr);
                         break; 
                     } 
-                    if (!detectedPrice) {
-                        detectedPrice = parseFloat(rawPrice);
-                    }
+                    if (!detectedPrice) detectedPrice = parseFloat(rawPriceStr);
                 }
             }
 
             document.getElementById('nombre').value = detectedStore;
             if (detectedPrice) {
                 const inputValor = document.getElementById('valor');
-                // IMPORTANTE: Lo guardamos en formato visual AR (coma) pero sin que formatVisual lo rompa
-                // Multiplicamos internamente para que formatVisual (que borra no-dígitos) mantenga el valor
-                inputValor.value = detectedPrice.toFixed(2).replace('.', ',');
                 
-                // Disparamos manualmente el formateo visual para que quede lindo
-                let rawVal = inputValor.value.replace(/\D/g, ""); 
-                inputValor.value = new Intl.NumberFormat('es-AR').format(rawVal);
+                // SOLUCIÓN AL PROBLEMA 5.557:
+                // 1. Convertimos a string de centavos puros (ej: 55.57 -> "5557")
+                let cents = Math.round(detectedPrice * 100).toString();
+                
+                // 2. Seteamos el valor al input
+                inputValor.value = cents;
+                
+                // 3. Forzamos el formateo visual AR que ya tenés:
+                // Al poner "5557", formatVisual lo convertirá en "5.557" (miles AR)
+                // Pero como tu función cleanVal(str) borra los puntos, 
+                // "5.557" en el input se leerá como "5557" / 100 = 55,57.
+                window.formatVisual(inputValor);
+
             } else {
-                alert("No detecté un precio claro (formato XX.XX). Probá apuntar mejor al TOTAL.");
+                alert("No detecté un precio claro (ej: 55.57). Probá acercar más el TOTAL.");
             }
         }
 
