@@ -441,12 +441,10 @@
         }
 
         async function startCamera() {
-            // Clausurado temporalmente
             return;
         }
 
         async function takePhoto() {
-            // Clausurado temporalmente
             return;
         }
 
@@ -462,18 +460,17 @@
             if (results && results.length > 0) {
                 results.slice(0, 10).forEach(item => {
                     
-                    // --- LÓGICA DE LIMPIEZA DE LINK (QUIRÚRGICA) ---
-                    let cleanLink = item.link;
-                    if (cleanLink && cleanLink.includes("/url?q=")) {
+                    // --- CORRECCIÓN QUIRÚRGICA: Limpiar el enlace para evitar error 404 ---
+                    let urlFinal = item.link;
+                    if (urlFinal && urlFinal.includes("/url?q=")) {
                         try {
-                            const part = cleanLink.split("url?q=")[1];
-                            if (part) {
-                                cleanLink = decodeURIComponent(part.split("&")[0]);
-                            }
+                            const params = new URLSearchParams(urlFinal.split('?')[1]);
+                            urlFinal = params.get('q') || urlFinal;
                         } catch(e) {
-                            console.log("Error limpiando link");
+                            console.log("Error extrayendo URL");
                         }
                     }
+                    // -------------------------------------------------------------------
 
                     const card = document.createElement('div');
                     card.className = 'result-card';
@@ -484,7 +481,7 @@
                             <div style="font-size:0.85rem; font-weight:700; margin-bottom:4px;">${item.title}</div>
                             <div class="result-price">${item.price || 'Ver precio'}</div>
                         </div>
-                        <a href="${cleanLink}" target="_blank" style="text-decoration:none; font-size:1.2rem;">🚀</a>
+                        <a href="${urlFinal}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; font-size:1.2rem;">🚀</a>
                     `;
                     resultsArea.appendChild(card);
                 });
