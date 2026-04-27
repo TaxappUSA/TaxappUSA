@@ -20,7 +20,6 @@
             --input-bg: #f1f5f9;
         }
 
-        /* Estilos Modo Oscuro */
         body.dark-mode {
             --bg: #0f172a;
             --white: #1e293b;
@@ -71,11 +70,11 @@
         input:focus { border-color: var(--primary); }
         .btn-add { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
         
-        /* Botón de Escaneo */
         .btn-scan { background: #0ea5e9; margin-bottom: 10px; border: none; width: 100%; padding: 12px; border-radius: 14px; color: white; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #scanner-ui { display: none; margin-bottom: 15px; border-radius: 20px; overflow: hidden; background: #000; position: relative; width: 100%; max-width: 450px; }
         #video-preview { width: 100%; display: block; }
-        .ocr-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; display: none; align-items: center; justify-content: center; font-weight: 800; text-align: center; padding: 20px; z-index: 10; }
+        .ocr-loading { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); color: white; display: none; flex-direction: column; align-items: center; justify-content: center; font-weight: 800; text-align: center; padding: 20px; z-index: 10; }
+        .close-scanner { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(255,255,255,0.2); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 20; border: 1px solid rgba(255,255,255,0.5); }
 
         .history-item { background: var(--bg); padding: 15px; border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--primary); }
         .dato-clave { background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 16px; border: 1.5px solid var(--success); margin-bottom: 15px; text-align: center; cursor: pointer; min-height: 85px; display: flex; flex-direction: column; justify-content: center; }
@@ -132,7 +131,11 @@
     </div>
 
     <div id="scanner-ui">
-        <div id="ocr-loader" class="ocr-loading">Analizando ticket... 🧐</div>
+        <div class="close-scanner" onclick="stopScanner()">✕</div>
+        <div id="ocr-loader" class="ocr-loading">
+            <span id="ocr-status-text">Analizando ticket... 🧐</span>
+            <small style="margin-top:10px; font-weight:400; opacity:0.8;">Buscando TOTAL y Tienda...</small>
+        </div>
         <video id="video-preview" autoplay playsinline></video>
         <button onclick="captureTicket()" style="position:absolute; bottom:15px; left:50%; transform:translateX(-50%); width:60px; height:60px; border-radius:50%; border:4px solid white; background:rgba(255,255,255,0.3); z-index:5;"></button>
     </div>
@@ -287,20 +290,16 @@
 
         let currentUser = null;
         let presupuestoBase = 0;
-        
         let allRates = {};
         let baseRates = { oficial: 0, tarjeta: 0, eur: 0, brl: 0 };
         const flags = { EUR: "🇪🇺", GBP: "🇬🇧", CHF: "🇨🇭", BRL: "🇧🇷", CLP: "🇨🇱", UYU: "🇺🇾", MXN: "🇲🇽", PEN: "🇵🇪", COP: "🇨🇴" };
 
-        // LÓGICA MODO OSCURO
         window.toggleDarkMode = () => {
             const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
         };
 
-        if (localStorage.getItem('darkMode') === 'enabled') {
-            document.body.classList.add('dark-mode');
-        }
+        if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
 
         window.formatVisual = (input) => {
             let val = input.value.replace(/\D/g, ""); 
@@ -308,17 +307,9 @@
             input.value = new Intl.NumberFormat('es-AR').format(val);
         };
 
-        function cleanVal(str) {
-            return parseFloat(str.toString().replace(/\./g, "").replace(/,/g, ".")) || 0;
-        }
-
-        function formatNumber(num) {
-            return Number(num).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        function updateEmojis() {
-            twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
-        }
+        function cleanVal(str) { return parseFloat(str.toString().replace(/\./g, "").replace(/,/g, ".")) || 0; }
+        function formatNumber(num) { return Number(num).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+        function updateEmojis() { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }
 
         async function fetchRates() {
             try {
@@ -329,14 +320,13 @@
                 const resGlob = await fetch('https://open.er-api.com/v6/latest/USD');
                 const dataGlob = await resGlob.json();
                 allRates = dataGlob.rates;
-                baseRates.eur = allRates.EUR;
-                baseRates.brl = allRates.BRL;
+                baseRates.eur = allRates.EUR; baseRates.brl = allRates.BRL;
                 document.getElementById('oficial-local').value = new Intl.NumberFormat('es-AR').format(baseRates.oficial);
                 document.getElementById('tarjeta-local').value = new Intl.NumberFormat('es-AR').format(baseRates.tarjeta);
                 document.getElementById('eur-local').value = baseRates.eur;
                 document.getElementById('brl-local').value = baseRates.brl;
                 updateEmojis();
-            } catch (e) { console.error("Error rates:", e); }
+            } catch (e) { console.error(e); }
         }
 
         window.updateMulti = (type) => {
@@ -352,8 +342,7 @@
             const usdInput = document.getElementById(`${type}-usd`);
             const localInput = document.getElementById(`${type}-local`);
             const rate = baseRates[type];
-            let vUsd = cleanVal(usdInput.value);
-            let vLoc = cleanVal(localInput.value);
+            let vUsd = cleanVal(usdInput.value), vLoc = cleanVal(localInput.value);
             if (direction === 'usd') localInput.value = new Intl.NumberFormat('es-AR').format((vUsd * rate).toFixed(0));
             else usdInput.value = new Intl.NumberFormat('es-AR').format((vLoc / rate).toFixed(0));
         };
@@ -366,7 +355,10 @@
         window.addGasto = async () => { 
             const n = document.getElementById('nombre').value; 
             const v = cleanVal(document.getElementById('valor').value); 
-            if(n && v && currentUser) { await addDoc(collection(db, "compras"), { nombre: n, valor: v, userId: currentUser.uid, createdAt: Date.now() }); document.getElementById('nombre').value = ""; document.getElementById('valor').value = ""; } 
+            if(n && v && currentUser) { 
+                await addDoc(collection(db, "compras"), { nombre: n, valor: v, userId: currentUser.uid, createdAt: Date.now() }); 
+                document.getElementById('nombre').value = ""; document.getElementById('valor').value = ""; 
+            } 
         };
 
         window.deleteGasto = (id) => confirm("¿Borrar?") && deleteDoc(doc(db, "compras", id));
@@ -380,144 +372,133 @@
         };
 
         window.toggleSettings = () => { 
-            const d = document.getElementById('settingsDrawer'); 
-            const o = document.getElementById('menuOverlay');
-            d.classList.toggle('open'); 
-            o.style.display = d.classList.contains('open') ? 'block' : 'none'; 
+            const d = document.getElementById('settingsDrawer'), o = document.getElementById('menuOverlay');
+            d.classList.toggle('open'); o.style.display = d.classList.contains('open') ? 'block' : 'none'; 
             updateEmojis();
         };
 
         window.changeEmail = async () => {
             if (currentUser) {
-                const nuevoEmail = prompt("Ingresa tu nuevo correo electrónico:", currentUser.email);
-                if (nuevoEmail && nuevoEmail !== currentUser.email && nuevoEmail.includes("@")) {
-                    try {
-                        await verifyBeforeUpdateEmail(currentUser, nuevoEmail);
-                        alert("¡Correo de verificación enviado a " + nuevoEmail + "!");
-                        toggleSettings();
-                    } catch (e) {
-                        alert("Error: Por seguridad, debés haber iniciado sesión recientemente.");
-                    }
-                } else if (nuevoEmail) { alert("Correo inválido."); }
+                const nuevoEmail = prompt("Nuevo correo:", currentUser.email);
+                if (nuevoEmail) { await verifyBeforeUpdateEmail(currentUser, nuevoEmail); alert("Correo de verificación enviado."); }
             }
         };
 
-        window.changePassword = () => { if (currentUser && currentUser.email) sendPasswordResetEmail(auth, currentUser.email).then(() => alert("Correo enviado.")).catch((e) => alert(e.message)); };
-        
-        window.deleteAccount = async () => { if (confirm("¿Borrar cuenta permanentemente?")) { try { await deleteDoc(doc(db, "usuarios", currentUser.uid)); await deleteUser(currentUser); window.location.replace("login.html"); } catch (e) { alert("Re-autenticación necesaria."); } } };
-        
+        window.changePassword = () => { if (currentUser) sendPasswordResetEmail(auth, currentUser.email).then(() => alert("Correo enviado.")); };
+        window.deleteAccount = async () => { if (confirm("¿Borrar cuenta?")) { await deleteDoc(doc(db, "usuarios", currentUser.uid)); await deleteUser(currentUser); window.location.replace("login.html"); } };
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
 
         onAuthStateChanged(auth, (user) => {
             if (!user) window.location.replace("login.html");
             else { 
-                currentUser = user; 
-                document.getElementById('userEmail').innerText = user.email; 
-                onSnapshot(doc(db, "usuarios", user.uid), (docSnap) => { 
-                    presupuestoBase = docSnap.exists() ? (docSnap.data().fondo || 0) : 0; 
-                    listenGastos(user.uid); 
-                }); 
+                currentUser = user; document.getElementById('userEmail').innerText = user.email; 
+                onSnapshot(doc(db, "usuarios", user.uid), (docSnap) => { presupuestoBase = docSnap.exists() ? (docSnap.data().fondo || 0) : 0; listenGastos(user.uid); }); 
                 fetchRates();
             }
         });
 
-        // ==========================================
-        // LÓGICA SCANNER OCR
-        // ==========================================
-        const video = document.getElementById('video-preview');
-        const canvas = document.getElementById('ocr-canvas');
+        const video = document.getElementById('video-preview'), canvas = document.getElementById('ocr-canvas');
         let stream = null;
+        const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS"];
 
         window.startScanner = async () => {
-            const scannerUI = document.getElementById('scanner-ui');
-            scannerUI.style.display = 'block';
+            document.getElementById('scanner-ui').style.display = 'block';
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
                 video.srcObject = stream;
-            } catch (err) {
-                alert("Error al acceder a la cámara: " + err.message);
-                scannerUI.style.display = 'none';
-            }
+            } catch (err) { alert("Cámara no disponible."); stopScanner(); }
+        };
+
+        window.stopScanner = () => {
+            if (stream) stream.getTracks().forEach(t => t.stop());
+            document.getElementById('scanner-ui').style.display = 'none';
+            document.getElementById('ocr-loader').style.display = 'none';
         };
 
         window.captureTicket = async () => {
             const loader = document.getElementById('ocr-loader');
             loader.style.display = 'flex';
-
             const ctx = canvas.getContext('2d');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             ctx.drawImage(video, 0, 0);
-
-            // Detener cámara
-            if (stream) stream.getTracks().forEach(t => t.stop());
-            document.getElementById('scanner-ui').style.display = 'none';
 
             try {
                 const worker = await Tesseract.createWorker('eng');
-                const { data: { text } } = await worker.recognize(canvas.toDataURL('image/jpeg'));
+                const { data: { text } } = await worker.recognize(canvas.toDataURL('image/jpeg', 0.9));
                 await worker.terminate();
                 
+                if (!text || text.trim().length < 10) {
+                    alert("⚠️ No se detectó texto claro. Sacá una foto nueva más cerca y con luz.");
+                    loader.style.display = 'none';
+                    return;
+                }
+
                 parseTicketText(text);
-            } catch (e) {
-                alert("Error procesando imagen");
-            }
-            loader.style.display = 'none';
+                stopScanner();
+            } catch (e) { alert("Error al procesar."); loader.style.display = 'none'; }
         };
 
         function parseTicketText(text) {
-            console.log("OCR Text:", text);
-            // Regex para buscar precios (ej: 50.00 o 50,00)
-            const priceRegex = /\$?(\d+[\.,]\d{2})/g;
-            const prices = [...text.matchAll(priceRegex)].map(m => parseFloat(m[1].replace(',', '.')));
-            
-            // Buscamos el precio más alto (asumiendo que es el total o item principal)
-            if (prices.length > 0) {
-                const maxPrice = Math.max(...prices);
-                document.getElementById('valor').value = maxPrice.toString().replace('.', ',');
-                formatVisual(document.getElementById('valor'));
-            }
-
-            // Intento básico de extraer producto (busca líneas que contengan palabras comunes de tiendas)
-            const lines = text.split('\n').filter(l => l.length > 5);
-            let product = "Ticket Detectado";
-            
-            for(let line of lines) {
-                if (line.toLowerCase().includes('item') || line.toLowerCase().includes('shoe') || line.toLowerCase().includes('nike')) {
-                    product = line.replace(/[^a-zA-Z\s]/g, '').trim();
-                    break;
+            const lines = text.split('\n').map(l => l.trim().toUpperCase());
+            let detectedPrice = null, detectedStore = "";
+            for (let store of knownStores) { if (text.toUpperCase().includes(store)) { detectedStore = store; break; } }
+            if (!detectedStore) { const firstRealLine = lines.find(l => l.length > 3 && !l.match(/[0-9]/)); detectedStore = firstRealLine ? firstRealLine.substring(0, 20) : "Ticket Ross/Compra"; }
+            let totalFound = false;
+            for (let i = lines.length - 1; i >= 0; i--) {
+                const line = lines[i];
+                if (line.includes('TOTAL') || line.includes('AMOUNT') || line.includes('SUBTOTAL') || line.includes('PAYMENT')) {
+                    const match = line.match(/(\d+[\.,]\d{2})/);
+                    if (match) { detectedPrice = match[1]; totalFound = true; break; }
                 }
             }
-            document.getElementById('nombre').value = product;
+            if (!totalFound) {
+                const matches = text.match(/(\d+[\.,]\d{2})/g);
+                if (matches) { const nums = matches.map(m => parseFloat(m.replace(',', '.'))); detectedPrice = Math.max(...nums).toFixed(2); }
+            }
+            document.getElementById('nombre').value = detectedStore;
+            if (detectedPrice) { document.getElementById('valor').value = detectedPrice.toString().replace('.', ','); formatVisual(document.getElementById('valor')); }
+            else { alert("Se leyó el ticket pero no se encontró el precio. Por favor cargalo a mano."); }
         }
 
         // ==========================================
-        // TIPS Y LISTA (CÓDIGO ORIGINAL)
+        // BASE DE DATOS DE CONSEJOS EXPANDIDA
         // ==========================================
-
         const shoppingTips = [
-            "Orlando: Premium Outlets Vineland es mejor para lujo y marcas europeas.",
-            "Miami: Sawgrass Mills requiere un día entero. Llevá una valija vacía para las compras.",
-            "Jersey Gardens (NJ): ¡Aprovechá! No pagás impuesto (Tax Free) en ropa y calzado.",
-            "Ross/Marshalls: Los mejores días son los martes, cuando renuevan el stock más barato.",
-            "NYC: Woodbury Common es el mejor outlet, pero está a 1 hora de Manhattan.",
-            "Tax: El impuesto en Miami es 7%, en Orlando 6.5% y en NYC 8.875% (excepto ropa < $110).",
-            "Apple: Los precios que ves online NO incluyen impuestos. Sumale el tax local al final.",
-            "Cuponeras: En la mayoría de los Simon Outlets, si mostrás el pasaporte te dan una cuponera.",
-            "Best Buy: Podés pedir 'Price Match' si encontrás el mismo producto más barato en Amazon."
+            "Orlando: Premium Outlets Vineland es mejor para lujo (Prada, Gucci).",
+            "Orlando: International Premium Outlets es el más grande y tiene Disney Character Warehouse.",
+            "Miami: Sawgrass Mills es inmenso. El área 'The Colonnade' tiene las marcas de lujo.",
+            "Miami: Dolphin Mall es ideal si estás cerca del aeropuerto y buscás marcas deportivas.",
+            "Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa y calzado. Ideal cerca de NYC.",
+            "NYC: Woodbury Common es el mejor outlet, pero está a 1 hora. Considerá el bus.",
+            "Texas: San Marcos Premium Outlets es de los mejores del centro de USA.",
+            "Estrategia Ross: Los mejores hallazgos están al fondo, en los racks de 'Clearance'.",
+            "Estrategia Marshalls: Suelen tener mejor selección de calzado de marca que Ross.",
+            "Cupones: Descargá la App 'Simon' para obtener cupones digitales en la mayoría de los Outlets.",
+            "VIP Club: Registrate en la web de Premium Outlets para recibir un libro de cupones digital gratis.",
+            "Impuestos: Recordá que en USA el precio de etiqueta NO incluye el Tax (aprox. 6-9%).",
+            "Orlando Tax: 6.5%. Miami Tax: 7%. Houston Tax: 8.25%.",
+            "Clearance: Buscá etiquetas rojas o amarillas. En Walmart suelen estar en pasillos específicos.",
+            "Apple: Los precios son fijos. No esperes descuentos en Outlets, solo en productos 'Refurbished' online.",
+            "Best Buy: Tienen una sección de 'Open Box' con productos devueltos casi nuevos y mucho más baratos.",
+            "Target: Sus colaboraciones con diseñadores son geniales y baratas. Mirá la sección 'Dollar Spot'.",
+            "Cosméticos: Sephora y Ulta son los reyes. En Marshalls/TJ Maxx podés encontrar marcas de lujo a mitad de precio.",
+            "Equipaje: Comprá valijas en Ross o TJ Maxx. Suelen costar un 60% menos que en tiendas oficiales.",
+            "Amazon Hub: Si comprás por Amazon, usá los 'Lockers' en Whole Foods o 7-Eleven para retirar seguro.",
+            "Días de reposición: Muchas tiendas reponen stock los lunes o martes a la mañana.",
+            "Zapatillas: Nike Clearance Store (no confundir con Factory) tiene los precios más bajos del país.",
+            "Walmart: La marca 'Great Value' es excelente y cuesta la mitad que las marcas líderes.",
+            "Orlando: El Florida Mall tiene la tienda oficial de M&M's y Nintendo.",
+            "Miami: Lincoln Road es genial para pasear, pero los precios son más altos que en el Mall.",
+            "Ropa interior: Victoria's Secret suele tener el 'Semi-Annual Sale' en junio y diciembre.",
+            "Electrónica: No compres en tiendas de 'Electronics' pequeñas en zonas turísticas; suelen ser estafas.",
+            "Nike App: Escaneá el código de barras en la tienda para ver si hay stock de otros talles u ofertas."
         ];
 
         let currentTipIndex = 0;
         window.nextTip = () => { 
             currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
             const el = document.getElementById('tip-text');
-            if(!el) return;
-            el.style.opacity = 0;
-            setTimeout(() => { 
-                el.innerText = shoppingTips[currentTipIndex]; 
-                el.style.opacity = 1; 
-                updateEmojis();
-            }, 300);
+            if(el) { el.style.opacity = 0; setTimeout(() => { el.innerText = shoppingTips[currentTipIndex]; el.style.opacity = 1; updateEmojis(); }, 300); }
         };
 
         function listenGastos(uid) {
@@ -525,13 +506,12 @@
             onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('listaGastos');
                 let totalGastado = 0;
-                if (snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#94a3b8;">No hay gastos.</p>'; updateDisplay(0); return; }
+                if (snapshot.empty) { container.innerHTML = '<p style="text-align:center;">No hay gastos.</p>'; updateDisplay(0); return; }
                 container.innerHTML = snapshot.docs.map(docSnap => {
                     const d = docSnap.data(); totalGastado += parseFloat(d.valor);
                     return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${formatNumber(d.valor)}</div><div onclick="deleteGasto('${docSnap.id}')" style="cursor:pointer; color:#ef4444; font-weight:bold;">×</div></div></div>`;
                 }).join('');
-                updateDisplay(totalGastado);
-                updateEmojis();
+                updateDisplay(totalGastado); updateEmojis();
             });
         }
 
@@ -540,8 +520,7 @@
         window.onload = () => { 
             const el = document.getElementById('tip-text');
             if(el) el.innerText = shoppingTips[0]; 
-            updateEmojis();
-            setInterval(window.nextTip, 8000); 
+            updateEmojis(); setInterval(window.nextTip, 8000); 
         };
     </script>
 </body>
