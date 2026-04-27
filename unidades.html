@@ -287,17 +287,12 @@
             });
         }
     </script>
-    function avisoProximamente(event) {
-    // Evita que cambie de página si es un enlace <a>
-    if(event) event.preventDefault();
-
-    // Opción A: Un simple alert (Rápido y efectivo)
-    alert("🚀 ¡Esta sección estará disponible próximamente!");
-
-    /* Opción B: Si querés algo más visual (como un Toast/Notificación), 
-    podés usar una librería o un div oculto, pero el alert es lo más directo 
-    para bloquear el acceso por ahora.
-    */
-}
+    <script>
+    // Asegurate de que esté dentro de estas etiquetas
+    window.avisoProximamente = (event) => {
+        if (event) event.preventDefault();
+        alert("🚀 El Comparador de Precios estará disponible próximamente.");
+    };
+</script>
 </body>
 </html>
