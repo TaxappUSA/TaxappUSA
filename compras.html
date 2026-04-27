@@ -117,7 +117,7 @@
     <div class="nav-bar">
         <a href="index.html" class="btn-nav">🏠 INICIO</a>
         <a href="itinerario.html" class="btn-nav">📍 ITINERARIO</a>
-        <a href="comparador.html" class="btn-nav">🔍 COMPARADOR</a>
+        <a href="#" class="btn-nav" onclick="avisoProximamente(event)">🔍 COMPARADOR</a>
         <a href="unidades.html" class="btn-nav">⚖️ UNIDADES</a>
         <button class="settings-trigger" onclick="toggleSettings()">⚙️</button>
     </div>
@@ -611,5 +611,14 @@
             updateEmojis(); setInterval(window.nextTip, 8000); 
         };
     </script>
+    <script>
+    function avisoProximamente(event) {
+        // Evita que la página intente recargarse al tocar el link
+        event.preventDefault();
+        
+        // Muestra el mensaje
+        alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
+    }
+</script>
 </body>
 </html>
