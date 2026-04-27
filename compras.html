@@ -97,8 +97,6 @@ img.emoji {
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: var(--text-main); }
         
-        img.emoji { height: 1em; width: 1em; margin: 0 .05em 0 .1em; vertical-align: -0.1em; }
-
         .nav-bar { width: 100%; max-width: 450px; margin-bottom: 15px; display: flex; gap: 5px; align-items: center; }
         .btn-nav { flex: 1; padding: 10px 4px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.65rem; border: 2px solid var(--card-border); color: var(--text-muted); transition: 0.2s; }
         .btn-nav-cyan { border-color: #0ea5e9; color: #0ea5e9; }
@@ -178,7 +176,6 @@ img.emoji {
         .scanner-warning { background: rgba(255, 193, 7, 0.1); border: 2px solid #ffc107; padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center; color: #f59e0b; font-weight: 700; font-size: 0.85rem; }
     </style>
 </head>
-    <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <body>
     <div class="card">
         <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
@@ -712,41 +709,63 @@ img.emoji {
 
         function listenGastos(uid) {
             const q = query(collection(db, "compras"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+            
             onSnapshot(q, (snapshot) => {
                 const container = document.getElementById('listaGastos');
                 let totalGastado = 0;
-                if (snapshot.empty) { container.innerHTML = '<p style="text-align:center;">No hay gastos.</p>'; updateDisplay(0); return; }
+                
+                if (snapshot.empty) { 
+                    container.innerHTML = '<p style="text-align:center;">No hay gastos.</p>'; 
+                    updateDisplay(0); 
+                    return; 
+                }
+
                 container.innerHTML = snapshot.docs.map(docSnap => {
-                    const d = docSnap.data(); totalGastado += parseFloat(d.valor);
-                    return `<div class="history-item"><div><b>${d.nombre}</b></div><div style="display:flex; align-items:center; gap:12px;"><div class="h-amount">-$${formatNumber(d.valor)}</div><button onclick="deleteGasto('${docSnap.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button></div></div>`;
+                    const d = docSnap.data(); 
+                    const valorNum = parseFloat(d.valor) || 0;
+                    totalGastado += valorNum;
+                    
+                    return `<div class="history-item">
+                                <div><b>${d.nombre}</b></div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div class="h-amount">-$${formatNumber(valorNum)}</div>
+                                    <button onclick="deleteGasto('${docSnap.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
+                                </div>
+                            </div>`;
                 }).join('');
-                updateDisplay(totalGastado); updateEmojis();
+
+                updateDisplay(totalGastado);
+                // Forzamos el render de emojis después de actualizar el DOM
+                setTimeout(updateEmojis, 100); 
+            }, (error) => {
+                console.error("Error en Snapshot: ", error);
             });
         }
 
-        function updateDisplay(gastado) { document.getElementById('disp-fondo').innerText = 'USD ' + formatNumber(presupuestoBase - gastado); }
+        function updateDisplay(gastado) { 
+            const saldo = presupuestoBase - gastado;
+            document.getElementById('disp-fondo').innerText = 'USD ' + formatNumber(saldo); 
+        }
         
-       window.onload = () => { 
-    const el = document.getElementById('tip-text');
-    if(el) el.innerText = shoppingTips[0]; 
-    
-    // Esto fuerza a que se aplique el diseño después de que todo cargó
-    setTimeout(() => {
-        twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
-    }, 500);
+        window.onload = () => { 
+            const el = document.getElementById('tip-text');
+            if(el) el.innerText = shoppingTips[0]; 
+            
+            setTimeout(() => {
+                if(typeof twemoji !== 'undefined') {
+                    twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
+                }
+            }, 500);
 
-    setInterval(window.nextTip, 8000); 
-};
+            setInterval(window.nextTip, 8000); 
+        };
     </script>
+
     <script>
-    function avisoProximamente(event) {
-        // Evita que la página intente recargarse al tocar el link
-        event.preventDefault();
-        
-        // Muestra el mensaje
-        alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
-    }    
-</script>
+        function avisoProximamente(event) {
+            event.preventDefault();
+            alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
+        }   
+    </script>
 </body>
 </html>
-
