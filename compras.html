@@ -123,7 +123,7 @@
 
     <div class="budget-card">
         <div class="budget-label">Presupuesto Restante</div>
-        <div class="budget-value" id="disp-fondo">USD 0,00</div>
+        <div class="budget-value" id="disp-fondo">USD 0.00</div>
         <div class="set-budget">
             <input type="text" id="input-fondo" placeholder="TOTAL USD" oninput="formatVisual(this)">
             <button onclick="updateFondo()">SET</button>
@@ -134,7 +134,7 @@
         <div class="close-scanner" onclick="stopScanner()">✕</div>
         <div id="ocr-loader" class="ocr-loading">
             <span id="ocr-status-text">Analizando ticket... 🧐</span>
-            <small style="margin-top:10px; font-weight:400; opacity:0.8;">Buscando TOTAL y Tienda...</small>
+            <small style="margin-top:10px; font-weight:400; opacity:0.8;">Modo USA: Punto para decimales</small>
         </div>
         <video id="video-preview" autoplay playsinline></video>
         <button onclick="captureTicket()" style="position:absolute; bottom:15px; left:50%; transform:translateX(-50%); width:60px; height:60px; border-radius:50%; border:4px solid white; background:rgba(255,255,255,0.3); z-index:5;"></button>
@@ -152,7 +152,7 @@
         </div>
         
         <div id="sec-gastos">
-            <button class="btn-scan" onclick="startScanner()">📷 ESCANEAR TICKET (OCR)</button>
+            <button class="btn-scan" onclick="startScanner()">📷 ESCANEAR TICKET (OCR USA)</button>
 
             <div class="rates-container">
                 <div class="rate-box arg">
@@ -195,7 +195,7 @@
             </div>
 
             <input type="text" id="nombre" placeholder="Producto" style="margin-bottom:10px;">
-            <input type="text" id="valor" placeholder="Precio USD" style="margin-bottom:10px;" oninput="formatVisual(this)">
+            <input type="text" id="valor" placeholder="Precio USD (0.00)" style="margin-bottom:10px;" oninput="formatVisual(this)">
             <button class="btn-add" onclick="addGasto()">GUARDAR GASTO</button>
             <div id="listaGastos" style="margin-top:20px;"><p style="text-align:center; color:#94a3b8;">Cargando...</p></div>
         </div>
@@ -301,18 +301,23 @@
 
         if (localStorage.getItem('darkMode') === 'enabled') document.body.classList.add('dark-mode');
 
+        // FORMATO USA: Coma para miles, PUNTO para decimales
         window.formatVisual = (input) => {
-            let val = input.value.replace(/\D/g, ""); 
+            let val = input.value.replace(/[^\d]/g, ""); 
             if (val === "") { input.value = ""; return; }
-            // Formateador estándar AR para miles
-            input.value = new Intl.NumberFormat('es-AR').format(val);
+            let n = parseFloat(val) / 100;
+            input.value = n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         };
 
         function cleanVal(str) { 
-            // Limpieza estricta: quita puntos de miles AR y pasa coma a punto para cálculo real
-            return parseFloat(str.toString().replace(/\./g, "").replace(/,/g, ".")) || 0; 
+            if (!str) return 0;
+            return parseFloat(str.toString().replace(/,/g, "")) || 0; 
         }
-        function formatNumber(num) { return Number(num).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+        function formatNumber(num) { 
+            return Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); 
+        }
+
         function updateEmojis() { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }
 
         async function fetchRates() {
@@ -325,10 +330,11 @@
                 const dataGlob = await resGlob.json();
                 allRates = dataGlob.rates;
                 baseRates.eur = allRates.EUR; baseRates.brl = allRates.BRL;
-                document.getElementById('oficial-local').value = new Intl.NumberFormat('es-AR').format(baseRates.oficial);
-                document.getElementById('tarjeta-local').value = new Intl.NumberFormat('es-AR').format(baseRates.tarjeta);
-                document.getElementById('eur-local').value = baseRates.eur;
-                document.getElementById('brl-local').value = baseRates.brl;
+                
+                document.getElementById('oficial-local').value = formatNumber(baseRates.oficial);
+                document.getElementById('tarjeta-local').value = formatNumber(baseRates.tarjeta);
+                document.getElementById('eur-local').value = formatNumber(baseRates.eur);
+                document.getElementById('brl-local').value = formatNumber(baseRates.brl);
                 updateEmojis();
             } catch (e) { console.error(e); }
         }
@@ -337,8 +343,8 @@
             const code = document.getElementById(`select-${type}`).value;
             baseRates[type] = allRates[code];
             document.getElementById(`flag-${type}`).innerText = flags[code];
-            document.getElementById(`${type}-usd`).value = 1;
-            document.getElementById(`${type}-local`).value = baseRates[type];
+            document.getElementById(`${type}-usd`).value = "1.00";
+            document.getElementById(`${type}-local`).value = formatNumber(baseRates[type]);
             updateEmojis();
         };
 
@@ -347,13 +353,13 @@
             const localInput = document.getElementById(`${type}-local`);
             const rate = baseRates[type];
             let vUsd = cleanVal(usdInput.value), vLoc = cleanVal(localInput.value);
-            if (direction === 'usd') localInput.value = new Intl.NumberFormat('es-AR').format((vUsd * rate).toFixed(0));
-            else usdInput.value = new Intl.NumberFormat('es-AR').format((vLoc / rate).toFixed(0));
+            if (direction === 'usd') localInput.value = formatNumber(vUsd * rate);
+            else usdInput.value = formatNumber(vLoc / rate);
         };
 
         window.updateFondo = async () => { 
             const val = cleanVal(document.getElementById('input-fondo').value); 
-            if(val && currentUser) await setDoc(doc(db, "usuarios", currentUser.uid), { fondo: val }, { merge: true }); 
+            if(currentUser) await setDoc(doc(db, "usuarios", currentUser.uid), { fondo: val }, { merge: true }); 
         };
         
         window.addGasto = async () => { 
@@ -403,7 +409,7 @@
 
         const video = document.getElementById('video-preview'), canvas = document.getElementById('ocr-canvas');
         let stream = null;
-        const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS", "UNITED", "DELTA", "AMERICAN AIRLINES", "AMAZON"];
+        const knownStores = ["ROSS", "MARSHALLS", "WALMART", "APPLE", "BEST BUY", "TARGET", "TJ MAXX", "MACY'S", "ZARA", "H&M", "NIKE", "ADIDAS", "AMAZON"];
 
         window.startScanner = async () => {
             document.getElementById('scanner-ui').style.display = 'block';
@@ -430,85 +436,49 @@
                 const worker = await Tesseract.createWorker('eng');
                 const { data: { text } } = await worker.recognize(canvas.toDataURL('image/jpeg', 0.9));
                 await worker.terminate();
-                
-                if (!text || text.trim().length < 5) {
-                    alert("⚠️ No se detectó texto claro. Intentá de nuevo.");
-                    loader.style.display = 'none';
-                    return;
-                }
-
                 parseTicketText(text);
                 stopScanner();
-            } catch (e) { alert("Error al procesar."); loader.style.display = 'none'; }
+            } catch (e) { alert("Error OCR."); loader.style.display = 'none'; }
         };
 
         function parseTicketText(text) {
-            // MODO USA PURO: Ignoramos todo separador que no cumpla con ser decimal final
-            const cleanText = text.toUpperCase().replace(/:/g, " ").replace(/[;=]/g, " ").replace(/\s+/g, " ");
-            const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
+            const cleanText = text.toUpperCase().replace(/,/g, ""); 
+            const lines = cleanText.split('\n');
             let detectedStore = "Compra";
-            let finalPrice = null;
-
-            for (let store of knownStores) {
-                if (cleanText.includes(store)) { detectedStore = store; break; }
-            }
-
-            const totalKeywords = ["TOTAL", "DUE", "BALANCE", "AMOUNT", "PAID", "USD", "FINAL", "PAY"];
-            
-            for (let i = lines.length - 1; i >= 0; i--) {
-                const line = lines[i];
-                // Buscamos cualquier número que parezca precio USA (ej: 55.57 o 1,008.00)
-                // Buscamos específicamente el patrón de decimales .XX al final
-                const matches = line.match(/\d+[\.,]\d{2}(?!\d)/g);
-                
-                if (matches) {
-                    let candidate = matches[matches.length - 1];
-                    // Convertimos a número limpio: eliminamos todo lo que NO sea dígito al final (centavos)
-                    let digitsOnly = candidate.replace(/\D/g, "");
-                    // Los últimos dos SIEMPRE son centavos en USA
-                    let dollars = digitsOnly.slice(0, -2);
-                    let cents = digitsOnly.slice(-2);
-                    let val = parseFloat(dollars + "." + cents);
-
-                    if (totalKeywords.some(k => line.includes(k))) {
-                        finalPrice = val;
-                        break;
-                    }
-                    if (!finalPrice) finalPrice = val;
-                }
-            }
-
+            let finalPrice = 0;
+            for (let store of knownStores) { if (cleanText.includes(store)) { detectedStore = store; break; } }
+            const priceRegex = /\d+\.\d{2}\b/g;
+            let allPrices = [];
+            lines.forEach(line => {
+                const matches = line.match(priceRegex);
+                if (matches) matches.forEach(m => allPrices.push(parseFloat(m)));
+            });
+            if (allPrices.length > 0) finalPrice = Math.max(...allPrices);
             document.getElementById('nombre').value = detectedStore;
-            
-            if (finalPrice) {
-                const inputValor = document.getElementById('valor');
-                // IMPORTANTE: Le pasamos el número "sucio" al input para que el formateador visual AR
-                // lo trate como si nosotros hubiéramos escrito los números seguidos.
-                // Ej: si finalPrice es 55.57, le pasamos "5557".
-                let rawValue = Math.round(finalPrice * 100).toString();
-                inputValor.value = rawValue;
-                
-                // Ejecutamos manualmente el formateador visual AR para que el usuario vea "55,57" (o 5.557 si es mil)
-                // Pero como nuestra función cleanVal() quita puntos, el cálculo será siempre correcto.
-                window.formatVisual(inputValor);
-            } else {
-                alert("No detecté un precio claro (formato USA XX.XX).");
-            }
+            if (finalPrice > 0) {
+                const input = document.getElementById('valor');
+                input.value = (finalPrice * 100).toFixed(0); 
+                window.formatVisual(input);
+            } else { alert("No se detectó precio USA (ej: 55.57)"); }
         }
 
+        // LISTA EXTENDIDA DE 15 CONSEJOS RESTAURADA
         const shoppingTips = [
-            "Orlando: Premium Outlets Vineland es mejor para lujo (Prada, Gucci).",
-            "Orlando: International Premium Outlets es el más grande y tiene Disney Character Warehouse.",
-            "Miami: Sawgrass Mills es inmenso. El área 'The Colonnade' tiene las marcas de lujo.",
-            "Miami: Dolphin Mall es ideal si estás cerca del aeropuerto.",
-            "Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa y calzado.",
-            "NYC: Woodbury Common es el mejor outlet, pero está a 1 hora.",
-            "Estrategia Ross: Los mejores hallazgos están al fondo, en 'Clearance'.",
-            "Impuestos: El precio de etiqueta NO incluye el Tax (aprox. 6-9%).",
-            "Best Buy: Mirá la sección 'Open Box' para precios ridículos.",
-            "Amazon Hub: Usá los 'Lockers' en Whole Foods para retirar tus paquetes.",
-            "Apple: Comprá 'Refurbished' en su web oficial para ahorrar un 15-20%"
+            "Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa ni calzado.",
+            "Impuestos: El precio de etiqueta NO incluye el Tax (aprox. 7-9%).",
+            "Ross/Marshalls: Los mejores precios están en los racks de 'Clearance'.",
+            "Apple: Comprá 'Refurbished' en su web oficial para ahorrar un 15%.",
+            "Best Buy: Tienen una sección de 'Open Box' con productos casi nuevos rebajados.",
+            "Cupones: Descargá la app 'RetailMeNot' para descuentos en el momento.",
+            "Seguridad: Nunca dejes bolsas visibles dentro del auto estacionado.",
+            "Documentos: Llevá siempre una foto del pasaporte en el celular.",
+            "Walmart: Ideal para snacks, tecnología básica y valijas baratas.",
+            "Talles: Un 'M' en USA suele ser un 'L' en Argentina. ¡Probate siempre!",
+            "Efectivo: Siempre tené billetes de 1 y 5 USD para propinas rápidas.",
+            "Premium Outlets: Registrate en su web para recibir cuponeras VIP gratis.",
+            "Equipaje: Pesá tu valija antes de ir al aeropuerto; el límite suele ser 23kg.",
+            "Amazon Hub: Podés pedir por Amazon y retirar en lockers de 7-Eleven.",
+            "Bancos: Avisá en tu homebanking que vas a usar la tarjeta en el exterior."
         ];
 
         let currentTipIndex = 0;
