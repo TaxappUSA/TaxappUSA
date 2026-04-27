@@ -462,18 +462,16 @@
             if (results && results.length > 0) {
                 results.slice(0, 10).forEach(item => {
                     
-                    // --- LÓGICA DE LIMPIEZA DE LINK PARA EVITAR 404 ---
+                    // --- LÓGICA DE LIMPIEZA DE LINK (QUIRÚRGICA) ---
                     let cleanLink = item.link;
                     if (cleanLink && cleanLink.includes("/url?q=")) {
                         try {
-                            // Extraemos solo la URL real después del parámetro 'q='
-                            const urlObj = new URL(cleanLink, window.location.origin);
-                            const realUrl = urlObj.searchParams.get('q');
-                            if (realUrl) {
-                                cleanLink = realUrl.split('&')[0]; // Quitamos parámetros extras de Google
+                            const part = cleanLink.split("url?q=")[1];
+                            if (part) {
+                                cleanLink = decodeURIComponent(part.split("&")[0]);
                             }
                         } catch(e) {
-                            console.log("Error limpiando link, usando original");
+                            console.log("Error limpiando link");
                         }
                     }
 
