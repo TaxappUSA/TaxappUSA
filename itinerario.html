@@ -46,7 +46,7 @@
 
         .btn-add { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         
-        .queues-box { margin-top: 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .queues-box { margin-top: 15px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
         .queue-card { background: var(--bg); border: 1px solid var(--border-color); padding: 10px 4px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 70px; }
         .queue-name { font-size: 0.52rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; line-height: 1.2; height: 28px; display: flex; align-items: center; justify-content: center; }
         .queue-status { font-size: 0.72rem; font-weight: 900; }
@@ -55,31 +55,20 @@
         .q-high { color: #ef4444; }
         .q-off { color: #94a3b8; }
 
-        .api-attribution { grid-column: span 3; text-align: center; margin-top: 5px; margin-bottom: 5px; }
+        .api-attribution { grid-column: span 2; text-align: center; margin-top: 5px; margin-bottom: 5px; }
         .api-attribution a { font-size: 0.6rem; color: #94a3b8; text-decoration: none; font-weight: 600; }
 
         .dato-itinerario { background: rgba(37, 99, 235, 0.1); padding: 15px; border-radius: 16px; border: 1.5px solid var(--blue); margin-top: 15px; text-align: center; cursor: pointer; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
         .list-container { width: 100%; max-width: 450px; margin-top: 10px; }
         .note-item { background: var(--white); padding: 18px; border-radius: 20px; margin-bottom: 12px; position: relative; display: flex; gap: 15px; align-items: flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
-        .status-indicator { min-width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-color); transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .note-item.completed { background: var(--bg); opacity: 0.7; }
-        .note-item.completed .status-indicator { background: var(--success); border-color: var(--success); }
-        .note-item.completed .status-indicator::after { content: '✓'; color: white; font-size: 0.7rem; font-weight: 900; }
-        .note-item.completed .note-text { text-decoration: line-through; color: var(--text-muted); }
-        .note-content { flex: 1; cursor: pointer; }
-        .note-text { font-size: 0.95rem; color: var(--text-main); font-weight: 600; white-space: pre-wrap; }
-        .note-date { font-size: 0.6rem; color: var(--text-muted); margin-top: 6px; font-weight: 700; }
-        .btn-delete-note { opacity: 0.3; padding: 5px; cursor: pointer; font-size: 1.1rem; color: var(--text-muted); }
+        .note-text { font-size: 0.95rem; color: var(--text-main); font-weight: 600; white-space: pre-wrap; flex: 1; }
         
         .footer { margin-top: auto; padding: 20px 0 5px 0; text-align: center; font-size: 0.75rem; color: #94a3b8; font-weight: 600; }
-        .api-credits { font-size: 0.55rem; color: #cbd5e1; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 20px; text-align: center; font-weight: 500; }
 
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
         .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--white); z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); color: var(--text-main); }
         .settings-drawer.open { right: 0; }
         .drawer-btn { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--white); color: var(--text-main); font-weight: 700; cursor: pointer; font-size: 0.85rem; text-align: left; }
-        
-        body.dark-mode .queue-card[style*="background: #f5f3ff"] { background: #2e1065 !important; border-color: #7c3aed !important; }
     </style>
 </head>
 <body>
@@ -100,6 +89,8 @@
             <option value="miami">🏖️ Miami</option>
             <option value="vegas">🎲 Las Vegas</option>
             <option value="la">🎬 Los Ángeles</option>
+            <option value="sf">🌉 San Francisco</option>
+            <option value="chicago">🏢 Chicago</option>
             <option value="dc">🏛️ Washington D.C.</option>
         </select>
 
@@ -128,7 +119,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.app", messagingSenderId: "237311739178", appId: "1:237311739178:web:333e468b184c0402a98a53" };
         const app = initializeApp(firebaseConfig);
@@ -136,135 +127,164 @@
         const db = getFirestore(app);
         let currentUser = null;
 
-        // MODO OSCURO
-        window.toggleDarkMode = () => {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('dark-mode', isDark);
-            updateDarkModeBtn();
+        // TIPS DINÁMICOS
+        const tips = [
+            "Orlando: La mejor hora para filas cortas es durante el show de fuegos artificiales.",
+            "NYC: Descargá la App Revel para moverte en motitos azules por Brooklyn y Queens.",
+            "Miami: Si vas de compras, el Dolphin Mall suele ser más barato que Sawgrass.",
+            "Vegas: Caminar por la Strip lleva mucho más tiempo de lo que parece, usá el Monorriel.",
+            "SF: Llevá siempre un abrigo, aunque sea verano; el viento en el puente es helado.",
+            "Chicago: El pase de arquitectura en barco es la mejor forma de ver la ciudad.",
+            "DC: Todos los museos Smithsonian son gratis, aprovechá.",
+            "General: Siempre dejá entre 18% y 22% de propina (Tip) en restaurantes."
+        ];
+        let currentTipIndex = 0;
+        window.nextTip = () => {
+            currentTipIndex = (currentTipIndex + 1) % tips.length;
+            document.getElementById('tip-text').innerText = tips[currentTipIndex];
         };
-        function updateDarkModeBtn() {
-            const btn = document.getElementById('darkModeBtn');
-            btn.innerText = document.body.classList.contains('dark-mode') ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-        }
-        if (localStorage.getItem('dark-mode') === 'true') document.body.classList.add('dark-mode');
-        updateDarkModeBtn();
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) window.location.replace("login.html");
-            else { currentUser = user; listenNotes(user.uid); renderCityData(); }
-        });
 
         const citiesConfig = {
-            orlando: [
-                { name: "🏰 Magic Kingdom", id: "mk", parkId: "6" },
-                { name: "🚀 Epcot", id: "ep", parkId: "5" },
-                { name: "🎬 Hollywood Studios", id: "hs", parkId: "7" },
-                { name: "🦁 Animal Kingdom", id: "ak", parkId: "8" },
-                { name: "📽️ Universal Studios", id: "us", parkId: "65" },
-                { name: "🦖 Islands of Adventure", id: "ioa", parkId: "64" },
-                { name: "✨ Epic Universe", id: "epic", parkId: 334, span: true }
-            ],
-            nyc: [{ name: "🔭 Top of the Rock", id: "rock" }, { name: "🏙️ Empire State", id: "emp" }],
-            miami: [{ name: "🛍️ Sawgrass Mills", id: "saw" }, { name: "🌊 South Beach", id: "sb" }]
+            orlando: { tz: "America/New_York", spots: [
+                { name: "🏰 Magic Kingdom", parkId: "6" }, { name: "🚀 Epcot", parkId: "5" },
+                { name: "🎬 Hollywood Studios", parkId: "7" }, { name: "🦁 Animal Kingdom", parkId: "8" },
+                { name: "📽️ Universal Studios", parkId: "65" }, { name: "🦖 Islands of Adventure", parkId: "64" }
+            ]},
+            nyc: { tz: "America/New_York", spots: [
+                { name: "🗽 Estatua Libertad" }, { name: "🏢 Empire State" },
+                { name: "🔭 Top of the Rock" }, { name: "🌳 Central Park" },
+                { name: "🍎 Times Square" }, { name: "🎨 MET Museum" }
+            ]},
+            miami: { tz: "America/New_York", spots: [
+                { name: "🌊 South Beach" }, { name: "🛍️ Sawgrass Mills" },
+                { name: "🎨 Wynwood Walls" }, { name: "🛥️ Bayside Mkt" }
+            ]},
+            vegas: { tz: "America/Los_Angeles", spots: [
+                { name: "🎲 Bellagio Fountains" }, { name: "🎡 High Roller" },
+                { name: "🍸 The Strip" }, { name: "🎰 Fremont St" }
+            ]},
+            la: { tz: "America/Los_Angeles", spots: [
+                { name: "🎬 Santa Monica Pier" }, { name: "🌌 Griffith Obs" },
+                { name: "🎢 Universal CA" }, { name: "🌟 Walk of Fame" }
+            ]},
+            sf: { tz: "America/Los_Angeles", spots: [
+                { name: "🌉 Golden Gate" }, { name: "⛓️ Alcatraz" },
+                { name: "🦀 Pier 39" }, { name: "🚋 Lombard St" }
+            ]},
+            chicago: { tz: "America/Chicago", spots: [
+                { name: "🫘 The Bean" }, { name: "🗼 Willis Tower" },
+                { name: "🎡 Navy Pier" }, { name: "🖼️ Art Institute" }
+            ]},
+            dc: { tz: "America/New_York", spots: [
+                { name: "🏛️ Capitolio" }, { name: "🏠 Casa Blanca" },
+                { name: "🦒 Zoo Nacional" }, { name: "🚀 Museo Aeroespacial" }
+            ]}
         };
 
-        window.renderCityData = () => {
-            const city = document.getElementById('citySelector').value;
+        window.renderCityData = async () => {
+            const cityKey = document.getElementById('citySelector').value;
             const container = document.getElementById('dynamicQueues');
-            const spots = citiesConfig[city] || [];
+            const cityData = citiesConfig[cityKey];
             
-            container.innerHTML = spots.map(s => `
-                <div class="queue-card" style="${s.span ? 'grid-column: span 3;' : ''}">
+            container.innerHTML = cityData.spots.map((s, i) => `
+                <div class="queue-card">
                     <div class="queue-name">${s.name}</div>
-                    <div id="${s.id}" class="queue-status">...</div>
+                    <div id="spot-${i}" class="queue-status">...</div>
                 </div>
-            `).join('') + (city === 'orlando' ? '<div class="api-attribution"><a href="https://queue-times.com/">Powered by Queue-Times.com</a></div>' : '');
+            `).join('') + (cityKey === 'orlando' ? '<div class="api-attribution"><a href="https://queue-times.com/">Powered by Queue-Times.com</a></div>' : '');
 
-            updateQueueTimes();
+            updateStatusDisplay(cityKey);
         };
 
-        async function updateQueueTimes() {
-            const city = document.getElementById('citySelector').value;
-            
-            // Obtener hora actual en Orlando (ET)
-            const orlandoTime = new Intl.DateTimeFormat("en-US", {
-                timeZone: "America/New_York",
-                hour: "numeric",
-                hour12: false
-            }).format(new Date());
-            const orlandoHour = parseInt(orlandoTime);
+        async function updateStatusDisplay(cityKey) {
+            const cityData = citiesConfig[cityKey];
+            const now = new Date();
+            const localHour = parseInt(new Intl.DateTimeFormat("en-US", { timeZone: cityData.tz, hour: "numeric", hour12: false }).format(now));
 
-            const isClosed = (orlandoHour >= 22 || orlandoHour < 8);
+            for (let i = 0; i < cityData.spots.length; i++) {
+                const el = document.getElementById(`spot-${i}`);
+                if (!el) continue;
 
-            if (city === 'orlando') {
-                const parks = citiesConfig.orlando.filter(p => p.parkId);
-                for (const park of parks) {
-                    const el = document.getElementById(park.id);
-                    if (!el) continue;
-
-                    // PRIORIDAD: Si es tarde, marcar como cerrado directamente
-                    if (isClosed) {
-                        el.innerText = "CERRADO 🌙";
-                        el.className = "queue-status q-off";
-                        continue;
+                if (cityKey === 'orlando' && cityData.spots[i].parkId) {
+                    // Lógica Real de Parques Orlando
+                    if (localHour >= 22 || localHour < 8) {
+                        el.innerText = "CERRADO 🌙"; el.className = "queue-status q-off";
+                    } else {
+                        try {
+                            const proxy = "https://corsproxy.io/?";
+                            const apiUrl = `https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json`;
+                            const response = await fetch(proxy + encodeURIComponent(apiUrl));
+                            const data = await response.json();
+                            let total = 0, c = 0;
+                            data.lands?.forEach(l => l.rides.forEach(r => { if(r.is_open){ total += r.wait_time; c++; } }));
+                            const avg = c > 0 ? total / c : 0;
+                            if (avg <= 20) { el.innerText = "BAJA 🟢"; el.className = "queue-status q-low"; }
+                            else if (avg <= 45) { el.innerText = "MED 🟡"; el.className = "queue-status q-med"; }
+                            else { el.innerText = "ALTA 🔴"; el.className = "queue-status q-high"; }
+                        } catch(e) { el.innerText = "N/A"; el.className = "queue-status q-off"; }
                     }
-
-                    try {
-                        const proxy = "https://corsproxy.io/?";
-                        const apiUrl = `https://queue-times.com/parks/${park.parkId}/queue_times.json`;
-                        const response = await fetch(proxy + encodeURIComponent(apiUrl));
-                        const data = await response.json();
-                        
-                        let totalWait = 0, count = 0;
-                        data.lands?.forEach(land => {
-                            land.rides.forEach(ride => {
-                                if (ride.is_open) { totalWait += ride.wait_time; count++; }
-                            });
-                        });
-
-                        const average = count > 0 ? totalWait / count : 0;
-                        if (count === 0) {
-                            el.innerText = "SIN INFO 🔄";
-                            el.className = "queue-status q-off";
-                        } else if (average <= 20) {
-                            el.innerText = "BAJA 🟢"; el.className = "queue-status q-low";
-                        } else if (average <= 45) {
-                            el.innerText = "MED 🟡"; el.className = "queue-status q-med";
-                        } else {
-                            el.innerText = "ALTA 🔴"; el.className = "queue-status q-high";
-                        }
-                    } catch (e) { 
-                        el.innerText = "Error 🔄"; el.className = "queue-status q-off"; 
-                    }
+                } else {
+                    // Lógica Simulada para otras ciudades basada en horario local
+                    if (localHour >= 23 || localHour < 7) { el.innerText = "CERRADO 🌙"; el.className = "queue-status q-off"; }
+                    else if (localHour >= 12 && localHour <= 19) { el.innerText = "ALTA 🔴"; el.className = "queue-status q-high"; }
+                    else if (localHour >= 9 && localHour < 12) { el.innerText = "MED 🟡"; el.className = "queue-status q-med"; }
+                    else { el.innerText = "BAJA 🟢"; el.className = "queue-status q-low"; }
                 }
             }
         }
 
-        window.addNote = async () => { 
-            const input = document.getElementById('noteInput'); 
+        // FIREBASE Y OTROS
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.replace("login.html");
+            else { 
+                currentUser = user; 
+                listenNotes(user.uid); 
+                renderCityData(); 
+                document.getElementById('tip-text').innerText = tips[0];
+            }
+        });
+
+        window.addNote = async () => {
+            const input = document.getElementById('noteInput');
             if (!input.value.trim()) return;
-            await addDoc(collection(db, "notas"), { text: input.value, userId: currentUser.uid, createdAt: Date.now(), completed: false });
-            input.value = ''; 
+            await addDoc(collection(db, "notas"), { text: input.value, userId: currentUser.uid, createdAt: Date.now() });
+            input.value = '';
         };
 
         function listenNotes(uid) {
             const q = query(collection(db, "notas"), where("userId", "==", uid), orderBy("createdAt", "desc"));
             onSnapshot(q, (sn) => {
-                document.getElementById('notesList').innerHTML = sn.docs.map(docSnap => {
-                    const d = docSnap.data();
-                    return `<div class="note-item ${d.completed ? 'completed' : ''}">
-                        <div class="note-text">${d.text}</div>
-                        <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer">×</div>
-                    </div>`;
-                }).join('');
+                document.getElementById('notesList').innerHTML = sn.docs.map(docSnap => `
+                    <div class="note-item">
+                        <div class="note-text">${docSnap.data().text}</div>
+                        <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer; font-weight:bold; color:#94a3b8">×</div>
+                    </div>
+                `).join('');
             });
         }
 
         window.deleteNote = async (id) => { if(confirm('¿Eliminar?')) await deleteDoc(doc(db, "notas", id)); };
-        window.toggleSettings = () => { document.getElementById('settingsDrawer').classList.toggle('open'); document.getElementById('menuOverlay').style.display = document.getElementById('settingsDrawer').classList.contains('open') ? 'block' : 'none'; };
-        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
+        
+        window.toggleSettings = () => { 
+            const d = document.getElementById('settingsDrawer');
+            d.classList.toggle('open');
+            document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
+        };
 
-        setInterval(updateQueueTimes, 60000); // Actualiza cada minuto
+        window.toggleDarkMode = () => {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('dark-mode', isDark);
+            document.getElementById('darkModeBtn').innerText = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+        };
+
+        if (localStorage.getItem('dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeBtn').innerText = "☀️ Modo Claro";
+        }
+
+        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
+        
+        setInterval(() => { if(currentUser) renderCityData(); }, 120000);
     </script>
 </body>
 </html>
