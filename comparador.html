@@ -28,6 +28,15 @@
             --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
+        /* ARREGLO DE EMOJIS GIGANTES */
+        img.emoji {
+            height: 1em;
+            width: 1em;
+            margin: 0 .05em 0 .1em;
+            vertical-align: -0.1em;
+            display: inline-block;
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
         body {
@@ -342,7 +351,6 @@
             document.getElementById('loading').style.display = "block";
             document.getElementById('resultsArea').innerHTML = "";
 
-            // SOLUCIÓN AL ERROR: Uso de Proxy para evitar bloqueo de CORS
             const proxy = "https://corsproxy.io/?";
             const apiUrl = `https://serpapi.com/search.json?engine=google_shopping&q=${encodeURIComponent(query)}&google_domain=google.com&hl=en&gl=us&api_key=${key}`;
             
@@ -383,8 +391,6 @@
                 formData.append("file", blob);
 
                 try {
-                    // Nota: Google Lens con archivos suele requerir un procesamiento de servidor real
-                    // Intentamos vía POST directo
                     const response = await fetch("https://serpapi.com/search.json", { 
                         method: "POST", 
                         body: formData 
