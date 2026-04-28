@@ -503,29 +503,30 @@ window.onload = updateEmojis;
     const nuevoPresupuesto = parseFloat(input.value);
     
     if (!isNaN(nuevoPresupuesto) && nuevoPresupuesto >= 0) {
-        // 1. Lo guardamos en la base de datos (Nube)
-        if (currentUser) {
-            const userRef = doc(db, "usuarios", currentUser.uid);
+        if (currentUser && perfilId) {
+            // Referencia exacta a la subcolección del perfil activo
+            const profileRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId);
+            
             try {
-                await updateDoc(userRef, {
-                    presupuestoBase: nuevoPresupuesto
+                // Guardamos en Firebase para que sea persistente
+                await updateDoc(profileRef, {
+                    presupuesto: nuevoPresupuesto
                 });
                 
-                // 2. También lo actualizamos localmente para respuesta inmediata
                 presupuestoBase = nuevoPresupuesto;
                 
-                // 3. Refrescar la pantalla
+                // Refrescamos los cálculos inmediatamente
                 if(typeof listenGastos === 'function') {
-                    listenGastos(currentUser.uid); 
+                    listenGastos(); 
                 }
-                alert("Presupuesto guardado en la nube");
+                alert("Presupuesto actualizado en la nube");
             } catch (error) {
-                console.error("Error al guardar en Firebase:", error);
-                alert("Error al sincronizar con la nube");
+                console.error("Error al sincronizar:", error);
+                alert("No se pudo guardar el presupuesto");
             }
         }
     } else {
-        alert("Por favor, ingresa un monto válido.");
+        alert("Por favor, ingresá un monto válido.");
     }
 };
         
@@ -627,13 +628,13 @@ window.onload = updateEmojis;
 
         // --- MANEJO DE ESTADO DE USUARIO ---
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                
-                if (!perfilId) {
-                    window.location.replace("profiles.html");
-                    return;
-                }
+    if (user) {
+        currentUser = user;
+        
+        if (!perfilId) {
+            window.location.replace("profiles.html");
+            return;
+        }
 
                 // Lógica de Foto de Perfil en el botón de ajustes
                 const trigger = document.querySelector('.settings-trigger-bar');
@@ -648,24 +649,25 @@ window.onload = updateEmojis;
                 }
 
                 try {
-                    const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
-                    const snap = await getDoc(profileRef);
+            const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
+            const snap = await getDoc(profileRef);
 
-                    if (snap.exists() && snap.data().presupuesto) {
-                        presupuestoBase = Number(snap.data().presupuesto);
-                    } else {
-                        presupuestoBase = 0; 
-                    }
-                    
-                    fetchRates(); 
-                    listenGastos(); 
-                } catch (e) {
-                    console.error("Error cargando perfil:", e);
-                }
+            if (snap.exists() && snap.data().presupuesto !== undefined) {
+                // Aquí recuperamos los 2200 que guardaste antes
+                presupuestoBase = Number(snap.data().presupuesto);
             } else {
-                window.location.replace("login.html");
+                presupuestoBase = 0; 
             }
-        });
+            
+            fetchRates(); 
+            listenGastos(); // Al ejecutarse con presupuestoBase > 0, ya no dará negativo
+        } catch (e) {
+            console.error("Error cargando perfil:", e);
+        }
+    } else {
+        window.location.replace("login.html");
+    }
+});
 
         const video = document.getElementById('video-preview'), canvas = document.getElementById('ocr-canvas');
         let stream = null;
