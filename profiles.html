@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Selecciona perfil - TaxUSA</title>
+    <title>Selecciona perfil - TaxUSA</title>
     <style>
         :root {
             --bg: #0f172a;
             --card-bg: #1e293b;
             --primary: #3b82f6;
+            --danger: #ef4444;
             --text-main: #f1f5f9;
             --text-sec: #94a3b8;
         }
@@ -23,183 +24,88 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
         }
 
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 40px;
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-align: center;
-        }
+        h1 { font-size: 2.2rem; margin-bottom: 40px; font-weight: 300; text-align: center; }
 
         .profiles-container {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 20px;
-            max-width: 800px;
+            display: flex; gap: 30px; flex-wrap: wrap;
+            justify-content: center; padding: 20px; max-width: 800px;
         }
 
-        .profile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 130px;
-        }
+        .profile { display: flex; flex-direction: column; align-items: center; width: 130px; }
 
-        .profile:hover { transform: scale(1.1); }
+        .avatar-wrapper { position: relative; width: 110px; height: 110px; margin-bottom: 15px; }
 
         .avatar {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            background: var(--card-bg);
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            border: 4px solid transparent;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            margin-bottom: 15px;
+            width: 110px; height: 110px; border-radius: 50%;
+            background: var(--card-bg); background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: 4px solid transparent; transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .profile:hover .avatar {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        .avatar:hover { transform: scale(1.05); border-color: var(--primary); }
+
+        .edit-badge {
+            position: absolute; bottom: 5px; right: 5px;
+            background: #000; border: 2px solid #fff;
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10; transition: 0.2s;
         }
 
-        .name {
-            color: var(--text-sec);
-            font-size: 1.1rem;
-            font-weight: 500;
-            transition: color 0.3s;
-            text-align: center;
-        }
+        .edit-badge:hover { transform: scale(1.2); background: var(--primary); }
 
-        .profile:hover .name { color: var(--text-main); }
+        .name { color: var(--text-sec); font-size: 1.1rem; text-align: center; margin-top: 5px; }
 
-        .add-profile {
-            border: 2px dashed #475569;
-            background: none;
-            color: #475569;
-        }
+        .add-profile { border: 2px dashed #475569; background: none; color: #475569; font-size: 2.5rem; }
 
-        /* MODAL DE GALERÍA */
         .modal-galeria {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.98);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 20px;
-            z-index: 100;
-            overflow-y: auto;
+            display: none; flex-direction: column; align-items: center;
+            padding: 40px 20px; z-index: 100; overflow-y: auto;
         }
 
         .grid-fotos {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 20px;
-            max-width: 600px;
-            width: 100%;
-            margin-top: 30px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 20px; max-width: 600px; width: 100%; margin-top: 30px;
         }
 
         .img-option {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: 0.3s;
-            object-fit: cover;
-            border: 3px solid transparent;
+            width: 100px; height: 100px; border-radius: 50%; cursor: pointer;
+            transition: 0.3s; object-fit: cover; border: 3px solid transparent;
         }
 
-        .img-option:hover {
-            transform: scale(1.1);
-            border-color: var(--primary);
+        .img-option:hover { transform: scale(1.1); border-color: var(--primary); }
+
+        .btn-group { display: flex; gap: 15px; margin-top: 30px; }
+
+        .btn {
+            padding: 12px 25px; border: none; border-radius: 25px;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
         }
 
-        .btn-cancelar {
-            margin-top: 30px;
-            padding: 12px 30px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .btn-cancelar { background: #334155; color: white; }
+        .btn-eliminar { background: var(--danger); color: white; }
 
-        <style>
-    /* ... Tus estilos anteriores ... */
-
-    /* NUEVOS ESTILOS ESTILO HBO MAX */
-    .avatar-wrapper {
-        position: relative;
-        width: 110px;
-        height: 110px;
-        margin-bottom: 15px;
-    }
-
-    /* El lápiz de edición en la esquina */
-    .edit-badge {
-        position: absolute;
-        bottom: 5px;
-        right: 5px;
-        background: #000; /* Fondo negro como la captura */
-        border: 2px solid #fff; /* Borde blanco resaltado */
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        z-index: 10;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
-
-    .edit-badge:hover {
-        transform: scale(1.15);
-        background: var(--primary); /* Se ilumina con tu color principal */
-    }
-
-    /* Efecto de hover solo para la foto al entrar */
-    .avatar {
-        cursor: pointer;
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .avatar:hover {
-        transform: scale(1.05);
-        border-color: var(--primary);
-    }
-</style>
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .show { display: flex !important; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <h1>¿Quién está planificando hoy?</h1>
-    
     <div class="profiles-container" id="profilesContainer"></div>
 
     <div id="galeria" class="modal-galeria">
-        <h2 style="font-weight: 300;">Elige tu Personaje</h2>
+        <h2 id="tituloGaleria" style="font-weight: 300;">Elige tu Personaje</h2>
         <div class="grid-fotos" id="gridFotos"></div>
-        <button class="btn-cancelar" onclick="cerrarGaleria()">Cancelar</button>
+        <div class="btn-group">
+            <button id="btnEliminarPerfil" class="btn btn-eliminar" style="display: none;">Eliminar Perfil</button>
+            <button class="btn btn-cancelar" onclick="cerrarGaleria()">Cancelar</button>
+        </div>
     </div>
 
     <script type="module">
@@ -221,197 +127,127 @@
         const db = getFirestore(app);
 
         let currentUID = null;
+        let modoEdicion = false;
+        let perfilIdAEditar = null;
+        let nombreTemporal = "";
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.replace("login.html");
-                return;
-            }
+            if (!user) { window.location.replace("login.html"); return; }
             currentUID = user.uid;
-            
-            const userRef = doc(db, "usuarios", user.uid);
+            const userRef = doc(db, "usuarios", currentUID);
             const userSnap = await getDoc(userRef);
             
-            let perfiles = [];
-            if (!userSnap.exists()) {
-                perfiles = [{ 
-                    id: "p1", 
-                    nombre: "Usuario Principal", 
-                    foto: "https://i.pinimg.com/originals/83/10/ab/8310ab709058763ef8bdf9ca82664ef5.jpg" 
-                }];
-                await setDoc(userRef, { perfiles: perfiles });
-            } else {
-                perfiles = userSnap.data().perfiles || [];
+            let perfiles = userSnap.exists() ? (userSnap.data().perfiles || []) : [];
+            if (!userSnap.exists() || perfiles.length === 0) {
+                perfiles = [{ id: "p" + Date.now(), nombre: "Invitado", foto: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mickey.webp" }];
+                await setDoc(userRef, { perfiles });
             }
             renderPerfiles(perfiles);
         });
 
         function renderPerfiles(perfiles) {
-    const container = document.getElementById('profilesContainer');
-    container.innerHTML = perfiles.map(p => `
-        <div class="profile">
-            <div class="avatar-wrapper">
-                <div class="avatar" 
-                     style="background-image: url('${p.foto}')" 
-                     onclick="selectProfile('${p.id}', '${p.nombre}', '${p.foto}')">
+            const container = document.getElementById('profilesContainer');
+            container.innerHTML = perfiles.map(p => `
+                <div class="profile">
+                    <div class="avatar-wrapper">
+                        <div class="avatar" style="background-image: url('${p.foto}')" onclick="selectProfile('${p.id}', '${p.nombre}', '${p.foto}')"></div>
+                        <div class="edit-badge" onclick="prepararEdicion('${p.id}', '${p.nombre}')">✏️</div>
+                    </div>
+                    <div class="name">${p.nombre}</div>
                 </div>
-                
-                <div class="edit-badge" onclick="prepararEdicion('${p.id}', '${p.nombre}')">
-                    <span>✏️</span>
-                </div>
-            </div>
-            <div class="name">${p.nombre}</div>
-        </div>
-    `).join('');
+            `).join('');
 
-    if (perfiles.length < 5) {
-        const addBtn = document.createElement('div');
-        addBtn.className = 'profile';
-        addBtn.innerHTML = `
-            <div class="avatar add-profile" onclick="abrirModoCrear()">+</div>
-            <div class="name">Nuevo perfil</div>
-        `;
-        container.appendChild(addBtn);
-    }
-}
-        /* --- LÓGICA DE CONTROL (PUNTO 3) --- */
-let modoEdicion = false;
-let perfilIdAEditar = null;
-let nombreTemporal = "";
-
-// 1. Función para el botón "+" (Crear nuevo)
-window.abrirModoCrear = () => {
-    modoEdicion = false;
-    abrirGaleria();
-};
-
-// 2. Función para el LÁPIZ (Preparar edición de perfil existente)
-window.prepararEdicion = (id, nombreActual) => {
-    modoEdicion = true;
-    perfilIdAEditar = id;
-    const nuevoNombre = prompt("Editar nombre del perfil:", nombreActual);
-    if (nuevoNombre) {
-        nombreTemporal = nuevoNombre;
-        abrirGaleria(); // Abre la galería para que también pueda cambiar la foto
-    }
-};
-
-// 3. Función unificada que decide si CREAR o ACTUALIZAR en Firebase
-async function ejecutarAccionPerfil(fotoUrl) {
-    if (modoEdicion) {
-        try {
-            const userRef = doc(db, "usuarios", currentUID);
-            const userSnap = await getDoc(userRef);
-            const perfiles = userSnap.data().perfiles;
-
-            // Mapeamos los perfiles para actualizar solo el que coincide con el ID 
-            const actualizados = perfiles.map(p => 
-                p.id === perfilIdAEditar ? { ...p, nombre: nombreTemporal, foto: fotoUrl } : p
-            );
-
-            await updateDoc(userRef, { perfiles: actualizados });
-            cerrarGaleria();
-            location.reload(); // Recarga para ver los cambios
-        } catch (e) {
-            alert("Error al actualizar: " + e.message);
+            if (perfiles.length < 5) {
+                const addBtn = document.createElement('div');
+                addBtn.className = 'profile';
+                addBtn.innerHTML = `<div class="avatar add-profile" onclick="abrirModoCrear()">+</div><div class="name">Nuevo</div>`;
+                container.appendChild(addBtn);
+            }
         }
-    } else {
-        // Si no es edición, llamamos a tu función original de crear
-        await crearNuevoPerfil(fotoUrl);
-    }
-}
 
-// IMPORTANTE: En tu función abrirGaleria(), debes cambiar la línea del onclick:
-// personajes.forEach(p => { ... img.onclick = () => ejecutarAccionPerfil(p.url); ... });
+        window.abrirModoCrear = () => {
+            modoEdicion = false;
+            document.getElementById('btnEliminarPerfil').style.display = 'none';
+            document.getElementById('tituloGaleria').innerText = "Elige personaje para tu nuevo perfil";
+            abrirGaleria();
+        };
+
+        window.prepararEdicion = (id, nombreActual) => {
+            modoEdicion = true;
+            perfilIdAEditar = id;
+            const nuevoNombre = prompt("Nombre del perfil:", nombreActual);
+            if (nuevoNombre) {
+                nombreTemporal = nuevoNombre;
+                document.getElementById('btnEliminarPerfil').style.display = 'block';
+                document.getElementById('tituloGaleria').innerText = "Actualizar foto de " + nuevoNombre;
+                abrirGaleria();
+            }
+        };
 
         window.abrirGaleria = () => {
             const grid = document.getElementById('gridFotos');
             grid.innerHTML = "";
-
-            window.abrirGaleria = () => {
-    const grid = document.getElementById('gridFotos');
-    grid.innerHTML = "";
-
-    const personajes = [
-        // TUS FOTOS DE GITHUB (ESTABLES)
-        { name: "Buzz", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Buzz.png" },
-        { name: "Mike", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mike.png" },
-        { name: "Stitch", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Stitch.png" },
-        { name: "Wall-E", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/WallE.png" },
-        { name: "Mickey Mouse", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mickey.webp" },
-
-        // DISNEY / PIXAR / MARVEL (ICONS8)
-        { name: "Spider-Man", url: "https://img.icons8.com/color/150/spiderman-new.png" },
-        { name: "Iron Man", url: "https://img.icons8.com/color/150/iron-man.png" },
-        { name: "Groot", url: "https://img.icons8.com/color/150/groot.png" },
-        { name: "Baby Yoda", url: "https://img.icons8.com/color/150/baby-yoda.png" },
-        { name: "Darth Vader", url: "https://img.icons8.com/color/150/darth-vader.png" },
-        
-        // UNIVERSAL / DREAMWORKS / ILLUMINATION
-        { name: "Mario", url: "https://img.icons8.com/color/150/super-mario.png" },
-        { name: "Luigi", url: "https://img.icons8.com/color/150/luigi.png" },
-        { name: "Shrek", url: "https://img.icons8.com/color/150/shrek.png" },
-
-        // WARNER / DC / OTROS
-        { name: "Joker", url: "https://img.icons8.com/color/150/joker-dc.png" },
-        { name: "Wonder Woman", url: "https://img.icons8.com/color/150/wonder-woman.png" },
-        { name: "Harry Potter", url: "https://img.icons8.com/color/150/harry-potter.png" },
-        { name: "Homer Simpson", url: "https://img.icons8.com/color/150/homer-simpson.png" },
-        { name: "Sonic", url: "https://img.icons8.com/color/150/sonic-the-hedgehog-1.png" },
-        { name: "Finn", url: "https://img.icons8.com/color/150/finn.png" },
-        { name: "Jake", url: "https://img.icons8.com/color/150/jake.png" }
-    ]; // El corchete cierra ACÁ al final de toda la lista
-
-    personajes.forEach(p => {
-        const img = document.createElement('img');
-        img.src = p.url;
-        img.alt = p.name;
-        img.className = 'img-option';
-        img.title = p.name;
-        img.onclick = () => crearNuevoPerfil(p.url);
-        grid.appendChild(img);
-    });
-    
-    document.getElementById('galeria').classList.add('show');
-};
+            const personajes = [
+                { name: "Buzz", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Buzz.png" },
+                { name: "Mike", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mike.png" },
+                { name: "Stitch", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Stitch.png" },
+                { name: "Wall-E", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/WallE.png" },
+                { name: "Mickey", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mickey.webp" },
+                { name: "Spider-Man", url: "https://img.icons8.com/color/150/spiderman-new.png" },
+                { name: "Iron Man", url: "https://img.icons8.com/color/150/iron-man.png" },
+                { name: "Baby Yoda", url: "https://img.icons8.com/color/150/baby-yoda.png" },
+                { name: "Mario", url: "https://img.icons8.com/color/150/super-mario.png" },
+                { name: "Sonic", url: "https://img.icons8.com/color/150/sonic-the-hedgehog-1.png" },
+                { name: "Homer", url: "https://img.icons8.com/color/150/homer-simpson.png" },
+                { name: "Harry Potter", url: "https://img.icons8.com/color/150/harry-potter.png" }
+            ];
 
             personajes.forEach(p => {
                 const img = document.createElement('img');
                 img.src = p.url;
-                img.alt = p.name;
                 img.className = 'img-option';
-                img.title = p.name;
-                img.onclick = () => crearNuevoPerfil(p.url);
+                img.onclick = () => ejecutarAccionPerfil(p.url);
                 grid.appendChild(img);
             });
-            
             document.getElementById('galeria').classList.add('show');
         };
 
-        window.cerrarGaleria = () => {
-            document.getElementById('galeria').classList.remove('show');
-        };
+        window.cerrarGaleria = () => document.getElementById('galeria').classList.remove('show');
 
-        async function crearNuevoPerfil(fotoUrl) {
-            const nombre = prompt("¿Cómo se llama este perfil?");
-            if (!nombre) return;
+        async function ejecutarAccionPerfil(fotoUrl) {
+            const userRef = doc(db, "usuarios", currentUID);
+            const userSnap = await getDoc(userRef);
+            let perfiles = userSnap.data().perfiles || [];
 
-            const nuevoPerfil = {
-                id: "p" + Date.now(),
-                nombre: nombre,
-                foto: fotoUrl
-            };
-
-            try {
-                await updateDoc(doc(db, "usuarios", currentUID), {
-                    perfiles: arrayUnion(nuevoPerfil)
-                });
-                cerrarGaleria();
-                location.reload();
-            } catch (e) {
-                alert("Error al crear perfil: " + e.message);
+            if (modoEdicion) {
+                perfiles = perfiles.map(p => 
+                    p.id === perfilIdAEditar ? { ...p, nombre: nombreTemporal, foto: fotoUrl } : p
+                );
+            } else {
+                const nombre = prompt("¿Cómo se llamará el nuevo perfil?");
+                if (!nombre) return;
+                perfiles.push({ id: "p" + Date.now(), nombre, foto: fotoUrl });
             }
+
+            await updateDoc(userRef, { perfiles });
+            location.reload();
         }
+
+        document.getElementById('btnEliminarPerfil').onclick = async () => {
+            if (confirm("¿Eliminar este perfil?")) {
+                const userRef = doc(db, "usuarios", currentUID);
+                const userSnap = await getDoc(userRef);
+                const perfiles = (userSnap.data().perfiles || []).filter(p => p.id !== perfilIdAEditar);
+                
+                if (perfiles.length === 0) {
+                    alert("No puedes eliminar el último perfil.");
+                    return;
+                }
+
+                await updateDoc(userRef, { perfiles });
+                location.reload();
+            }
+        };
 
         window.selectProfile = (id, nombre, foto) => {
             localStorage.setItem('perfilActivoId', id);
