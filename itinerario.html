@@ -367,8 +367,8 @@
                 if (trigger) {
                     const imagenAMostrar = perfilFoto || user.photoURL;
                     if (imagenAMostrar) {
-                        trigger.style.backgroundImage = `url(${imagenAMostrar})`;
-                        trigger.style.backgroundSize = "cover";
+                        trigger.style.backgroundImage = `none`;
+                        trigger.style.backgroundColor = "transparent";
                         trigger.style.borderRadius = "50%";
                     }
                 }
