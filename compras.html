@@ -360,8 +360,7 @@ img.emoji {
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
-        import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";        import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain: "viajes-db538.firebaseapp.com", projectId: "viajes-db538", storageBucket: "viajes-db538.firebasestorage.googleapis.com", messagingSenderId: "1053003173098", appId: "1:1053003173098:web:ecf5cdc31b9cca17e2151f" };
         
@@ -607,7 +606,7 @@ window.onload = updateEmojis;
                     }
                     
                     fetchRates(); // Trae el dólar blue/oficial
-                    listenToExpenses(); // Activamos la escucha de gastos
+                    listenGastos(); // Activamos la escucha de gastos
                 } catch (e) {
                     console.error("Error cargando perfil:", e);
                 }
@@ -808,88 +807,69 @@ if (finalUSD > 0) {
 };
 
         function listenGastos() {
-    // Si no tenemos el usuario o el perfil, no podemos abrir el cajón
-    if (!currentUser || !perfilId) return;
-
-    // LA NUEVA RUTA: usuarios -> UID -> perfiles -> perfilId -> gastos
-    const gastosRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "gastos");
-    
-    // Ordenamos por fecha de creación (createdAt o fecha)
-    const q = query(gastosRef, orderBy("fecha", "desc"));
-    
-    onSnapshot(q, (snapshot) => {
-        const container = document.getElementById('listaGastos');
-        let totalGastado = 0;
-        
-        if (snapshot.empty) { 
-            container.innerHTML = '<p style="text-align:center; color: var(--text-dim);">No hay gastos en este perfil.</p>'; 
-            updateDisplay(0); 
-            return; 
-        }
-
-        container.innerHTML = snapshot.docs.map(docSnap => {
-            const d = docSnap.data(); 
-            const valorNum = parseFloat(d.valor) || 0;
-            totalGastado += valorNum;
+            if (!currentUser || !perfilId) return;
+            const gastosRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "gastos");
+            const q = query(gastosRef, orderBy("fecha", "desc"));
             
-            return `<div class="history-item">
-                        <div><b>${d.nombre}</b></div>
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div class="h-amount">-$${formatNumber(valorNum)}</div>
-                            <button onclick="deleteGasto('${docSnap.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
-                        </div>
-                    </div>`;
-        }).join('');
+            onSnapshot(q, (snapshot) => {
+                const container = document.getElementById('listaGastos');
+                let totalGastado = 0;
+                
+                if (snapshot.empty) { 
+                    container.innerHTML = '<p style="text-align:center; color: var(--text-dim);">No hay gastos en este perfil.</p>'; 
+                    updateDisplay(0); 
+                    return; 
+                }
 
-        updateDisplay(totalGastado);
-        setTimeout(updateEmojis, 100); 
-    }, (error) => {
-        console.error("Error en Auditoría de Gastos: ", error);
-    });
-}
+                container.innerHTML = snapshot.docs.map(docSnap => {
+                    const d = docSnap.data(); 
+                    const valorNum = parseFloat(d.valor) || 0;
+                    totalGastado += valorNum;
+                    
+                    return `<div class="history-item">
+                                <div><b>${d.nombre}</b></div>
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <div class="h-amount">-$${formatNumber(valorNum)}</div>
+                                    <button onclick="deleteGasto('${docSnap.id}')" style="background:none; border:none; color:#ef4444; cursor:pointer; font-weight:800;">✕</button>
+                                </div>
+                            </div>`;
+                }).join('');
+
+                updateDisplay(totalGastado);
+                setTimeout(updateEmojis, 100); 
+            }, (error) => {
+                console.error("Error en Snapshot: ", error);
+            });
+        }
 
         function updateDisplay(gastado) { 
             const saldo = presupuestoBase - gastado;
-            document.getElementById('disp-fondo').innerText = 'USD ' + formatNumber(saldo); 
+            const elFondo = document.getElementById('disp-fondo');
+            if (elFondo) elFondo.innerText = 'USD ' + formatNumber(saldo); 
         }
-        / ... (aquí seguramente tenés la función listenGastos) ...
 
-        // --- PEGA ESTO AQUÍ ---
-        
-        // GUARDAR GASTO: Esta función se activa cuando confirmás un nuevo ticket
         window.saveGasto = async (gastoData) => {
             if (currentUser && perfilId) {
                 try {
                     const gastosRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "gastos");
-                    
-                    // Usamos serverTimestamp o Date.now para la auditoría de fecha
                     await addDoc(gastosRef, { 
                         ...gastoData, 
-                        fecha: Date.now(),
-                        createdAt: serverTimestamp() // Si tenés importado serverTimestamp de firestore
+                        fecha: Date.now()
                     });
-                    
-                    console.log("Gasto archivado en el perfil correctamente");
-                } catch (e) {
-                    console.error("Error de Tesorería al guardar:", e);
-                }
+                    console.log("Gasto archivado.");
+                } catch (e) { console.error("Error al guardar:", e); }
             }
         };
 
-        // BORRAR GASTO: Esta se activa al tocar la 'X' en la lista
         window.deleteGasto = async (id) => {
             if (confirm("¿Confirmas que querés eliminar este comprobante?") && currentUser && perfilId) {
                 try {
                     const docRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "gastos", id);
                     await deleteDoc(docRef);
-                    console.log("Gasto eliminado del legajo");
-                } catch (e) {
-                    console.error("Error al eliminar del perfil:", e);
-                }
+                } catch (e) { console.error("Error al eliminar:", e); }
             }
         };
-        
-        
+
         window.onload = () => { 
             const el = document.getElementById('tip-text');
             if(el) el.innerText = shoppingTips[0]; 
@@ -901,6 +881,7 @@ if (finalUSD > 0) {
             }, 500);
 
             setInterval(window.nextTip, 8000); 
+            fetchRates(); // Esto reactiva las APIs del dólar
         };
     </script>
 
