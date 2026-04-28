@@ -258,7 +258,14 @@
             d.classList.toggle('open');
             document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
         };
-
+        // --- 3. FUNCIONES DE AJUSTES (Agregadas) ---
+        window.changeProfile = () => {
+            // No borramos el usuario de Firebase, solo el perfil elegido
+            localStorage.removeItem('perfilActivoId');
+            localStorage.removeItem('perfilActivoNombre');
+            localStorage.removeItem('perfilActivoFoto');
+            window.location.href = "profiles.html";
+        };
         window.changeEmail = async () => {
             const newEmail = prompt("Ingresa el nuevo correo electrónico:");
             if (newEmail && newEmail.includes("@")) {
