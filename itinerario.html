@@ -151,8 +151,9 @@
                 <span>⚖️</span>
                 <span>UNIDADES</span>
             </a>
-            <button class="settings-trigger-nav" onclick="toggleSettings()">⚙️</button>
-        </div>
+<button class="settings-trigger-nav" onclick="toggleSettings()">
+    <span>⚙️</span>
+</button>        </div>
 
     <div class="card">
         <h2>📍 Itinerario</h2>
@@ -370,7 +371,6 @@
                         trigger.style.backgroundImage = `url(${imagenAMostrar})`;
                         trigger.style.backgroundSize = "cover";
                         trigger.style.borderRadius = "50%";
-                        trigger.innerText = ""; 
                     }
                 }
 
