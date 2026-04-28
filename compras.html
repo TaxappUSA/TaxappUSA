@@ -863,6 +863,7 @@ if (finalUSD > 0) {
             if (elFondo) elFondo.innerText = 'USD ' + formatNumber(saldo); 
         }
 
+        // --- FUNCIONES DE PERSISTENCIA (SISTEMA DE GASTOS) ---
         window.saveGasto = async (gastoData) => {
             if (currentUser && perfilId) {
                 try {
@@ -885,6 +886,15 @@ if (finalUSD > 0) {
             }
         };
 
+        // --- FUNCIÓN DE LOGOUT (IGUAL QUE EN INDEX) ---
+        window.logout = async () => {
+            if (confirm("¿Cerrar sesión y cambiar de usuario?")) {
+                try {
+                    await signOut(auth);
+                } catch (e) { console.error("Error al salir:", e); }
+            }
+        };
+
         window.onload = () => { 
             const el = document.getElementById('tip-text');
             if(el) el.innerText = shoppingTips[0]; 
@@ -896,16 +906,18 @@ if (finalUSD > 0) {
             }, 500);
 
             setInterval(window.nextTip, 8000); 
-            fetchRates(); // Esto reactiva las APIs del dólar
+            fetchRates(); 
         };
     </script>
 
     <script>
+        // Funciones de interfaz (fuera del módulo de Firebase)
         function avisoProximamente(event) {
             event.preventDefault();
             alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
-        }   
+        }
 
+        // Si tenés el botón de cerrar sesión en el HTML, asegurate que llame a window.logout()
     </script>
 </body>
 </html>
