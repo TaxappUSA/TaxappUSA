@@ -139,6 +139,53 @@
             font-weight: bold;
         }
 
+        <style>
+    /* ... Tus estilos anteriores ... */
+
+    /* NUEVOS ESTILOS ESTILO HBO MAX */
+    .avatar-wrapper {
+        position: relative;
+        width: 110px;
+        height: 110px;
+        margin-bottom: 15px;
+    }
+
+    /* El lápiz de edición en la esquina */
+    .edit-badge {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: #000; /* Fondo negro como la captura */
+        border: 2px solid #fff; /* Borde blanco resaltado */
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .edit-badge:hover {
+        transform: scale(1.15);
+        background: var(--primary); /* Se ilumina con tu color principal */
+    }
+
+    /* Efecto de hover solo para la foto al entrar */
+    .avatar {
+        cursor: pointer;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .avatar:hover {
+        transform: scale(1.05);
+        border-color: var(--primary);
+    }
+</style>
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .show { display: flex !important; animation: fadeIn 0.3s; }
     </style>
@@ -200,25 +247,82 @@
         });
 
         function renderPerfiles(perfiles) {
-            const container = document.getElementById('profilesContainer');
-            container.innerHTML = perfiles.map(p => `
-                <div class="profile" onclick="selectProfile('${p.id}', '${p.nombre}', '${p.foto}')">
-                    <div class="avatar" style="background-image: url('${p.foto}')"></div>
-                    <div class="name">${p.nombre}</div>
+    const container = document.getElementById('profilesContainer');
+    container.innerHTML = perfiles.map(p => `
+        <div class="profile">
+            <div class="avatar-wrapper">
+                <div class="avatar" 
+                     style="background-image: url('${p.foto}')" 
+                     onclick="selectProfile('${p.id}', '${p.nombre}', '${p.foto}')">
                 </div>
-            `).join('');
+                
+                <div class="edit-badge" onclick="prepararEdicion('${p.id}', '${p.nombre}')">
+                    <span>✏️</span>
+                </div>
+            </div>
+            <div class="name">${p.nombre}</div>
+        </div>
+    `).join('');
 
-            if (perfiles.length < 5) {
-                const addBtn = document.createElement('div');
-                addBtn.className = 'profile';
-                addBtn.innerHTML = `
-                    <div class="avatar add-profile">+</div>
-                    <div class="name">Agregar</div>
-                `;
-                addBtn.onclick = abrirGaleria;
-                container.appendChild(addBtn);
-            }
+    if (perfiles.length < 5) {
+        const addBtn = document.createElement('div');
+        addBtn.className = 'profile';
+        addBtn.innerHTML = `
+            <div class="avatar add-profile" onclick="abrirModoCrear()">+</div>
+            <div class="name">Nuevo perfil</div>
+        `;
+        container.appendChild(addBtn);
+    }
+}
+        /* --- LÓGICA DE CONTROL (PUNTO 3) --- */
+let modoEdicion = false;
+let perfilIdAEditar = null;
+let nombreTemporal = "";
+
+// 1. Función para el botón "+" (Crear nuevo)
+window.abrirModoCrear = () => {
+    modoEdicion = false;
+    abrirGaleria();
+};
+
+// 2. Función para el LÁPIZ (Preparar edición de perfil existente)
+window.prepararEdicion = (id, nombreActual) => {
+    modoEdicion = true;
+    perfilIdAEditar = id;
+    const nuevoNombre = prompt("Editar nombre del perfil:", nombreActual);
+    if (nuevoNombre) {
+        nombreTemporal = nuevoNombre;
+        abrirGaleria(); // Abre la galería para que también pueda cambiar la foto
+    }
+};
+
+// 3. Función unificada que decide si CREAR o ACTUALIZAR en Firebase
+async function ejecutarAccionPerfil(fotoUrl) {
+    if (modoEdicion) {
+        try {
+            const userRef = doc(db, "usuarios", currentUID);
+            const userSnap = await getDoc(userRef);
+            const perfiles = userSnap.data().perfiles;
+
+            // Mapeamos los perfiles para actualizar solo el que coincide con el ID 
+            const actualizados = perfiles.map(p => 
+                p.id === perfilIdAEditar ? { ...p, nombre: nombreTemporal, foto: fotoUrl } : p
+            );
+
+            await updateDoc(userRef, { perfiles: actualizados });
+            cerrarGaleria();
+            location.reload(); // Recarga para ver los cambios
+        } catch (e) {
+            alert("Error al actualizar: " + e.message);
         }
+    } else {
+        // Si no es edición, llamamos a tu función original de crear
+        await crearNuevoPerfil(fotoUrl);
+    }
+}
+
+// IMPORTANTE: En tu función abrirGaleria(), debes cambiar la línea del onclick:
+// personajes.forEach(p => { ... img.onclick = () => ejecutarAccionPerfil(p.url); ... });
 
         window.abrirGaleria = () => {
             const grid = document.getElementById('gridFotos');
