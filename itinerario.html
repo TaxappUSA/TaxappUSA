@@ -209,9 +209,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let currentUser = null;
-        const perfilId = localStorage.getItem('perfilId');
-const perfilNombre = localStorage.getItem('perfilNombre');
-const perfilFoto = localStorage.getItem('perfilFoto');
 
         // --- FUNCIONES DE CUENTA ---
         window.changeEmail = async () => {
@@ -348,97 +345,37 @@ const perfilFoto = localStorage.getItem('perfilFoto');
             }
         }
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                
-                if (!perfilId) {
-                    window.location.replace("profiles.html");
-                    return;
-                }
-
-                // Lógica de Foto de Perfil en el botón de ajustes
-                const trigger = document.querySelector('.settings-trigger-nav'); // Corregida la clase
-                if (trigger) {
-                    const imagenAMostrar = perfilFoto || user.photoURL;
-                    if (imagenAMostrar) {
-                        trigger.style.backgroundImage = `url(${imagenAMostrar})`;
-                        trigger.style.backgroundSize = "cover";
-                        trigger.style.borderRadius = "50%"; // Para que sea un circulito
-                        trigger.innerText = ""; 
-                    }
-                }
-
-                try {
-                    const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
-                    const snap = await getDoc(profileRef);
-
-                    if (snap.exists()) {
-                        renderCityData(); // Carga clima y datos
-                    }
-                    
-                    listenNotes(); // Activa las notas
-                } catch (e) {
-                    console.error("Error cargando perfil:", e);
-                }
-            } else {
-                window.location.replace("login.html");
+        // --- FLUJO APP ---
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.replace("login.html");
+            else { 
+                currentUser = user; 
+                listenNotes(user.uid); 
+                renderCityData(); 
+                document.getElementById('tip-text').innerText = tips[0];
             }
         });
 
         window.addNote = async () => {
             const input = document.getElementById('noteInput');
-            const text = input.value.trim();
-
-            if (text && currentUser && perfilId) {
-                try {
-                    const notesRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas");
-                    await addDoc(notesRef, {
-                        text: text,
-                        createdAt: Date.now()
-                    });
-                    input.value = "";
-                    console.log("¡Nota guardada en el perfil!");
-                } catch (e) {
-                    console.error("Error al añadir nota: ", e);
-                }
-            } else {
-                alert("Por favor, escribí algo y asegurate de estar en un perfil.");
-            }
+            if (!input.value.trim()) return;
+            await addDoc(collection(db, "notas"), { text: input.value, userId: currentUser.uid, createdAt: Date.now() });
+            input.value = '';
         };
 
-        // --- PASO 2: ESCUCHAR NOTAS (Igual a listenGastos) ---
-        function listenNotes() {
-            if (!currentUser || !perfilId) return;
-            
-            const notesRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas");
-            // Ordenamos por fecha de creación descendente (la más nueva arriba)
-            const q = query(notesRef, orderBy("createdAt", "desc"));
-            
+        function listenNotes(uid) {
+            const q = query(collection(db, "notas"), where("userId", "==", uid), orderBy("createdAt", "desc"));
             onSnapshot(q, (sn) => {
-                const container = document.getElementById('notesList');
-                if (!container) return;
-
-                container.innerHTML = sn.docs.map(docSnap => `
+                document.getElementById('notesList').innerHTML = sn.docs.map(docSnap => `
                     <div class="note-item">
                         <div class="note-text">${docSnap.data().text}</div>
-                        <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer; font-weight:bold; color:#94a3b8; padding: 5px;">×</div>
+                        <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer; font-weight:bold; color:#94a3b8">×</div>
                     </div>
                 `).join('');
             });
         }
 
-        // --- PASO 3: BORRAR NOTA (Igual a deleteGasto) ---
-        window.deleteNote = async (id) => {
-            if (confirm('¿Eliminar esta nota?')) {
-                try {
-                    const docRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas", id);
-                    await deleteDoc(docRef);
-                } catch (e) {
-                    console.error("Error al eliminar nota: ", e);
-                }
-            }
-        };
+        window.deleteNote = async (id) => { if(confirm('¿Eliminar?')) await deleteDoc(doc(db, "notas", id)); };
         
         window.toggleSettings = () => { 
             const d = document.getElementById('settingsDrawer');
