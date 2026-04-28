@@ -185,7 +185,8 @@
     <div id="settingsDrawer" class="settings-drawer">
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
         <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
-        
+
+        <button class="drawer-btn" onclick="changeProfile()">👤 Cambiar de Perfil</button>
         <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Cambiar Tema</button>
         <button class="drawer-btn" onclick="location.reload()">🔄 Actualizar App</button>
         <button class="drawer-btn" onclick="executeWithToken(changeEmail)">📧 Cambiar Correo</button>
@@ -372,6 +373,15 @@
             d.classList.toggle('open');
             document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
         };
+        
+        window.changeProfile = () => {
+            // No borramos el usuario de Firebase, solo el perfil elegido
+            localStorage.removeItem('perfilActivoId');
+            localStorage.removeItem('perfilActivoNombre');
+            localStorage.removeItem('perfilActivoFoto');
+            window.location.href = "profiles.html";
+        };
+        
 
         window.toggleDarkMode = () => {
             const isDark = document.body.classList.toggle('dark-mode');
