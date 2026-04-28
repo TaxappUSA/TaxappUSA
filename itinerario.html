@@ -186,6 +186,7 @@
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
         <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
         
+        <button class="drawer-btn" onclick="changeProfile()">👤 Cambiar de Perfil</button>
         <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Cambiar Tema</button>
         <button class="drawer-btn" onclick="location.reload()">🔄 Actualizar App</button>
         <button class="drawer-btn" onclick="executeWithToken(changeEmail)">📧 Cambiar Correo</button>
@@ -218,6 +219,15 @@
                     alert("Se ha enviado un correo de verificación a la nueva dirección. El cambio se aplicará tras verificar.");
                 } catch (e) { alert("Error: Reautenticación requerida para cambios sensibles."); }
             }
+        };
+        
+        // --- SECCIÓN DE AJUSTES Y CUENTA ---
+        window.changeProfile = () => {
+            // Borramos el perfil de la memoria para que pida elegir uno nuevo
+            localStorage.removeItem('perfilId');
+            localStorage.removeItem('perfilNombre');
+            localStorage.removeItem('perfilFoto');
+            window.location.href = "profiles.html";
         };
 
         window.changePassword = async () => {
