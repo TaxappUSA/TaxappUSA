@@ -337,13 +337,47 @@
         }
 
         // --- FLUJO APP ---
-        onAuthStateChanged(auth, (user) => {
-            if (!user) window.location.replace("login.html");
-            else { 
-                currentUser = user; 
-                listenNotes(user.uid); 
-                renderCityData(); 
-                document.getElementById('tip-text').innerText = tips[0];
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                // 1. Verificamos que haya un perfil seleccionado
+                if (!perfilId || perfilId === "null") {
+                    window.location.replace("profiles.html");
+                    return;
+                }
+
+                // 2. Lógica de la foto de perfil en el botón
+                const trigger = document.querySelector('.settings-trigger-nav');
+                if (trigger) {
+                    const imagenAMostrar = perfilFoto || user.photoURL;
+                    if (imagenAMostrar) {
+                        trigger.style.backgroundImage = `url(${imagenAMostrar})`;
+                        trigger.style.backgroundSize = "cover";
+                        trigger.style.borderRadius = "50%";
+                        trigger.innerText = ""; 
+                    }
+                }
+
+                try {
+                    // 3. Verificamos que el perfil exista en Firestore
+                    const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
+                    const snap = await getDoc(profileRef);
+
+                    if (snap.exists()) {
+                        renderCityData(); // Carga clima del destino del perfil
+                    }
+                    
+                    // 4. Cargamos las notas de ESTE perfil
+                    listenNotes(); 
+                    
+                    // Tip inicial
+                    document.getElementById('tip-text').innerText = tips[0];
+                } catch (e) {
+                    console.error("Error de Tesorería al cargar perfil:", e);
+                }
+            } else {
+                window.location.replace("login.html");
             }
         });
 
