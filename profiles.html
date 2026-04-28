@@ -224,33 +224,52 @@
             const grid = document.getElementById('gridFotos');
             grid.innerHTML = "";
 
-            const personajes = [
-                // DISNEY / PIXAR / MARVEL
-                { name: "Spider-Man", url: "https://img.icons8.com/color/150/spiderman-new.png" },
-                { name: "Buzz", url: "https://github.com/TaxappUSA/TaxappUSA/blob/main/Buzz.png" },
-                { name: "Mike", url: "https://github.com/TaxappUSA/TaxappUSA/blob/main/Mike.png" },
-                { name: "Stitch", url: "https://github.com/TaxappUSA/TaxappUSA/blob/main/Stitch.png" },
-                { name: "Wall-E", url: "https://github.com/TaxappUSA/TaxappUSA/blob/main/WallE.png" },
-                { name: "Mickey Mouse", url: "https://github.com/TaxappUSA/TaxappUSA/blob/main/Mickey.webp" },
-                { name: "Iron Man", url: "https://img.icons8.com/color/150/iron-man.png" },
-                { name: "Groot", url: "https://img.icons8.com/color/150/groot.png" },
-                { name: "Baby Yoda", url: "https://img.icons8.com/color/150/baby-yoda.png" },
-                { name: "Darth Vader", url: "https://img.icons8.com/color/150/darth-vader.png" },
-                
-                // UNIVERSAL / DREAMWORKS / ILLUMINATION
-                { name: "Mario", url: "https://img.icons8.com/color/150/super-mario.png" },
-                { name: "Luigi", url: "https://img.icons8.com/color/150/luigi.png" },
-                { name: "Shrek", url: "https://img.icons8.com/color/150/shrek.png" },
+            window.abrirGaleria = () => {
+    const grid = document.getElementById('gridFotos');
+    grid.innerHTML = "";
 
-                // WARNER / DC / OTROS
-                { name: "Joker", url: "https://img.icons8.com/color/150/joker-dc.png" },
-                { name: "Wonder Woman", url: "https://img.icons8.com/color/150/wonder-woman.png" },
-                { name: "Harry Potter", url: "https://img.icons8.com/color/150/harry-potter.png" },
-                { name: "Homer Simpson", url: "https://img.icons8.com/color/150/homer-simpson.png" },
-                { name: "Sonic", url: "https://img.icons8.com/color/150/sonic-the-hedgehog-1.png" },
-                { name: "Finn (Hora de Aventura)", url: "https://img.icons8.com/color/150/finn.png" },
-                { name: "Jake (Hora de Aventura)", url: "https://img.icons8.com/color/150/jake.png" }
-            ];
+    const personajes = [
+        // TUS FOTOS DE GITHUB (ESTABLES)
+        { name: "Buzz", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Buzz.png" },
+        { name: "Mike", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mike.png" },
+        { name: "Stitch", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Stitch.png" },
+        { name: "Wall-E", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/WallE.png" },
+        { name: "Mickey Mouse", url: "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mickey.webp" },
+
+        // DISNEY / PIXAR / MARVEL (ICONS8)
+        { name: "Spider-Man", url: "https://img.icons8.com/color/150/spiderman-new.png" },
+        { name: "Iron Man", url: "https://img.icons8.com/color/150/iron-man.png" },
+        { name: "Groot", url: "https://img.icons8.com/color/150/groot.png" },
+        { name: "Baby Yoda", url: "https://img.icons8.com/color/150/baby-yoda.png" },
+        { name: "Darth Vader", url: "https://img.icons8.com/color/150/darth-vader.png" },
+        
+        // UNIVERSAL / DREAMWORKS / ILLUMINATION
+        { name: "Mario", url: "https://img.icons8.com/color/150/super-mario.png" },
+        { name: "Luigi", url: "https://img.icons8.com/color/150/luigi.png" },
+        { name: "Shrek", url: "https://img.icons8.com/color/150/shrek.png" },
+
+        // WARNER / DC / OTROS
+        { name: "Joker", url: "https://img.icons8.com/color/150/joker-dc.png" },
+        { name: "Wonder Woman", url: "https://img.icons8.com/color/150/wonder-woman.png" },
+        { name: "Harry Potter", url: "https://img.icons8.com/color/150/harry-potter.png" },
+        { name: "Homer Simpson", url: "https://img.icons8.com/color/150/homer-simpson.png" },
+        { name: "Sonic", url: "https://img.icons8.com/color/150/sonic-the-hedgehog-1.png" },
+        { name: "Finn", url: "https://img.icons8.com/color/150/finn.png" },
+        { name: "Jake", url: "https://img.icons8.com/color/150/jake.png" }
+    ]; // El corchete cierra ACÁ al final de toda la lista
+
+    personajes.forEach(p => {
+        const img = document.createElement('img');
+        img.src = p.url;
+        img.alt = p.name;
+        img.className = 'img-option';
+        img.title = p.name;
+        img.onclick = () => crearNuevoPerfil(p.url);
+        grid.appendChild(img);
+    });
+    
+    document.getElementById('galeria').classList.add('show');
+};
 
             personajes.forEach(p => {
                 const img = document.createElement('img');
