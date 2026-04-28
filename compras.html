@@ -498,26 +498,34 @@ window.onload = updateEmojis;
             else usdInput.value = formatNumber(vLoc / rate);
         };
 
-        window.updateFondo = () => {
+        window.updateFondo = async () => {
     const input = document.getElementById('input-fondo');
-    // Leemos el valor como un número decimal directamente
     const nuevoPresupuesto = parseFloat(input.value);
     
     if (!isNaN(nuevoPresupuesto) && nuevoPresupuesto >= 0) {
-        presupuestoBase = nuevoPresupuesto;
-        // Guardamos en localStorage para que no se pierda al recargar
-        localStorage.setItem('presupuesto', presupuestoBase);
-        
-        // Refrescar la pantalla (suponiendo que tenés estas funciones)
-        if(typeof listenGastos === 'function' && currentUser) {
-            listenGastos(currentUser.uid); 
-        } else {
-            updateDisplay(0);
+        // 1. Lo guardamos en la base de datos (Nube)
+        if (currentUser) {
+            const userRef = doc(db, "usuarios", currentUser.uid);
+            try {
+                await updateDoc(userRef, {
+                    presupuestoBase: nuevoPresupuesto
+                });
+                
+                // 2. También lo actualizamos localmente para respuesta inmediata
+                presupuestoBase = nuevoPresupuesto;
+                
+                // 3. Refrescar la pantalla
+                if(typeof listenGastos === 'function') {
+                    listenGastos(currentUser.uid); 
+                }
+                alert("Presupuesto guardado en la nube");
+            } catch (error) {
+                console.error("Error al guardar en Firebase:", error);
+                alert("Error al sincronizar con la nube");
+            }
         }
-        
-        input.value = ""; // Limpia el cuadrito después de darle a SET
     } else {
-        alert("Por favor, ingresa un número válido");
+        alert("Por favor, ingresa un monto válido.");
     }
 };
         
