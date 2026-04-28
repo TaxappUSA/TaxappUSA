@@ -646,7 +646,7 @@ window.onload = updateEmojis;
                     if (snap.exists() && snap.data().presupuesto) {
                         presupuestoBase = Number(snap.data().presupuesto);
                     } else {
-                        presupuestoBase = 1000; 
+                        presupuestoBase = 0; 
                     }
                     
                     fetchRates(); 
