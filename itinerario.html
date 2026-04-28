@@ -444,13 +444,13 @@ if (localStorage.getItem('dark-mode') === 'true') {
         signOut(auth).then(() => window.location.replace("login.html"));
     }
 };        
-setInterval(() => { if(currentUser) renderCityData(); }, 120000);   
-    </script>
+// ... última línea de tu lógica anterior
+    setInterval(() => { if(currentUser) renderCityData(); }, 120000);   
+</script>
+
+<script>
     function avisoProximamente(event) {
-        // Evita que la página intente recargarse al tocar el link
         event.preventDefault();
-        
-        // Muestra el mensaje
         alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
     }
 </script>
