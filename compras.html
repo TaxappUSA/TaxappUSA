@@ -622,6 +622,14 @@ window.onload = updateEmojis;
             }
         });
 
+        // --- 3. FUNCIONES DE AJUSTES (Agregadas) ---
+        window.changeProfile = () => {
+            // No borramos el usuario de Firebase, solo el perfil elegido
+            localStorage.removeItem('perfilActivoId');
+            localStorage.removeItem('perfilActivoNombre');
+            localStorage.removeItem('perfilActivoFoto');
+            window.location.href = "profiles.html";
+
         const video = document.getElementById('video-preview'), canvas = document.getElementById('ocr-canvas');
         let stream = null;
         let scannerStarted = false;
