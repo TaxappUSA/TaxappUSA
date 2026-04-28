@@ -185,8 +185,7 @@
     <div id="settingsDrawer" class="settings-drawer">
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
         <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
-
-        <button class="drawer-btn" onclick="changeProfile()">👤 Cambiar de Perfil</button>
+        
         <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Cambiar Tema</button>
         <button class="drawer-btn" onclick="location.reload()">🔄 Actualizar App</button>
         <button class="drawer-btn" onclick="executeWithToken(changeEmail)">📧 Cambiar Correo</button>
@@ -337,115 +336,59 @@
         }
 
         // --- FLUJO APP ---
-       onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUser = user;
-        if (!perfilId) {
-            window.location.replace("profiles.html");
-            return;
-        }
+        onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.replace("login.html");
+            else { 
+                currentUser = user; 
+                listenNotes(user.uid); 
+                renderCityData(); 
+                document.getElementById('tip-text').innerText = tips[0];
+            }
+        });
 
-        // Foto en la barra de navegación (como en index)
-        const trigger = document.querySelector('.settings-trigger-bar');
-        if (trigger && (perfilFoto || user.photoURL)) {
-            trigger.style.backgroundImage = `url(${perfilFoto || user.photoURL})`;
-            trigger.style.backgroundSize = "cover";
-            trigger.innerText = "";
-        }
+        window.addNote = async () => {
+            const input = document.getElementById('noteInput');
+            if (!input.value.trim()) return;
+            await addDoc(collection(db, "notas"), { text: input.value, userId: currentUser.uid, createdAt: Date.now() });
+            input.value = '';
+        };
 
-        // Activamos la escucha de notas para este perfil específico
-        listenNotes(); 
-    } else {
-        window.location.replace("login.html");
-    }
-});
-            
-     window.addNote = async () => {
-    const input = document.getElementById('noteInput');
-    const text = input.value.trim();
-    if (text && currentUser && perfilId) {
-        try {
-            // RUTA: usuarios -> UID -> perfiles -> perfilId -> notas
-            const notesRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas");
-            await addDoc(notesRef, {
-                text: text,
-                createdAt: Date.now()
+        function listenNotes(uid) {
+            const q = query(collection(db, "notas"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+            onSnapshot(q, (sn) => {
+                document.getElementById('notesList').innerHTML = sn.docs.map(docSnap => `
+                    <div class="note-item">
+                        <div class="note-text">${docSnap.data().text}</div>
+                        <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer; font-weight:bold; color:#94a3b8">×</div>
+                    </div>
+                `).join('');
             });
-            input.value = "";
-        } catch (e) { console.error("Error al guardar nota:", e); }
-    }
-};
+        }
 
-        // Función de escucha corregida para la nueva estructura
-function listenNotes() {
-    if (!currentUser || !perfilId) return;
-    
-    const notesRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas");
-    const q = query(notesRef, orderBy("createdAt", "desc"));
-    
-    onSnapshot(q, (sn) => {
-        // Asegúrate de que el ID en tu HTML sea 'notesList'
-        const container = document.getElementById('notesList');
-        if (!container) return;
-
-        container.innerHTML = sn.docs.map(docSnap => `
-            <div class="note-item">
-                <div class="note-text">${docSnap.data().text}</div>
-                <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer; font-weight:bold; color:#94a3b8; padding: 5px;">×</div>
-            </div>
-        `).join('');
-    });
-}
-
-       window.deleteNote = async (id) => {
-    if (confirm('¿Eliminar esta nota?')) {
-        try {
-            const docRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas", id);
-            await deleteDoc(docRef);
-        } catch (e) { console.error("Error al eliminar:", e); }
-    }
-};        
+        window.deleteNote = async (id) => { if(confirm('¿Eliminar?')) await deleteDoc(doc(db, "notas", id)); };
+        
         window.toggleSettings = () => { 
-    const d = document.getElementById('settingsDrawer');
-    d.classList.toggle('open');
-    document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
-};
+            const d = document.getElementById('settingsDrawer');
+            d.classList.toggle('open');
+            document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
+        };
 
-window.toggleDarkMode = () => {
-    const isDark = document.body.classList.toggle('dark-mode');
-    localStorage.setItem('dark-mode', isDark);
-    const btn = document.getElementById('darkModeBtn');
-    if (btn) btn.innerText = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-};
+        window.toggleDarkMode = () => {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('dark-mode', isDark);
+            document.getElementById('darkModeBtn').innerText = isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+        };
 
-       // Carga inicial del modo oscuro
-if (localStorage.getItem('dark-mode') === 'true') {
-    document.body.classList.add('dark-mode');
-    const btn = document.getElementById('darkModeBtn');
-    if (btn) btn.innerText = "☀️ Modo Claro";
-}
+        if (localStorage.getItem('dark-mode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeBtn').innerText = "☀️ Modo Claro";
+        }
 
-        window.changeProfile = () => {
-    localStorage.removeItem('perfilId');
-    localStorage.removeItem('perfilNombre');
-    localStorage.removeItem('perfilFoto');
-    window.location.href = "profiles.html";
-};
-
-    window.changePassword = () => {
-    if (currentUser) {
-        sendPasswordResetEmail(auth, currentUser.email)
-            .then(() => alert("Correo enviado a " + currentUser.email));
-    }
-};
-
-    window.logout = () => {
-    if (confirm("¿Cerrar sesión?")) {
-        signOut(auth).then(() => window.location.replace("login.html"));
-    }
-};        
-setInterval(() => { if(currentUser) renderCityData(); }, 120000);   
+        window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
+        
+        setInterval(() => { if(currentUser) renderCityData(); }, 120000);
     </script>
+    <script>
     function avisoProximamente(event) {
         // Evita que la página intente recargarse al tocar el link
         event.preventDefault();
