@@ -346,36 +346,99 @@
         }
 
         // --- FLUJO APP ---
-        onAuthStateChanged(auth, (user) => {
-            if (!user) window.location.replace("login.html");
-            else { 
-                currentUser = user; 
-                listenNotes(user.uid); 
-                renderCityData(); 
-                document.getElementById('tip-text').innerText = tips[0];
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                if (!perfilId) {
+                    window.location.replace("profiles.html");
+                    return;
+                }
+
+                // Lógica de Foto de Perfil en el botón de ajustes
+                const trigger = document.querySelector('.settings-trigger-bar');
+                if (trigger) {
+                    // Prioridad 1: Foto del perfil (viaje) | Prioridad 2: Foto de Google
+                    const imagenAMostrar = perfilFoto || user.photoURL;
+                    if (imagenAMostrar) {
+                        trigger.style.backgroundImage = `url(${imagenAMostrar})`;
+                        trigger.style.backgroundSize = "cover";
+                        trigger.innerText = ""; 
+                    }
+                }
+
+                try {
+                    // Verificamos que el perfil exista en Firestore (Ruta: usuarios -> UID -> perfiles -> perfilId)
+                    const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
+                    const snap = await getDoc(profileRef);
+
+                    / Verificamos si existe el perfil para cargar los datos de la ciudad
+                    if (snap.exists()) {
+                        renderCityData(); // Esto carga el clima y datos de la ciudad
+                    }
+                    
+                    listenNotes(); // Esto activa la escucha de las notas del perfil
+                } catch (e) {
+                    console.error("Error cargando perfil:", e);
+                }
+            } else {
+                window.location.replace("login.html");
             }
         });
 
         window.addNote = async () => {
             const input = document.getElementById('noteInput');
-            if (!input.value.trim()) return;
-            await addDoc(collection(db, "notas"), { text: input.value, userId: currentUser.uid, createdAt: Date.now() });
-            input.value = '';
+            const text = input.value.trim();
+
+            if (text && currentUser && perfilId) {
+                try {
+                    const notesRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas");
+                    await addDoc(notesRef, {
+                        text: text,
+                        createdAt: Date.now()
+                    });
+                    input.value = "";
+                    console.log("¡Nota guardada en el perfil!");
+                } catch (e) {
+                    console.error("Error al añadir nota: ", e);
+                }
+            } else {
+                alert("Por favor, escribí algo y asegurate de estar en un perfil.");
+            }
         };
 
-        function listenNotes(uid) {
-            const q = query(collection(db, "notas"), where("userId", "==", uid), orderBy("createdAt", "desc"));
+        // --- PASO 2: ESCUCHAR NOTAS (Igual a listenGastos) ---
+        function listenNotes() {
+            if (!currentUser || !perfilId) return;
+            
+            const notesRef = collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas");
+            // Ordenamos por fecha de creación descendente (la más nueva arriba)
+            const q = query(notesRef, orderBy("createdAt", "desc"));
+            
             onSnapshot(q, (sn) => {
-                document.getElementById('notesList').innerHTML = sn.docs.map(docSnap => `
+                const container = document.getElementById('notesList');
+                if (!container) return;
+
+                container.innerHTML = sn.docs.map(docSnap => `
                     <div class="note-item">
                         <div class="note-text">${docSnap.data().text}</div>
-                        <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer; font-weight:bold; color:#94a3b8">×</div>
+                        <div onclick="window.deleteNote('${docSnap.id}')" style="cursor:pointer; font-weight:bold; color:#94a3b8; padding: 5px;">×</div>
                     </div>
                 `).join('');
             });
         }
 
-        window.deleteNote = async (id) => { if(confirm('¿Eliminar?')) await deleteDoc(doc(db, "notas", id)); };
+        // --- PASO 3: BORRAR NOTA (Igual a deleteGasto) ---
+        window.deleteNote = async (id) => {
+            if (confirm('¿Eliminar esta nota?')) {
+                try {
+                    const docRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas", id);
+                    await deleteDoc(docRef);
+                } catch (e) {
+                    console.error("Error al eliminar nota: ", e);
+                }
+            }
+        };
         
         window.toggleSettings = () => { 
             const d = document.getElementById('settingsDrawer');
