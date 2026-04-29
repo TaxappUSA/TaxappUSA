@@ -330,6 +330,12 @@ h1 {
         <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
         <p id="userEmail" style="font-size:0.75rem; color:var(--text-sub); margin-bottom:20px; font-weight:700;"></p>
 
+        <label data-i18n="label_language" style="display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 5px; margin-left: 5px;">Idioma</label>
+    <div class="lang-selector" style="display: flex; background: var(--box-bg); border-radius: 12px; padding: 4px; margin-bottom: 20px; gap: 4px; border: 1px solid var(--input-border);">
+        <button class="lang-opt" id="lang-es" onclick="changeLanguage('es')" style="flex: 1; padding: 8px; border-radius: 8px; border: none; background: transparent; cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-sub);">🇪🇸 ES</button>
+        <button class="lang-opt" id="lang-en" onclick="changeLanguage('en')" style="flex: 1; padding: 8px; border-radius: 8px; border: none; background: transparent; cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-sub);">🇺🇸 EN</button>
+    </div>
+
         <button class="drawer-btn" onclick="changeProfile()">👤 Cambiar de Perfil</button>
         <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Cambiar Tema</button>
         <button class="drawer-btn" onclick="location.reload()">🔄 Actualizar App</button>
@@ -342,6 +348,14 @@ h1 {
         </div>
     </div>
 
+    <style>
+    .lang-opt.active { 
+        background: var(--card) !important; 
+        color: var(--primary) !important; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+    }
+</style>
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
@@ -365,6 +379,47 @@ h1 {
         let tripData = { destination: "Orlando", date: "2027-01-01" };
         let currentTipPercentage = 15;
 
+        // --- LÓGICA DE TRADUCCIÓN ---
+        const translations = {
+            es: {
+                nav_expenses: "GASTOS", nav_itinerary: "ITINERARIO", nav_compare: "COMPARAR", nav_units: "UNIDADES",
+                label_price: "Precio en Etiqueta (USD)", label_category: "Categoría", cat_general: "GENERAL", cat_tech: "TECH", cat_food: "COMIDA", cat_med: "MEDICINA",
+                label_state: "Estado", label_city: "Ciudad / Condado", tax_applied: "Tax Aplicado", label_tip: "Propina (Tip)", label_total: "TOTAL FINAL (INC. TIP)",
+                settings_title: "Ajustes", label_language: "Idioma", btn_change_profile: "Cambiar Perfil",
+                btn_theme: "Cambiar Tema", btn_password: "Cambiar Contraseña", btn_logout: "Cerrar Sesión", btn_delete: "Eliminar Cuenta",
+                trip_title: "Mi Viaje", btn_save: "GUARDAR", btn_close: "Cerrar", loading: "Cargando...", days_to: "Faltan para",
+                soon: "¡Próximamente!"
+            },
+            en: {
+                nav_expenses: "EXPENSES", nav_itinerary: "ITINERARY", nav_compare: "COMPARE", nav_units: "UNITS",
+                label_price: "Sticker Price (USD)", label_category: "Category", cat_general: "GENERAL", cat_tech: "TECH", cat_food: "FOOD", cat_med: "MEDICINE",
+                label_state: "State", label_city: "City / County", tax_applied: "Applied Tax", label_tip: "Tip", label_total: "FINAL TOTAL (INC. TIP)",
+                settings_title: "Settings", label_language: "Language", btn_change_profile: "Change Profile",
+                btn_theme: "Toggle Theme", btn_password: "Change Password", btn_logout: "Logout", btn_delete: "Delete Account",
+                trip_title: "My Trip", btn_save: "SAVE", btn_close: "Close", loading: "Loading...", days_to: "Days until",
+                soon: "Coming Soon!"
+            }
+        };
+
+        window.changeLanguage = (lang) => {
+            localStorage.setItem('appLang', lang);
+            
+            // Estilo visual de los botones de idioma
+            document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
+            const activeBtn = document.getElementById('lang-' + lang);
+            if (activeBtn) activeBtn.classList.add('active');
+            
+            // Cambio de todos los textos con data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerText = translations[lang][key];
+            });
+
+            // Actualizar elementos dinámicos
+            if (typeof calculate === 'function') calculate();
+            if (typeof updateTripUI === 'function') updateTripUI();
+        };
+        
         onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
@@ -677,6 +732,9 @@ window.clicManualConsejo = () => {
         window.onload = () => { 
             window.loadCities(); 
             setInterval(updateCountdown, 1000); 
+
+            const savedLang = localStorage.getItem('appLang') || 'es';
+            window.changeLanguage(savedLang);
 
             const tipElement = document.getElementById('tip-content');
             let tipIndex = 0;
