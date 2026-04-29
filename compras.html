@@ -466,15 +466,15 @@ img.emoji {
 window.changeLanguage = (lang) => {
     localStorage.setItem('appLang', lang);
 
-    // Actualizar botones visuales ES/EN
+    // 1. Actualizar botones visuales ES/EN (se ponen azules)
     document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
     const btn = document.getElementById('lang-' + lang);
     if (btn) btn.classList.add('active');
 
-    // Traducir elementos
+    // 2. Traducir elementos estáticos (Nav, Botones, etc.)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
+        if (translations[lang] && translations[lang][key]) {
             if (el.tagName === 'INPUT') {
                 el.placeholder = translations[lang][key];
             } else {
@@ -483,9 +483,22 @@ window.changeLanguage = (lang) => {
         }
     });
 
-    // Esta es la parte que faltaba o estaba mal cerrada
-    if (typeof updateEmojis === 'function') updateEmojis();
-}; // <-- Asegurate de que solo haya una llave aquí
+    // 3. ACTUALIZAR EL TIP ACTUAL (Para que cambie de idioma al instante)
+    const tipEl = document.getElementById('tip-text');
+    if (tipEl && shoppingTips[lang]) {
+        // Usamos el mismo índice para que no salte a otro tip, solo lo traduzca
+        tipEl.innerText = shoppingTips[lang][currentTipIndex];
+        // Aplicar Twemoji al nuevo texto
+        if(typeof twemoji !== 'undefined') {
+            twemoji.parse(tipEl, { folder: 'svg', ext: '.svg' });
+        }
+    }
+
+    // 4. Actualizar Emojis en el resto del body
+    if (typeof twemoji !== 'undefined') {
+        twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
+    }
+};// <-- Asegurate de que solo haya una llave aquí
 
         window.toggleDarkMode = () => {
             const isDark = document.body.classList.toggle('dark-mode');
@@ -966,15 +979,24 @@ let currentTipIndex = 0;
 
         let currentTipIndex = 0;
         window.nextTip = () => { 
-    currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
+    // Detectamos el idioma actual
+    const lang = localStorage.getItem('appLang') || 'es';
+    const tipsActuales = shoppingTips[lang]; // Obtenemos la lista correcta (es o en)
+
+    currentTipIndex = (currentTipIndex + 1) % tipsActuales.length; 
+    
     const el = document.getElementById('tip-text');
     if(el) { 
         el.style.opacity = 0; 
         setTimeout(() => { 
-            // 1. Cambiamos el texto
-            el.innerText = shoppingTips[currentTipIndex]; 
-            // 2. Aplicamos Twemoji SOLO a este pequeño elemento
-            updateEmojis(el); 
+            // 1. Cambiamos el texto usando el idioma detectado
+            el.innerText = tipsActuales[currentTipIndex]; 
+            
+            // 2. Aplicamos Twemoji
+            if(typeof twemoji !== 'undefined') {
+                twemoji.parse(el, { folder: 'svg', ext: '.svg' });
+            }
+            
             // 3. Mostramos
             el.style.opacity = 1; 
         }, 300); 
