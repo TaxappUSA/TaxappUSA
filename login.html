@@ -39,6 +39,26 @@
             color: var(--text-main);
         }
 
+        /* Selector de Idioma Aesthetic */
+        .lang-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .lang-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .lang-btn.active { border-color: var(--primary); color: var(--primary); }
+
         .login-card { 
             background: var(--card-bg); 
             padding: 2.5rem; 
@@ -103,7 +123,6 @@
         .toggle-link { color: var(--text-sec); font-size: 0.85rem; cursor: pointer; text-decoration: none; font-weight: 600; }
         .toggle-link:hover { color: var(--primary); }
 
-        /* Aseguramos que el badge sea visible */
         .grecaptcha-badge { bottom: 15px !important; visibility: visible !important; }
 
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -111,20 +130,25 @@
 </head>
 <body>
 
+    <div class="lang-selector">
+        <button class="lang-btn" id="btn-es" onclick="applyLanguage('es')">ES</button>
+        <button class="lang-btn" id="btn-en" onclick="applyLanguage('en')">EN</button>
+    </div>
+
     <div class="login-card">
-        <h1 id="title">Bienvenido</h1>
-        <input type="email" id="email" placeholder="Correo electrónico">
-        <input type="password" id="password" placeholder="Contraseña">
+        <h1 id="title" data-key="welcome">Bienvenido</h1>
+        <input type="email" id="email" placeholder="Correo electrónico" data-lp="email">
+        <input type="password" id="password" placeholder="Contraseña" data-lp="pass">
         
-        <div id="verifAlert" class="verification-notice">
+        <div id="verifAlert" class="verification-notice" data-key="verifNotice">
             Te enviaremos un mail de verificación. Revisa tu bandeja de entrada o SPAM. ✈️
         </div>
 
-        <button id="mainBtn" onclick="handleAuth()">INGRESAR</button>
+        <button id="mainBtn" onclick="handleAuth()" data-key="loginBtn">INGRESAR</button>
         
         <div class="links-container">
-            <span class="reset-link" onclick="resetPassword()">¿Olvidaste tu contraseña?</span>
-            <span class="toggle-link" id="toggleLink" onclick="toggleMode()">¿No tienes cuenta? Regístrate aquí</span>
+            <span class="reset-link" onclick="resetPassword()" data-key="forgot">¿Olvidaste tu contraseña?</span>
+            <span class="toggle-link" id="toggleLink" onclick="toggleMode()" data-key="noAccount">¿No tienes cuenta? Regístrate aquí</span>
         </div>
     </div>
 
@@ -154,7 +178,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // 2. FORZAR MODO DEBUG
         self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 
         const appCheck = initializeAppCheck(app, {
@@ -162,13 +185,80 @@
             isTokenAutoRefreshEnabled: true 
         });
 
+        // --- MOTOR DE IDIOMAS ---
+        const i18n = {
+            es: {
+                welcome: "Bienvenido",
+                create: "Crea tu cuenta",
+                email: "Correo electrónico",
+                pass: "Contraseña",
+                loginBtn: "INGRESAR",
+                regBtn: "REGISTRARME",
+                noAccount: "¿No tienes cuenta? Regístrate aquí",
+                haveAccount: "¿Ya tienes cuenta? Ingresa aquí",
+                verifNotice: "Te enviaremos un mail de verificación. Revisa tu bandeja de entrada o SPAM. ✈️",
+                forgot: "¿Olvidaste tu contraseña?",
+                alertFields: "Por favor, completa todos los campos.",
+                alertRegSuccess: "¡Registro exitoso!\n\nSe ha enviado un correo de verificación a ",
+                alertNoVerif: "Tu cuenta aún no ha sido verificada.",
+                alertReset: "Correo de recuperación enviado.",
+                alertForgotMail: "Por favor, ingresa tu correo electrónico arriba."
+            },
+            en: {
+                welcome: "Welcome",
+                create: "Create Account",
+                email: "Email address",
+                pass: "Password",
+                loginBtn: "LOGIN",
+                regBtn: "REGISTER",
+                noAccount: "Don't have an account? Sign up here",
+                haveAccount: "Already have an account? Login here",
+                verifNotice: "We'll send you a verification email. Check your inbox or SPAM folder. ✈️",
+                forgot: "Forgot your password?",
+                alertFields: "Please, fill all fields.",
+                alertRegSuccess: "Registration successful!\n\nA verification email has been sent to ",
+                alertNoVerif: "Your account has not been verified yet.",
+                alertReset: "Recovery email sent.",
+                alertForgotMail: "Please enter your email address above."
+            }
+        };
+
+        let currentLang = localStorage.getItem('appLang') || 'es';
+
+        window.applyLanguage = (lang) => {
+            currentLang = lang;
+            localStorage.setItem('appLang', lang);
+            
+            // UI Update
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (i18n[lang][key]) el.innerText = i18n[lang][key];
+            });
+
+            document.querySelectorAll('[data-lp]').forEach(el => {
+                const key = el.getAttribute('data-lp');
+                if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+            });
+
+            // Botones selector
+            document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            // Actualizar textos dinámicos si el modo cambió
+            updateDynamicTexts();
+        };
+
+        const updateDynamicTexts = () => {
+            document.getElementById('title').innerText = isLogin ? i18n[currentLang].welcome : i18n[currentLang].create;
+            document.getElementById('mainBtn').innerText = isLogin ? i18n[currentLang].loginBtn : i18n[currentLang].regBtn;
+            document.getElementById('toggleLink').innerText = isLogin ? i18n[currentLang].noAccount : i18n[currentLang].haveAccount;
+        };
+
         let isLogin = true;
 
         window.toggleMode = () => {
             isLogin = !isLogin;
-            document.getElementById('title').innerText = isLogin ? "Bienvenido" : "Crea tu cuenta";
-            document.getElementById('mainBtn').innerText = isLogin ? "INGRESAR" : "REGISTRARME";
-            document.getElementById('toggleLink').innerText = isLogin ? "¿No tienes cuenta? Regístrate aquí" : "¿Ya tienes cuenta? Ingresa aquí";
+            updateDynamicTexts();
             document.getElementById('verifAlert').style.display = isLogin ? "none" : "block";
         };
 
@@ -176,7 +266,7 @@
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
             if (!email || !pass) {
-                alert("Por favor, completa todos los campos.");
+                alert(i18n[currentLang].alertFields);
                 return;
             }
             try {
@@ -185,13 +275,13 @@
                 } else {
                     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                     await sendEmailVerification(userCredential.user);
-                    alert("¡Registro exitoso!\n\nSe ha enviado un correo de verificación a " + email + ".");
+                    alert(i18n[currentLang].alertRegSuccess + email + ".");
                     await signOut(auth);
                     location.reload(); 
                 }
             } catch (e) { 
                 let msg = "Error: " + e.message;
-                if (e.code === 'auth/app-check-failed') msg = "Error de validación reCAPTCHA. Intenta nuevamente.";
+                if (e.code === 'auth/app-check-failed') msg = "reCAPTCHA Error. Try again.";
                 alert(msg); 
             }
         };
@@ -199,12 +289,12 @@
         window.resetPassword = async () => {
             const email = document.getElementById('email').value;
             if (!email) {
-                alert("Por favor, ingresa tu correo electrónico arriba.");
+                alert(i18n[currentLang].alertForgotMail);
                 return;
             }
             try {
                 await sendPasswordResetEmail(auth, email);
-                alert("Correo de recuperación enviado.");
+                alert(i18n[currentLang].alertReset);
             } catch (e) { alert("Error: " + e.message); }
         };
 
@@ -213,11 +303,15 @@
                 if (user.emailVerified) {
                     window.location.replace("profiles.html");
                 } else {
-                    alert("Tu cuenta aún no ha sido verificada.");
+                    alert(i18n[currentLang].alertNoVerif);
                     await signOut(auth);
                 }
             }
         });
+
+        // Inicializar idioma
+        applyLanguage(currentLang);
+
     </script>
 </body>
 </html>
