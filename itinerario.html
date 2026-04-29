@@ -517,6 +517,7 @@ window.deleteAccount = async () => {
             d.classList.toggle('open');
             document.getElementById('menuOverlay').style.display = d.classList.contains('open') ? 'block' : 'none';
         };
+       
         
         window.changeProfile = () => {
             // No borramos el usuario de Firebase, solo el perfil elegido
@@ -525,7 +526,45 @@ window.deleteAccount = async () => {
             localStorage.removeItem('perfilActivoFoto');
             window.location.href = "profiles.html";
         };
-        
+
+       // --- SISTEMA DE IDIOMAS ---
+
+window.changeLanguage = (lang) => {
+    // 1. Guardar la elección del usuario
+    localStorage.setItem('appLang', lang);
+
+    // 2. Marcar el botón activo (ES o EN) en el diseño
+    document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
+    document.getElementById('lang-' + lang)?.classList.add('active');
+
+    // 3. Traducir textos con data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            el.innerText = translations[lang][key];
+        }
+    });
+
+    // 4. Traducir placeholders (como el de las notas)
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang] && translations[lang][key]) {
+            el.setAttribute('placeholder', translations[lang][key]);
+        }
+    });
+
+    // 5. Sincronizar el Tip de Viaje actual
+    const tipElement = document.getElementById('tip-text');
+    if (tipElement && typeof shoppingTips !== 'undefined' && shoppingTips[lang]) {
+        tipElement.innerText = shoppingTips[lang][currentTipIndex || 0];
+    }
+
+    // 6. Actualizar las ciudades para que digan "LOW/HIGH" o "BAJA/ALTA"
+    const citySelector = document.getElementById('citySelector');
+    if (citySelector) {
+        updateStatusDisplay(citySelector.value);
+    }
+};
 
         window.toggleDarkMode = () => {
             const isDark = document.body.classList.toggle('dark-mode');
@@ -550,6 +589,50 @@ window.deleteAccount = async () => {
         // Muestra el mensaje
         alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
     }
+    window.onload = () => {
+    // 1. Cargamos el idioma guardado (o español por defecto)
+    const savedLang = localStorage.getItem('appLang') || 'es';
+    
+    // 2. Aplicamos el idioma a toda la pantalla
+    // Esta función traducirá el menú, títulos, botones y ciudades
+    if (typeof window.changeLanguage === 'function') {
+        window.changeLanguage(savedLang);
+    }
+
+    // 3. Cargamos el primer Tip de Viaje
+    const tipEl = document.getElementById('tip-text');
+    if (tipEl && typeof shoppingTips !== 'undefined') {
+        tipEl.innerText = shoppingTips[savedLang][0];
+    }
+
+    // 4. Iniciamos el reloj de los tips (cambia cada 8 segundos)
+    setInterval(() => {
+        if (typeof window.nextTip === 'function') window.nextTip();
+    }, 8000);
+
+    // 5. Verificamos el estado de Firebase (si lo tenés configurado)
+    if (typeof auth !== 'undefined') {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentUser = user;
+                const emailEl = document.getElementById('userEmail');
+                if (emailEl) emailEl.innerText = user.email;
+                
+                // Cargamos los datos de la ciudad inicial (ej: Orlando)
+                if (typeof renderCityData === 'function') renderCityData();
+            } else {
+                window.location.replace("login.html");
+            }
+        });
+    }
+
+    // 6. Refresco automático de estados de filas cada 2 minutos
+    setInterval(() => { 
+        if (window.currentUser && typeof renderCityData === 'function') {
+            renderCityData(); 
+        }
+    }, 120000);
+};
 </script>
 </body>
 </html>
