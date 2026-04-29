@@ -85,6 +85,11 @@
             color: var(--header-color); 
             transition: color 0.3s ease;
         }
+        lang-opt.active { 
+        background: var(--card) !important; 
+        color: var(--primary) !important; 
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+    }
         /* Esto hace que el emoji se comporte como un texto y no como una imagen gigante */
 img.emoji {
     height: 1.2em !important;
@@ -470,24 +475,14 @@ img.emoji {
 };
 
 window.changeLanguage = (lang) => {
-    localStorage.setItem('appLang', lang);
-
-    // Actualizar botones visuales ES/EN
-    document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
-    const btn = document.getElementById('lang-' + lang);
-    if (btn) btn.classList.add('active');
-
-    // Traducir elementos
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
-            if (el.tagName === 'INPUT') {
-                el.placeholder = translations[lang][key];
-            } else {
-                el.innerText = translations[lang][key];
-            }
-        }
-    });
+        localStorage.setItem('appLang', lang);
+        document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
+        document.getElementById('lang-' + lang)?.classList.add('active');
+        
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) el.innerText = translations[lang][key];
+        });
 
     // Esta es la parte que faltaba o estaba mal cerrada
     if (typeof updateEmojis === 'function') updateEmojis();
