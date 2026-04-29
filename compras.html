@@ -296,6 +296,7 @@ window.changeLanguage = (lang) => {
     });
     const el=document.getElementById('tip-text');
     if(el) el.innerText=shoppingTips[lang][tipIndex];
+    document.title = lang === 'en' ? 'TaxUSA — Expenses' : 'TaxUSA — Gastos';
 };
 
 async function fetchRates(){
