@@ -277,7 +277,7 @@
                 if (localHour >= 22 || localHour < 8) { el.innerText = t.status_closed; el.className = "queue-status q-off"; }
                 else {
                     try {
-                        const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(`<https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json>`));
+                        const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(`https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json`));
                         const data = await res.json();
                         let tot = 0, c = 0;
                         data.lands?.forEach(l => l.rides.forEach(r => { if(r.is_open){ tot += r.wait_time; c++; } }));
