@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaxUSA — Perfiles</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb; --danger: #ef4444;
+            --bg: #0f172a; --surface: #1e293b; --surface-2: #273549;
+            --border: #334155; --input-bg: #273549;
+            --text: #f1f5f9; --text-sub: #94a3b8; --text-dim: #64748b;
+            --radius: 20px; --radius-sm: 12px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+        *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body {
+            font-family: 'DM Sans', -apple-system, system-ui, sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 32px 20px; -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: ''; position: fixed; inset: 0; z-index: 0;
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(37,99,235,0.12), transparent);
+            pointer-events: none;
+        }
+
+        .page-title {
+            font-size: 2rem; font-weight: 900; text-align: center;
+            margin-bottom: 48px; letter-spacing: -0.5px;
+            position: relative; z-index: 1;
+            transition: var(--transition);
+        }
+
+        .profiles-grid {
+            display: grid; grid-template-columns: repeat(2, 140px);
+            gap: 28px; justify-content: center;
+            margin-bottom: 48px; position: relative; z-index: 1;
+        }
+
+        .profile-item {
+            display: flex; flex-direction: column;
+            align-items: center; cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .avatar-wrapper {
+            position: relative; width: 120px; height: 120px; margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 120px; height: 120px;
+            border-radius: 18px;
+            background: var(--surface-2) no-repeat center/cover;
+            border: 2.5px solid transparent;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        body:not(.editing-mode) .profile-item:hover .avatar {
+            transform: scale(1.06); border-color: white;
+            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
+        }
+
+        .edit-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.55);
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: var(--transition); z-index: 5;
+        }
+        .editing-mode .edit-overlay { opacity: 1; pointer-events: auto; }
+        .edit-overlay svg { width: 32px; fill: white; }
+
+        .profile-name {
+            color: var(--text-sub); font-size: 0.95rem; font-weight: 700;
+            transition: var(--transition);
+        }
+        body:not(.editing-mode) .profile-item:hover .profile-name { color: var(--text); }
+
+        .add-avatar {
+            width: 120px; height: 120px;
+            border: 2px dashed var(--border);
+            border-radius: 18px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: var(--border);
+            transition: var(--transition);
+        }
+        .profile-item:hover .add-avatar { border-color: var(--text-sub); color: var(--text-sub); }
+
+        .manage-btn {
+            position: relative; z-index: 1;
+            background: var(--surface); color: var(--text-sub);
+            border: 1.5px solid var(--border);
+            padding: 13px 28px; border-radius: var(--radius-sm);
+            font-size: 0.8rem; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            font-family: inherit; transition: var(--transition);
+        }
+        .manage-btn:hover { background: var(--surface-2); color: var(--text); }
+        .editing-mode .manage-btn { background: white; color: black; border-color: white; }
+
+        .modal {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none; align-items: center; justify-content: center;
+            z-index: 1000; padding: 24px;
+            backdrop-filter: blur(16px);
+        }
+        .modal.show { display: flex; animation: modalIn 0.25s ease; }
+        @keyframes modalIn { from { opacity:0; transform: scale(0.92); } to { opacity:1; transform: scale(1); } }
+
+        .modal-content {
+            background: var(--surface); border-radius: 28px;
+            padding: 28px 24px; width: 100%; max-width: 380px;
+            border: 1.5px solid var(--border); text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .modal-title { font-size: 1.2rem; font-weight: 900; color: var(--primary); margin-bottom: 20px; }
+
+        .preview-avatar {
+            width: 100px; height: 100px; border-radius: 16px;
+            margin: 0 auto 20px; border: 3px solid var(--primary);
+            background-size: cover; background-position: center;
+            box-shadow: 0 0 24px rgba(37,99,235,0.25);
+        }
+
+        .name-input {
+            width: 100%; padding: 14px 16px;
+            background: var(--input-bg); border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm); color: var(--text);
+            font-family: inherit; font-size: 0.95rem; font-weight: 600;
+            margin-bottom: 16px; outline: none; -webkit-appearance: none;
+        }
+        .name-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+
+        .photo-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 10px; margin-bottom: 20px;
+            max-height: 190px; overflow-y: auto; padding: 4px;
+        }
+        .photo-option {
+            aspect-ratio: 1; border-radius: 12px;
+            cursor: pointer; border: 2.5px solid transparent;
+            object-fit: cover; transition: 0.2s;
+        }
+        .photo-option:hover { transform: scale(1.08); border-color: white; }
+        .photo-option.selected { border-color: var(--primary); }
+
+        .modal-actions { display: flex; flex-direction: column; gap: 10px; }
+        .btn {
+            width: 100%; padding: 14px; border: none; border-radius: var(--radius-sm);
+            font-family: inherit; font-size: 0.85rem; font-weight: 800;
+            cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: white; color: black; }
+        .btn-ghost { background: transparent; color: var(--text-sub); border: 1.5px solid var(--border); }
+        .btn-danger { background: transparent; color: var(--danger); margin-top: 6px; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<h1 class="page-title" id="pageTitle">¿Quién está planificando hoy?</h1>
+
+<div class="profiles-grid" id="profilesGrid"></div>
+
+<button class="manage-btn" id="manageBtn" onclick="toggleEditMode()">EDITAR PERFILES</button>
+
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h2 class="modal-title" id="modalTitle">Nuevo Perfil</h2>
+        <div class="preview-avatar" id="previewAvatar"></div>
+        <input type="text" class="name-input" id="nameInput" placeholder="Tu nombre">
+        <div class="photo-grid" id="photoGrid"></div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" onclick="saveProfile()" id="btnSave">GUARDAR</button>
+            <button class="btn btn-ghost" onclick="closeModal()" id="btnCancel">CANCELAR</button>
+            <button class="btn btn-danger" id="btnDelete" onclick="deleteProfile()">Eliminar Perfil</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
+        authDomain: "viajes-db538.firebaseapp.com",
+        projectId: "viajes-db538",
+        storageBucket: "viajes-db538.firebasestorage.app",
+        messagingSenderId: "237311739178",
+        appId: "1:237311739178:web:333e468b184c0402a98a53"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const i18n = {
+        es: { title: "¿Quién está planificando hoy?", editTitle: "Administrar Perfiles", manage: "EDITAR PERFILES", done: "LISTO", save: "GUARDAR", cancel: "CANCELAR", delete: "Eliminar Perfil", edit: "Editar Perfil", newProfile: "Nuevo Perfil", guest: "Invitado", confirm: "¿Eliminar este perfil?" },
+        en: { title: "Who's planning today?", editTitle: "Manage Profiles", manage: "EDIT PROFILES", done: "DONE", save: "SAVE", cancel: "CANCEL", delete: "Delete Profile", edit: "Edit Profile", newProfile: "New Profile", guest: "Guest", confirm: "Delete this profile?" }
+    };
+
+    const photos = [
+        "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mickey.webp",
+        "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Buzz.png",
+        "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Mike.png",
+        "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/Stitch.png",
+        "https://raw.githubusercontent.com/TaxappUSA/TaxappUSA/main/WallE.png",
+        "https://img.icons8.com/color/150/spiderman-new.png",
+        "https://img.icons8.com/color/150/iron-man.png",
+        "https://img.icons8.com/color/150/baby-yoda.png"
+    ];
+
+    let uid, profiles = [], editingId = null, selectedPhoto = photos[0], isEditing = false;
+    const lang = localStorage.getItem('appLang') || 'es';
+    const t = i18n[lang];
+
+    document.getElementById('pageTitle').innerText = t.title;
+    document.getElementById('manageBtn').innerText = t.manage;
+    document.getElementById('btnSave').innerText = t.save;
+    document.getElementById('btnCancel').innerText = t.cancel;
+    document.getElementById('btnDelete').innerText = t.delete;
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) return window.location.replace('login.html');
+        uid = user.uid;
+        const snap = await getDoc(doc(db, 'usuarios', uid));
+        profiles = snap.exists() ? (snap.data().perfiles || []) : [];
+        if (profiles.length === 0) {
+            profiles = [{ id: 'p' + Date.now(), nombre: t.guest, foto: photos[0] }];
+            await setDoc(doc(db, 'usuarios', uid), { perfiles: profiles });
+        }
+        render();
+    });
+
+    function render() {
+        const grid = document.getElementById('profilesGrid');
+        grid.innerHTML = profiles.map(p => `
+            <div class="profile-item" onclick="handleClick('${p.id}','${p.nombre}','${encodeURIComponent(p.foto)}')">
+                <div class="avatar-wrapper">
+                    <div class="avatar" style="background-image:url('${p.foto}')"></div>
+                    <div class="edit-overlay">
+                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </div>
+                </div>
+                <div class="profile-name">${p.nombre}</div>
+            </div>
+        `).join('');
+
+        if (profiles.length < 5) {
+            grid.innerHTML += `
+                <div class="profile-item" onclick="openEditor(null)">
+                    <div class="avatar-wrapper"><div class="add-avatar">+</div></div>
+                    <div class="profile-name">${t.newProfile}</div>
+                </div>`;
+        }
+    }
+
+    window.toggleEditMode = () => {
+        isEditing = !isEditing;
+        document.body.classList.toggle('editing-mode', isEditing);
+        document.getElementById('pageTitle').innerText = isEditing ? t.editTitle : t.title;
+        document.getElementById('manageBtn').innerText = isEditing ? t.done : t.manage;
+    };
+
+    window.handleClick = (id, nombre, fotoEnc) => {
+        if (isEditing) { openEditor(id); return; }
+        const foto = decodeURIComponent(fotoEnc);
+        localStorage.setItem('perfilActivoId', id);
+        localStorage.setItem('perfilActivoNombre', nombre);
+        localStorage.setItem('perfilActivoFoto', foto);
+        window.location.replace('index.html');
+    };
+
+    window.openEditor = (id) => {
+        editingId = id;
+        const p = profiles.find(x => x.id === id);
+        document.getElementById('modalTitle').innerText = id ? t.edit : t.newProfile;
+        document.getElementById('nameInput').value = p ? p.nombre : '';
+        selectedPhoto = p ? p.foto : photos[0];
+        document.getElementById('btnDelete').style.display = id ? 'block' : 'none';
+        updatePreview();
+
+        const grid = document.getElementById('photoGrid');
+        grid.innerHTML = photos.map(url => `
+            <img src="${url}" class="photo-option ${url === selectedPhoto ? 'selected' : ''}"
+                 onclick="selectPhoto('${url}')">
+        `).join('');
+
+        document.getElementById('editModal').classList.add('show');
+    };
+
+    window.selectPhoto = (url) => {
+        selectedPhoto = url;
+        document.querySelectorAll('.photo-option').forEach(img => img.classList.toggle('selected', img.src === url));
+        updatePreview();
+    };
+
+    function updatePreview() {
+        document.getElementById('previewAvatar').style.backgroundImage = `url('${selectedPhoto}')`;
+    }
+
+    window.closeModal = () => document.getElementById('editModal').classList.remove('show');
+
+    window.saveProfile = async () => {
+        const name = document.getElementById('nameInput').value.trim();
+        if (!name) return;
+        if (editingId) profiles = profiles.map(p => p.id === editingId ? { ...p, nombre: name, foto: selectedPhoto } : p);
+        else profiles.push({ id: 'p' + Date.now(), nombre: name, foto: selectedPhoto });
+        await updateDoc(doc(db, 'usuarios', uid), { perfiles: profiles });
+        closeModal();
+        if (isEditing) toggleEditMode();
+        render();
+    };
+
+    window.deleteProfile = async () => {
+        if (profiles.length <= 1 || !confirm(t.confirm)) return;
+        profiles = profiles.filter(p => p.id !== editingId);
+        await updateDoc(doc(db, 'usuarios', uid), { perfiles: profiles });
+        closeModal();
+        if (isEditing) toggleEditMode();
+        render();
+    };
+</script>
+</body>
+</html>
