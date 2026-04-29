@@ -189,8 +189,77 @@ h1 {
             color: var(--text-main);
         }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-        .modal-content { background: var(--card); padding: 25px; border-radius: 24px; width: 100%; max-width: 350px; color: var(--text-main); }
+        /* =========================================
+   ESTILO AESTHETIC DEL MODAL Y BOTONES
+   ========================================= */
+.modal { 
+    display: none; 
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.4); 
+    z-index: 2000; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 20px; 
+    backdrop-filter: blur(10px); /* Desenfoque de fondo premium */
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.modal-content { 
+    background: var(--card); 
+    padding: 30px; 
+    border-radius: 30px; /* Bordes bien redondeados */
+    width: 100%; 
+    max-width: 360px; 
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--input-border);
+    text-align: center;
+}
+
+.modal-title {
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+/* Contenedor de botones en columna */
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-modal {
+    width: 100%;
+    padding: 16px;
+    border-radius: 20px; /* Botones cápsula */
+    font-size: 0.9rem;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-modal:active { transform: scale(0.96); }
+
+/* Botón Guardar - Azul */
+.btn-save {
+    background: var(--primary);
+    color: white;
+}
+
+/* Botón Cerrar - Rojo Aesthetic */
+.btn-close {
+    background: #ff4d4d; /* Rojo vibrante */
+    color: white;
+}
         
         .settings-trigger { position: absolute; top: 15px; right: 15px; background: var(--box-bg); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; color: var(--text-main); }
         
@@ -317,20 +386,28 @@ h1 {
     <div class="api-credits">
     <span data-i18n="api_used">APIs USADAS</span>: Firebase • FlagCDN • Google Auth • reCAPTCHA v3
 </div>
-
-    <div id="tripModal" class="modal">
+<div id="tripModal" class="modal">
     <div class="modal-content">
-        <h3 style="margin-top:0; color: var(--primary);" data-i18n="modal_trip_title">Mi Viaje</h3>
+        <h3 class="modal-title" data-i18n="modal_trip_title">Mi Viaje</h3>
+        
         <div class="input-group">
             <label data-i18n="modal_city_label">¿A qué ciudad vas?</label>
             <input type="text" id="input-destination" placeholder="Ej: Orlando">
         </div>
+        
         <div class="input-group">
             <label data-i18n="modal_date_label">Fecha del viaje</label>
             <input type="date" id="input-date">
         </div>
-        <button class="drawer-btn" style="background: var(--primary); color: white; border: none;" onclick="saveTripSettings()" data-i18n="btn_save">GUARDAR</button>
-        <button onclick="closeTripModal()" style="..." data-i18n="btn_close">Cerrar</button>
+        
+        <div class="modal-actions">
+            <button class="btn-modal btn-save" onclick="saveTripSettings()">
+                <span>💾</span> <span data-i18n="btn_save">GUARDAR</span>
+            </button>
+            <button class="btn-modal btn-close" onclick="closeTripModal()">
+                <span>❌</span> <span data-i18n="btn_close">CERRAR</span>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -625,8 +702,15 @@ h1 {
         const d = document.getElementById('settingsDrawer');
         document.getElementById('menuOverlay').style.display = d.classList.toggle('open') ? 'block' : 'none';
     };
-    window.openTripModal = () => document.getElementById('tripModal').style.display = 'flex';
-    window.closeTripModal = () => document.getElementById('tripModal').style.display = 'none';
+    window.openTripModal = () => {
+    const modal = document.getElementById('tripModal');
+    modal.style.display = 'flex';
+    // Pequeño delay para que el navegador registre el display flex antes de animar si usaras opacidad
+};
+
+window.closeTripModal = () => {
+    document.getElementById('tripModal').style.display = 'none';
+};
     window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
     window.changeProfile = () => { localStorage.removeItem('perfilActivoId'); window.location.href = "profiles.html"; };
     window.toggleDarkMode = () => {
