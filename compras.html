@@ -340,12 +340,12 @@ img.emoji {
 </div>
 
 <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
-<<div id="settingsDrawer" class="settings-drawer">
+<div id="settingsDrawer" class="settings-drawer">
     <h3 style="color:var(--primary); margin-top:0;" data-i18n="title_settings">Ajustes</h3>
     <p id="userEmail" style="font-size:0.75rem; color:var(--text-muted); margin-bottom:20px; font-weight:700;"></p>
     
     <div class="settings-group" style="margin-bottom: 20px;">
-        <label style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;" data-i18n="label_language">Idioma</label>
+        <label style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;" data-i18n="label_language">Idioma / Language</label>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button id="lang-es" class="lang-opt" onclick="changeLanguage('es')">🇪🇸 ES</button>
             <button id="lang-en" class="lang-opt" onclick="changeLanguage('en')">🇺🇸 EN</button>
@@ -353,12 +353,11 @@ img.emoji {
     </div>
 
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar de Perfil</span></button>
-    <button class="drawer-btn" onclick="window.toggleDarkMode()">🌓 <span data-i18n="btn_toggle_theme">Cambiar Tema</span></button>
+    <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_toggle_theme">Cambiar Tema</span></button>
     <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
     <button class="drawer-btn" onclick="changeEmail()">📧 <span data-i18n="btn_change_email">Cambiar Correo</span></button>
     <button class="drawer-btn" onclick="changePassword()">🔑 <span data-i18n="btn_change_pass">Cambiar Contraseña</span></button>
     <button class="drawer-btn" onclick="logout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
-    
     <div style="margin-top: auto; padding-top: 20px;">
         <button class="drawer-btn btn-danger" onclick="deleteAccount()">🗑️ <span data-i18n="btn_delete_acc">Eliminar Cuenta</span></button>
     </div>
@@ -424,8 +423,7 @@ img.emoji {
         btn_logout: "Cerrar Sesión",
         btn_delete_acc: "Eliminar Cuenta",
         footer_text: "Creado por Juan Cruz Bria 🇦🇷",
-        nav_home: "INICIO", nav_itinerary: "ITINERARIO", nav_compare: "COMPARAR", nav_units: "UNIDADES",
-        label_total_spent: "Presupuesto Restante"
+        nav_expenses: "INICIO", nav_itinerary: "ITINERARIO", nav_compare: "COMPARAR", nav_units: "UNIDADES"
     },
     en: {
         ocr_analyzing: "Analyzing ticket... 🧐",
@@ -445,7 +443,7 @@ img.emoji {
         btn_save_expense: "SAVE EXPENSE",
         loading: "Loading...",
         title_footwear: "👟 Footwear (ARG → US)",
-        th_men: "M", th_women: "W", th_equiv: "US SIZE.",
+        th_men: "M", th_women: "W", th_equiv: "US EQUIV.",
         title_tops: "👕 T-Shirts / Tops",
         title_jackets: "🧥 Hoodies / Jackets",
         title_settings: "Settings",
@@ -458,48 +456,33 @@ img.emoji {
         btn_logout: "Logout",
         btn_delete_acc: "Delete Account",
         footer_text: "Created by Juan Cruz Bria 🇦🇷",
-        nav_home: "HOME", nav_itinerary: "ITINERARY", nav_compare: "COMPARE", nav_units: "UNITS",
-        label_total_spent: "Remaining Budget"
+        nav_expenses: "HOME", nav_itinerary: "ITINERARY", nav_compare: "COMPARE", nav_units: "UNITS"
     }
 };
 
 window.changeLanguage = (lang) => {
     localStorage.setItem('appLang', lang);
 
-    // Botones azules ES/EN
+    // Actualizar botones visuales ES/EN
     document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
     const btn = document.getElementById('lang-' + lang);
     if (btn) btn.classList.add('active');
 
+    // Traducir elementos
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) el.innerText = translations[lang][key];
+        if (translations[lang][key]) {
+            if (el.tagName === 'INPUT') {
+                el.placeholder = translations[lang][key];
+            } else {
+                el.innerText = translations[lang][key];
+            }
+        }
     });
 
-    // Traducir el tip que se está viendo ahora mismo
-    const tipEl = document.getElementById('tip-text');
-    if (tipEl) {
-        tipEl.innerText = shoppingTips[lang][currentTipIndex];
-        if(typeof twemoji !== 'undefined') twemoji.parse(tipEl);
-    }
-};
-
-    // 3. ACTUALIZAR EL TIP ACTUAL (Para que cambie de idioma al instante)
-    const tipEl = document.getElementById('tip-text');
-    if (tipEl && shoppingTips[lang]) {
-        // Usamos el mismo índice para que no salte a otro tip, solo lo traduzca
-        tipEl.innerText = shoppingTips[lang][currentTipIndex];
-        // Aplicar Twemoji al nuevo texto
-        if(typeof twemoji !== 'undefined') {
-            twemoji.parse(tipEl, { folder: 'svg', ext: '.svg' });
-        }
-    }
-
-    // 4. Actualizar Emojis en el resto del body
-    if (typeof twemoji !== 'undefined') {
-        twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
-    }
-};// <-- Asegurate de que solo haya una llave aquí
+    // Esta es la parte que faltaba o estaba mal cerrada
+    if (typeof updateEmojis === 'function') updateEmojis();
+}; // <-- Asegurate de que solo haya una llave aquí
 
         window.toggleDarkMode = () => {
             const isDark = document.body.classList.toggle('dark-mode');
@@ -939,58 +922,36 @@ if (finalUSD > 0) {
 }
 }
 
-        const shoppingTips = {
-    es: [
-        "Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa ni calzado.",
-        "Impuestos: El precio de etiqueta NO incluye el Tax (aprox. 7-9%).",
-        "Ross/Marshalls: Los mejores precios están en los racks de 'Clearance'.",
-        "Apple: Comprá 'Refurbished' en su web oficial para ahorrar un 15%.",
-        "Best Buy: Tienen una sección de 'Open Box' con productos casi nuevos rebajados.",
-        "Cupones: Descargá la app 'RetailMeNot' para descuentos en el momento.",
-        "Seguridad: Nunca dejes bolsas visibles dentro del auto estacionado.",
-        "Documentos: Llevá siempre una foto del pasaporte en el celular.",
-        "Walmart: Ideal para snacks, tecnología básica y valijas baratas.",
-        "Talles: Un 'M' en USA suele ser un 'L' en Argentina. ¡Probate siempre!",
-        "Efectivo: Siempre tené billetes de 1 y 5 USD para propinas rápidas.",
-        "Premium Outlets: Registrate en su web para recibir cuponeras VIP gratis.",
-        "Equipaje: Pesá tu valija antes de ir al aeropuerto; el límite suele ser 23kg.",
-        "Amazon Hub: Podés pedir por Amazon y retirar en lockers de 7-Eleven.",
-        "Bancos: Avisá en tu homebanking que vas a usar la tarjeta en el exterior."
-    ],
-    en: [
-        "Jersey Gardens (NJ): Tax Free! You don't pay tax on clothes or footwear.",
-        "Taxes: The tag price does NOT include Tax (approx. 7-9%).",
-        "Ross/Marshalls: Best prices are in the 'Clearance' racks.",
-        "Apple: Buy 'Refurbished' on their official web to save 15%.",
-        "Best Buy: They have an 'Open Box' section with like-new discounted products.",
-        "Coupons: Download 'RetailMeNot' app for instant discounts.",
-        "Security: Never leave visible bags inside a parked car.",
-        "Documents: Always keep a photo of your passport on your phone.",
-        "Walmart: Ideal for snacks, basic tech, and cheap suitcases.",
-        "Sizes: A US 'M' is usually an 'L' in Argentina. Always try it on!",
-        "Cash: Always keep $1 and $5 bills for quick tips.",
-        "Premium Outlets: Sign up on their website for free VIP coupon books.",
-        "Baggage: Weigh your suitcase before the airport; the limit is 23kg.",
-        "Amazon Hub: You can order on Amazon and pick up at 7-Eleven lockers.",
-        "Banks: Notify your bank that you will use your card abroad."
-    ]
-};
+        const shoppingTips = [
+            "Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa ni calzado.",
+            "Impuestos: El precio de etiqueta NO incluye el Tax (aprox. 7-9%).",
+            "Ross/Marshalls: Los mejores precios están en los racks de 'Clearance'.",
+            "Apple: Comprá 'Refurbished' en su web oficial para ahorrar un 15%.",
+            "Best Buy: Tienen una sección de 'Open Box' con productos casi nuevos rebajados.",
+            "Cupones: Descargá la app 'RetailMeNot' para descuentos en el momento.",
+            "Seguridad: Nunca dejes bolsas visibles dentro del auto estacionado.",
+            "Documentos: Llevá siempre una foto del pasaporte en el celular.",
+            "Walmart: Ideal para snacks, tecnología básica y valijas baratas.",
+            "Talles: Un 'M' en USA suele ser un 'L' en Argentina. ¡Probate siempre!",
+            "Efectivo: Siempre tené billetes de 1 y 5 USD para propinas rápidas.",
+            "Premium Outlets: Registrate en su web para recibir cuponeras VIP gratis.",
+            "Equipaje: Pesá tu valija antes de ir al aeropuerto; el límite suele ser 23kg.",
+            "Amazon Hub: Podés pedir por Amazon y retirar en lockers de 7-Eleven.",
+            "Bancos: Avisá en tu homebanking que vas a usar la tarjeta en el exterior."
+        ];
 
-let currentTipIndex = 0;
-window.nextTip = () => { 
-    const lang = localStorage.getItem('appLang') || 'es';
-    const currentList = shoppingTips[lang]; // Elegimos la lista según idioma
-
-    currentTipIndex = (currentTipIndex + 1) % currentList.length; 
-    
+        let currentTipIndex = 0;
+        window.nextTip = () => { 
+    currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
     const el = document.getElementById('tip-text');
     if(el) { 
         el.style.opacity = 0; 
         setTimeout(() => { 
-            el.innerText = currentList[currentTipIndex]; 
-            if(typeof twemoji !== 'undefined') {
-                twemoji.parse(el, { folder: 'svg', ext: '.svg' });
-            }
+            // 1. Cambiamos el texto
+            el.innerText = shoppingTips[currentTipIndex]; 
+            // 2. Aplicamos Twemoji SOLO a este pequeño elemento
+            updateEmojis(el); 
+            // 3. Mostramos
             el.style.opacity = 1; 
         }, 300); 
     }
