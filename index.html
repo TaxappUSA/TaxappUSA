@@ -485,14 +485,19 @@ window.onload = () => {
     window.avisoProximamente = (event) => {
     if (event) event.preventDefault();
 
-    // Detectamos si el idioma del documento empieza con "en" (English)
-    const isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
+    // 1. Leemos el idioma de la etiqueta <html lang="..."> que me mostraste
+    const idioma = document.documentElement.lang.toLowerCase();
 
-    const mensaje = isEnglish 
-        ? "🚀 The Price Comparison tool will be available soon." 
-        : "🚀 El Comparador de Precios estará disponible próximamente.";
+    // 2. Definimos los mensajes
+    const mensajes = {
+        'es': "🚀 El Comparador de Precios estará disponible próximamente.",
+        'en': "🚀 The Price Comparator will be available soon."
+    };
 
-    alert(mensaje);
+    // 3. Mostramos el mensaje (si es 'en' muestra inglés, si no, español por defecto)
+    const textoAMostrar = mensajes[idioma] || mensajes['es'];
+    
+    alert(textoAMostrar);
 };
 </script>
 </body>
