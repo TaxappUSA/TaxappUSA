@@ -173,31 +173,11 @@
         }
         .btn:active { transform: scale(0.97); }
         .btn-primary { background: white; color: black; }
-
-        .lang-switcher {
-            position: fixed; top: 20px; right: 20px;
-            z-index: 100; display: flex; gap: 6px;
-        }
-        .lang-btn {
-            background: var(--surface); border: 1.5px solid var(--border);
-            color: var(--text-sub); border-radius: 8px;
-            padding: 6px 12px; font-family: inherit;
-            font-size: 0.75rem; font-weight: 800;
-            cursor: pointer; letter-spacing: 0.5px;
-            transition: var(--transition);
-        }
-        .lang-btn:hover { background: var(--surface-2); color: var(--text); }
-        .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .btn-ghost { background: transparent; color: var(--text-sub); border: 1.5px solid var(--border); }
         .btn-danger { background: transparent; color: var(--danger); margin-top: 6px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
-
-<div class="lang-switcher">
-    <button class="lang-btn" id="btnEs" onclick="setLang('es')">ES</button>
-    <button class="lang-btn" id="btnEn" onclick="setLang('en')">EN</button>
-</div>
 
 <h1 class="page-title" id="pageTitle">¿Quién está planificando hoy?</h1>
 
@@ -258,27 +238,18 @@
     ];
 
     let uid, profiles = [], editingId = null, selectedPhoto = photos[0], isEditing = false;
-    let lang = localStorage.getItem('appLang') || 'es';
+    const lang = localStorage.getItem('appLang') || 'es';
     let t = i18n[lang];
 
     function applyLang() {
         t = i18n[lang];
         document.title = t.pageTitle;
-        document.getElementById('pageTitle').innerText = isEditing ? t.editTitle : t.title;
-        document.getElementById('manageBtn').innerText = isEditing ? t.done : t.manage;
+        document.getElementById('pageTitle').innerText = t.title;
+        document.getElementById('manageBtn').innerText = t.manage;
         document.getElementById('btnSave').innerText = t.save;
         document.getElementById('btnCancel').innerText = t.cancel;
         document.getElementById('btnDelete').innerText = t.delete;
-        document.getElementById('btnEs').classList.toggle('active', lang === 'es');
-        document.getElementById('btnEn').classList.toggle('active', lang === 'en');
-        render();
     }
-
-    window.setLang = (newLang) => {
-        lang = newLang;
-        localStorage.setItem('appLang', lang);
-        applyLang();
-    };
 
     applyLang();
 
