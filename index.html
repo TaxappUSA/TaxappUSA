@@ -37,8 +37,10 @@
             --header-color: #3C3B6E; /* El azul de la bandera USA */
         }
 
-        #tip-content {
-    transition: opacity 0.3s ease-in-out;
+#tip-content {
+    transition: opacity 0.3s ease-in-out; /* Velocidad de parpadeo rápida */
+    display: inline-block;
+    min-height: 1.2em; /* Evita que el contenedor colapse al quedar vacío */
 }
 
         /* COLORES MODO OSCURO (AÑADIDO) */
@@ -771,22 +773,25 @@ let tipIndex = 0; // DECLARADA UNA SOLA VEZ ACÁ AFUERA
             window.changeLanguage(savedLang); // Esto ya dispara el primer tip gracias al paso anterior
 
             const tipElement = document.getElementById('tip-content');
+            
             const rotateTip = () => {
                 const lang = localStorage.getItem('appLang') || 'es';
                 const lista = econTips[lang];
                 
-                // 1. Desvanecer texto viejo
+                // 1. Desvanece (tarda 0.3s por el CSS)
                 tipElement.style.opacity = 0;
 
                 setTimeout(() => {
-                    // 2. Cambiar el índice y el texto mientras está invisible
+                    // 2. Cambia el contenido (esto pasa cuando ya no se ve)
                     tipIndex = (tipIndex + 1) % lista.length;
                     tipElement.innerText = lista[tipIndex];
                     
-                    // 3. Aparecer texto nuevo rápido
+                    // 3. Lo vuelve a mostrar
                     tipElement.style.opacity = 1;
-                }, 300); // Solo 300ms de espera para el cambio
+                }, 300); // Este tiempo debe ser igual al del CSS
             };
+
+            // Ejecuta el cambio cada 8 segundos
             setInterval(rotateTip, 8000);
         };
     </script>
