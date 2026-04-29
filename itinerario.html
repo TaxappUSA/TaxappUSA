@@ -128,6 +128,27 @@
         .btn-danger { color: var(--danger); border-color: var(--danger); }
         
         .divider { height: 1px; background: var(--border-color); margin: 15px 0; }
+        
+.lang-selector {
+    display: flex; 
+    background: var(--box-bg) !important;
+    border-radius: 12px; 
+    padding: 4px; 
+    margin-bottom: 20px; 
+    gap: 4px; 
+    border: 1px solid var(--input-border);
+}
+
+.lang-opt {
+    flex: 1; padding: 8px; border-radius: 8px; border: none; background: transparent; 
+    cursor: pointer; font-size: 0.75rem; font-weight: 800; color: var(--text-sub);
+    display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;
+}
+
+.lang-opt.active { 
+    background: var(--primary) !important; 
+    color: white !important; 
+}
     </style>
 </head>
 <body>
@@ -135,71 +156,83 @@
         <h1>TaxUSA <img src="https://flagcdn.com/w40/us.png" style="width: 28px; border-radius: 3px;" alt="USA"></h1>
 
         <div class="nav-bar">
-            <a href="index.html" class="btn-nav">
-                <span>🏠</span>
-                <span>INICIO</span>
-            </a>
-            <a href="compras.html" class="btn-nav active">
-                <span>🛍️</span>
-                <span>GASTOS</span>
-            </a>
-            <a href="javascript:void(0)" class="btn-nav" onclick="avisoProximamente(event)">
-                <span>🔍</span>
-                <span>COMPARAR</span>
-            </a>
-            <a href="unidades.html" class="btn-nav">
-                <span>⚖️</span>
-                <span>UNIDADES</span>
-            </a>
-            <button class="settings-trigger-nav" onclick="toggleSettings()">⚙️</button>
-       </div>
+    <a href="index.html" class="btn-nav">
+        <span>🏠</span>
+        <span data-i18n="nav_home">INICIO</span>
+    </a>
+    <a href="compras.html" class="btn-nav">
+        <span>🛍️</span>
+        <span data-i18n="nav_expenses">GASTOS</span>
+    </a>
+    <a href="javascript:void(0)" class="btn-nav" onclick="avisoProximamente(event)">
+        <span>🔍</span>
+        <span data-i18n="nav_compare">COMPARAR</span>
+    </a>
+    <a href="unidades.html" class="btn-nav">
+        <span>⚖️</span>
+        <span data-i18n="nav_units">UNIDADES</span>
+    </a>
+    <button class="settings-trigger-nav" onclick="toggleSettings()">⚙️</button>
+</div>
 
-    <div class="card">
-        <h2>📍 Itinerario</h2>
+<div class="card">
+    <h2><span data-i18n="itinerary_title">📍 Itinerario</span></h2>
         
         <select id="citySelector" class="city-picker" onchange="renderCityData()">
-            <option value="orlando">🎡 Orlando</option>
-            <option value="nyc">🍎 Nueva York</option>
-            <option value="miami">🏖️ Miami</option>
-            <option value="vegas">🎲 Las Vegas</option>
-            <option value="la">🎬 Los Ángeles</option>
-            <option value="sf">🌉 San Francisco</option>
-            <option value="chicago">🏢 Chicago</option>
-            <option value="dc">🏛️ Washington D.C.</option>
-        </select>
+    <option value="orlando" data-i18n="city_orlando">🎡 Orlando</option>
+    <option value="nyc" data-i18n="city_nyc">🍎 Nueva York</option>
+    <option value="miami" data-i18n="city_miami">🏖️ Miami</option>
+    <option value="vegas" data-i18n="city_vegas">🎲 Las Vegas</option>
+    <option value="la" data-i18n="city_la">🎬 Los Ángeles</option>
+    <option value="sf" data-i18n="city_sf">🌉 San Francisco</option>
+    <option value="chicago" data-i18n="city_chicago">🏢 Chicago</option>
+    <option value="dc" data-i18n="city_dc">🏛️ Washington D.C.</option>
+</select>
 
-        <textarea id="noteInput" rows="4" placeholder="Vuelos, hoteles, recordatorios..."></textarea>
-        <button class="btn-add" onclick="addNote()">AGREGAR AL HISTORIAL</button>
-        
-        <div class="queues-box" id="dynamicQueues"></div>
+        <textarea id="noteInput" rows="4" data-i18n-placeholder="note_placeholder" placeholder="Vuelos, hoteles, recordatorios..."></textarea>
+<button class="btn-add" onclick="addNote()" data-i18n="btn_add_note">AGREGAR AL HISTORIAL</button>
 
-        <div class="dato-itinerario" onclick="nextTip()">
-            <small style="color: var(--blue); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;">✨ Tip de Viaje</small>
-            <div id="tip-text" style="font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-top: 4px;">Cargando tips...</div>
-        </div>
-    </div>
+<div class="queues-box" id="dynamicQueues"></div>
+
+<div class="dato-itinerario" onclick="nextTip()">
+    <small style="color: var(--primary); font-weight: 800; font-size: 0.6rem; text-transform: uppercase;" data-i18n="tip_label">✨ Tip de Viaje</small>
+    <div id="tip-text" style="font-weight: 700; font-size: 0.85rem; color: var(--text-main); margin-top: 4px;">Cargando tips...</div>
+</div>
 
     <div id="notesList" class="list-container"></div>
     
     <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
     <div id="settingsDrawer" class="settings-drawer">
-        <h3 style="margin-top:0; color: var(--primary);">Ajustes</h3>
-        <p id="userEmail" style="font-size:0.75rem; color:#64748b; margin-bottom:20px; font-weight:700;"></p>
+    <h3 style="margin-top:0; color: var(--primary);" data-i18n="settings_title">Ajustes</h3>
+    <p id="userEmail" style="font-size:0.75rem; color: var(--text-sub); margin-bottom:20px; font-weight:700;"></p>
 
-        <button class="drawer-btn" onclick="changeProfile()">👤 Cambiar de Perfil</button>
-        <button class="drawer-btn" onclick="toggleDarkMode()">🌓 Cambiar Tema</button>
-        <button class="drawer-btn" onclick="location.reload()">🔄 Actualizar App</button>
-        <button class="drawer-btn" onclick="executeWithToken(changeEmail)">📧 Cambiar Correo</button>
-        <button class="drawer-btn" onclick="executeWithToken(changePassword)">🔑 Cambiar Contraseña</button>
-        <button class="drawer-btn" onclick="executeWithToken(logout)">🚪 Cerrar Sesión</button>
-        <div style="margin-top: auto; padding-top: 20px;">
-            <button class="drawer-btn btn-danger-text" onclick="executeWithToken(deleteAccount)">🗑️ Eliminar Cuenta</button>
-        </div>
+    <label data-i18n="label_language" style="display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 5px; margin-left: 5px;">Idioma</label>
+    <div class="lang-selector">
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')">
+            <img src="https://flagcdn.com/w40/es.png" width="20"> ES
+        </button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')">
+            <img src="https://flagcdn.com/w40/us.png" width="20"> EN
+        </button>
     </div>
 
-<div class="footer">
-        <span>Creado por Juan Cruz Bria <img src="https://flagcdn.com/w40/ar.png" style="width:18px;" alt="Argentina"></span>
+    <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar de Perfil</span></button>
+    <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
+    <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_refresh">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="executeWithToken(changeEmail)">📧 <span data-i18n="btn_change_email">Cambiar Correo</span></button>
+    <button class="drawer-btn" onclick="executeWithToken(changePassword)">🔑 <span data-i18n="btn_change_pass">Cambiar Contraseña</span></button>
+    <button class="drawer-btn" onclick="executeWithToken(logout)">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
+    
+    <div style="margin-top: auto; padding-top: 20px;">
+        <button class="drawer-btn btn-danger-text" onclick="executeWithToken(deleteAccount)">🗑️ <span data-i18n="btn_delete_acc">Eliminar Cuenta</span></button>
     </div>
+</div>
+
+<div class="footer" style="text-align: center; padding: 20px; font-size: 0.75rem; color: var(--text-sub); opacity: 0.8;">
+    <span data-i18n="footer_created">Creado por</span> 
+    <span style="font-weight: 800; color: var(--primary);">Juan Cruz Bria</span> 
+    <img src="https://flagcdn.com/w40/ar.png" style="width:18px; vertical-align: middle; margin-left: 4px;" alt="Argentina">
+</div>
    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, updateEmail, updatePassword, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
@@ -226,34 +259,45 @@
         const perfilFoto = localStorage.getItem('perfilActivoFoto');
 
         // --- FUNCIONES DE CUENTA ---
-        window.changeEmail = async () => {
-            const newEmail = prompt("Ingresa el nuevo correo electrónico:");
-            if (newEmail && currentUser) {
-                try {
-                    await verifyBeforeUpdateEmail(currentUser, newEmail);
-                    alert("Se ha enviado un correo de verificación a la nueva dirección. El cambio se aplicará tras verificar.");
-                } catch (e) { alert("Error: Reautenticación requerida para cambios sensibles."); }
-            }
-        };
+window.changeEmail = async () => {
+    const lang = localStorage.getItem('appLang') || 'es';
+    const newEmail = prompt(translations[lang].prompt_new_email);
+    
+    if (newEmail && currentUser) {
+        try {
+            await verifyBeforeUpdateEmail(currentUser, newEmail);
+            alert(translations[lang].alert_email_verify);
+        } catch (e) { 
+            alert(translations[lang].alert_reauth_required); 
+        }
+    }
+};
 
-        window.changePassword = async () => {
-            const newPass = prompt("Ingresa la nueva contraseña (mínimo 6 caracteres):");
-            if (newPass && currentUser) {
-                try {
-                    await updatePassword(currentUser, newPass);
-                    alert("Contraseña actualizada con éxito.");
-                } catch (e) { alert("Error: Reautenticación requerida."); }
-            }
-        };
+window.changePassword = async () => {
+    const lang = localStorage.getItem('appLang') || 'es';
+    const newPass = prompt(translations[lang].prompt_new_pass);
+    
+    if (newPass && currentUser) {
+        try {
+            await updatePassword(currentUser, newPass);
+            alert(translations[lang].alert_pass_success);
+        } catch (e) { 
+            alert(translations[lang].alert_reauth_required); 
+        }
+    }
+};
 
-        window.deleteAccount = async () => {
-            if (confirm("¿ESTÁS SEGURO? Esta acción borrará todos tus datos de forma permanente.")) {
-                try {
-                    await deleteUser(currentUser);
-                    window.location.replace("login.html");
-                } catch (e) { alert("Error: Reautenticación requerida para eliminar la cuenta."); }
-            }
-        };
+window.deleteAccount = async () => {
+    const lang = localStorage.getItem('appLang') || 'es';
+    if (confirm(translations[lang].confirm_delete_account)) {
+        try {
+            await deleteUser(currentUser);
+            window.location.replace("login.html");
+        } catch (e) { 
+            alert(translations[lang].alert_reauth_required); 
+        }
+    }
+};
 
         // --- SISTEMA DE TIPS ---
         const tips = [
@@ -318,38 +362,47 @@
         };
 
         async function updateStatusDisplay(cityKey) {
-            const cityData = citiesConfig[cityKey];
-            const localHour = parseInt(new Intl.DateTimeFormat("en-US", { timeZone: cityData.tz, hour: "numeric", hour12: false }).format(new Date()));
+    const cityData = citiesConfig[cityKey];
+    const lang = localStorage.getItem('appLang') || 'es'; // Detectar idioma
+    const t = translations[lang]; // Atajo para las traducciones
+    
+    const localHour = parseInt(new Intl.DateTimeFormat("en-US", { 
+        timeZone: cityData.tz, 
+        hour: "numeric", 
+        hour12: false 
+    }).format(new Date()));
 
-            for (let i = 0; i < cityData.spots.length; i++) {
-                const el = document.getElementById(`spot-${i}`);
-                if (!el) continue;
+    for (let i = 0; i < cityData.spots.length; i++) {
+        const el = document.getElementById(`spot-${i}`);
+        if (!el) continue;
 
-                if (cityKey === 'orlando' && cityData.spots[i].parkId) {
-                    if (localHour >= 22 || localHour < 8) {
-                        el.innerText = "CERRADO 🌙"; el.className = "queue-status q-off";
-                    } else {
-                        try {
-                            const proxy = "https://corsproxy.io/?";
-                            const apiUrl = `https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json`;
-                            const response = await fetch(proxy + encodeURIComponent(apiUrl));
-                            const data = await response.json();
-                            let total = 0, c = 0;
-                            data.lands?.forEach(l => l.rides.forEach(r => { if(r.is_open){ total += r.wait_time; c++; } }));
-                            const avg = c > 0 ? total / c : 0;
-                            if (avg <= 20) { el.innerText = "BAJA 🟢"; el.className = "queue-status q-low"; }
-                            else if (avg <= 45) { el.innerText = "MED 🟡"; el.className = "queue-status q-med"; }
-                            else { el.innerText = "ALTA 🔴"; el.className = "queue-status q-high"; }
-                        } catch(e) { el.innerText = "N/A"; el.className = "queue-status q-off"; }
-                    }
-                } else {
-                    if (localHour >= 23 || localHour < 7) { el.innerText = "CERRADO 🌙"; el.className = "queue-status q-off"; }
-                    else if (localHour >= 12 && localHour <= 19) { el.innerText = "ALTA 🔴"; el.className = "queue-status q-high"; }
-                    else if (localHour >= 9 && localHour < 12) { el.innerText = "MED 🟡"; el.className = "queue-status q-med"; }
-                    else { el.innerText = "BAJA 🟢"; el.className = "queue-status q-low"; }
-                }
+        if (cityKey === 'orlando' && cityData.spots[i].parkId) {
+            if (localHour >= 22 || localHour < 8) {
+                el.innerText = t.status_closed; el.className = "queue-status q-off";
+            } else {
+                try {
+                    const proxy = "https://corsproxy.io/?";
+                    const apiUrl = `https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json`;
+                    const response = await fetch(proxy + encodeURIComponent(apiUrl));
+                    const data = await response.json();
+                    let total = 0, c = 0;
+                    data.lands?.forEach(l => l.rides.forEach(r => { if(r.is_open){ total += r.wait_time; c++; } }));
+                    const avg = c > 0 ? total / c : 0;
+                    
+                    if (avg <= 20) { el.innerText = t.status_low; el.className = "queue-status q-low"; }
+                    else if (avg <= 45) { el.innerText = t.status_med; el.className = "queue-status q-med"; }
+                    else { el.innerText = t.status_high; el.className = "queue-status q-high"; }
+                } catch(e) { el.innerText = t.status_na; el.className = "queue-status q-off"; }
             }
+        } else {
+            // Lógica para ciudades sin API (basada en horario)
+            if (localHour >= 23 || localHour < 7) { el.innerText = t.status_closed; el.className = "queue-status q-off"; }
+            else if (localHour >= 12 && localHour <= 19) { el.innerText = t.status_high; el.className = "queue-status q-high"; }
+            else if (localHour >= 9 && localHour < 12) { el.innerText = t.status_med; el.className = "queue-status q-med"; }
+            else { el.innerText = t.status_low; el.className = "queue-status q-low"; }
         }
+    }
+}
 
         // --- FLUJO APP ---
         // --- FLUJO APP ---
