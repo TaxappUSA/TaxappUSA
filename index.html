@@ -487,20 +487,8 @@ window.onload = () => {
 };
     window.avisoProximamente = (event) => {
     if (event) event.preventDefault();
-
-    // 1. Leemos el idioma de la etiqueta <html lang="..."> que me mostraste
-    const idioma = document.documentElement.lang.toLowerCase();
-
-    // 2. Definimos los mensajes
-    const mensajes = {
-        'es': "🚀 El Comparador de Precios estará disponible próximamente.",
-        'en': "🚀 The Price Comparator will be available soon."
-    };
-
-    // 3. Mostramos el mensaje (si es 'en' muestra inglés, si no, español por defecto)
-    const textoAMostrar = mensajes[idioma] || mensajes['es'];
-    
-    alert(textoAMostrar);
+    const lang = localStorage.getItem('appLang') || 'es';
+    alert(i18n[lang].alert_upcoming);
 };
 </script>
 </body>
