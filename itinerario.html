@@ -272,6 +272,112 @@ window.changeEmail = async () => {
         }
     }
 };
+    const translations = {
+    es: {
+        // Navegación
+        nav_home: "INICIO",
+        nav_expenses: "GASTOS",
+        nav_compare: "COMPARAR",
+        nav_units: "UNIDADES",
+        
+        // Títulos e Interfaz
+        itinerary_title: "📍 Itinerario",
+        settings_title: "Ajustes",
+        label_language: "Idioma",
+        btn_theme: "Cambiar Tema",
+        btn_refresh: "Actualizar App",
+        btn_logout: "Cerrar Sesión",
+        
+        // Selector de Ciudades
+        city_orlando: "🎡 Orlando",
+        city_nyc: "🍎 Nueva York",
+        city_miami: "🏖️ Miami",
+        city_vegas: "🎲 Las Vegas",
+        city_la: "🎬 Los Ángeles",
+        city_sf: "🌉 San Francisco",
+        city_chicago: "🏢 Chicago",
+        city_dc: "🏛️ Washington D.C.",
+        
+        // Estados de Filas (Queues)
+        status_low: "BAJA 🟢",
+        status_med: "MED 🟡",
+        status_high: "ALTA 🔴",
+        status_closed: "CERRADO 🌙",
+        status_na: "N/A",
+        
+        // Notas y Tips
+        note_placeholder: "Vuelos, hoteles, recordatorios...",
+        btn_add_note: "AGREGAR AL HISTORIAL",
+        tip_label: "✨ Tip de Viaje",
+        
+        // Gestión de Cuenta
+        btn_change_profile: "👤 Cambiar de Perfil",
+        btn_change_email: "📧 Cambiar Correo",
+        btn_change_pass: "🔑 Cambiar Contraseña",
+        btn_delete_acc: "🗑️ Eliminar Cuenta",
+        prompt_new_email: "Ingresa el nuevo correo electrónico:",
+        prompt_new_pass: "Ingresa la nueva contraseña (mínimo 6 caracteres):",
+        alert_email_verify: "Se ha enviado un correo de verificación. El cambio se aplicará tras verificar.",
+        alert_pass_success: "Contraseña actualizada con éxito.",
+        alert_reauth_required: "Error: Reautenticación requerida para cambios sensibles.",
+        confirm_delete_account: "¿ESTÁS SEGURO? Esta acción borrará todos tus datos de forma permanente.",
+        
+        // Footer
+        footer_created: "Creado por"
+    },
+    en: {
+        // Navigation
+        nav_home: "HOME",
+        nav_expenses: "EXPENSES",
+        nav_compare: "COMPARE",
+        nav_units: "UNITS",
+        
+        // Titles & UI
+        itinerary_title: "📍 Itinerary",
+        settings_title: "Settings",
+        label_language: "Language",
+        btn_theme: "Toggle Theme",
+        btn_refresh: "Refresh App",
+        btn_logout: "Sign Out",
+        
+        // City Selector
+        city_orlando: "🎡 Orlando",
+        city_nyc: "🍎 New York",
+        city_miami: "🏖️ Miami",
+        city_vegas: "🎲 Las Vegas",
+        city_la: "🎬 Los Angeles",
+        city_sf: "🌉 San Francisco",
+        city_chicago: "🏢 Chicago",
+        city_dc: "🏛️ Washington D.C.",
+        
+        // Queue Status
+        status_low: "LOW 🟢",
+        status_med: "MED 🟡",
+        status_high: "HIGH 🔴",
+        status_closed: "CLOSED 🌙",
+        status_na: "N/A",
+        
+        // Notes & Tips
+        note_placeholder: "Flights, hotels, reminders...",
+        btn_add_note: "ADD TO HISTORY",
+        tip_label: "✨ Travel Tip",
+        
+        // Account Management
+        btn_change_profile: "👤 Change Profile",
+        btn_change_email: "📧 Change Email",
+        btn_change_pass: "🔑 Change Password",
+        btn_delete_acc: "🗑️ Delete Account",
+        prompt_new_email: "Enter your new email address:",
+        prompt_new_pass: "Enter your new password (minimum 6 characters):",
+        alert_email_verify: "A verification email has been sent. Changes will apply after verification.",
+        alert_pass_success: "Password updated successfully.",
+        alert_reauth_required: "Error: Re-authentication required for sensitive changes.",
+        confirm_delete_account: "ARE YOU SURE? This action will permanently delete all your data.",
+        
+        // Footer
+        footer_created: "Created by"
+    }
+};
 
 window.changePassword = async () => {
     const lang = localStorage.getItem('appLang') || 'es';
