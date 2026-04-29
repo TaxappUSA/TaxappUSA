@@ -241,10 +241,10 @@ h1 {
     </div>
     
     <div class="countdown-box" id="box-trip" onclick="openTripModal()">
-        <span class="edit-hint">✏️</span>
-        <span class="countdown-label" id="trip-label" data-i18n="loading">Cargando viaje...</span>
-        <span id="timer">00d 00h 00m 00s</span>
-    </div>
+    <span class="edit-hint">✏️</span>
+    <span class="countdown-label" id="trip-label" data-i18n="loading">Cargando viaje...</span>
+    <span id="timer">00d 00h 00m 00s</span>
+</div>
     
     <div class="input-group">
         <label data-i18n="label_price">Precio en Etiqueta (USD)</label>
@@ -307,24 +307,24 @@ h1 {
     <span data-i18n="footer_by">Creado por Juan Cruz Bria</span> <img src="https://flagcdn.com/w40/ar.png" style="width:18px;" alt="Argentina">
 </div>
     <div class="api-credits">
-        APIs USADAS: Firebase • FlagCDN • Google Auth • reCAPTCHA v3
-    </div>
+    <span data-i18n="api_used">APIs USADAS</span>: Firebase • FlagCDN • Google Auth • reCAPTCHA v3
+</div>
 
     <div id="tripModal" class="modal">
-        <div class="modal-content">
-            <h3 style="margin-top:0; color: var(--primary);">Mi Viaje</h3>
-            <div class="input-group">
-                <label>¿A qué ciudad vas?</label>
-                <input type="text" id="input-destination" placeholder="Ej: Orlando">
-            </div>
-            <div class="input-group">
-                <label>Fecha del viaje</label>
-                <input type="date" id="input-date">
-            </div>
-            <button class="drawer-btn" style="background: var(--primary); color: white; border: none;" onclick="saveTripSettings()">GUARDAR</button>
-            <button onclick="closeTripModal()" style="width:100%; background:none; border:none; margin-top:15px; color:var(--text-sub); font-weight:700; cursor:pointer;">Cerrar</button>
+    <div class="modal-content">
+        <h3 style="margin-top:0; color: var(--primary);" data-i18n="modal_trip_title">Mi Viaje</h3>
+        <div class="input-group">
+            <label data-i18n="modal_city_label">¿A qué ciudad vas?</label>
+            <input type="text" id="input-destination" placeholder="Ej: Orlando">
         </div>
+        <div class="input-group">
+            <label data-i18n="modal_date_label">Fecha del viaje</label>
+            <input type="date" id="input-date">
+        </div>
+        <button class="drawer-btn" style="background: var(--primary); color: white; border: none;" onclick="saveTripSettings()" data-i18n="btn_save">GUARDAR</button>
+        <button onclick="closeTripModal()" style="..." data-i18n="btn_close">Cerrar</button>
     </div>
+</div>
 
     <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
     <div id="settingsDrawer" class="settings-drawer">
@@ -389,7 +389,9 @@ h1 {
                 settings_title: "Ajustes", label_language: "Idioma", btn_change_profile: "Cambiar Perfil",
                 btn_theme: "Cambiar Tema", btn_password: "Cambiar Contraseña", btn_logout: "Cerrar Sesión", btn_delete: "Eliminar Cuenta",
                 trip_title: "Mi Viaje", btn_save: "GUARDAR", btn_close: "Cerrar", loading: "Cargando...", days_to: "Faltan para",
-                soon: "¡Próximamente!"
+                soon: "¡Próximamente!", loading: "Cargando viaje...", loading_tips: "Cargando tip económico...", footer_by: "Creado por Juan Cruz Bria",
+                api_used: "APIs USADAS", tax_applied_label: "Tax Aplicado", days_label: "d", hours_label: "h", minutes_label: "m", seconds_label: "s",
+                trip_prefix: "Faltan para"
             },
             en: {
                 nav_expenses: "EXPENSES", nav_itinerary: "ITINERARY", nav_compare: "COMPARE", nav_units: "UNITS",
@@ -398,30 +400,39 @@ h1 {
                 settings_title: "Settings", label_language: "Language", btn_change_profile: "Change Profile",
                 btn_theme: "Toggle Theme", btn_password: "Change Password", btn_logout: "Logout", btn_delete: "Delete Account",
                 trip_title: "My Trip", btn_save: "SAVE", btn_close: "Close", loading: "Loading...", days_to: "Days until",
-                soon: "Coming Soon!"
+                soon: "Coming Soon!", loading: "Loading trip...", loading_tips: "Loading economic tip...",  footer_by: "Created by Juan Cruz Bria",
+                api_used: "APIS USED",  tax_applied_label: "Tax Applied", days_label: "d", hours_label: "h", minutes_label: "m", seconds_label: "s", 
+                trip_prefix: "Days until"
             }
         };
 
         window.changeLanguage = (lang) => {
-    localStorage.setItem('appLang', lang);
-    
-    // 1. Marcar botón activo
-    document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
-    const activeBtn = document.getElementById('lang-' + lang);
-    if (activeBtn) activeBtn.classList.add('active');
-    
-    // 2. TRADUCIR: Busca todo lo que tenga data-i18n y cambia el texto
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-            el.innerText = translations[lang][key];
-        }
-    });
+        localStorage.setItem('appLang', lang);
+        
+        // 1. Marcar botón activo
+        document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
+        const activeBtn = document.getElementById('lang-' + lang);
+        if (activeBtn) activeBtn.classList.add('active');
+        
+        // 2. TRADUCIR: Busca todo lo que tenga data-i18n y cambia el texto
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+                el.innerText = translations[lang][key];
+            }
+        });
 
-            // Actualizar elementos dinámicos
-            if (typeof calculate === 'function') calculate();
-            if (typeof updateTripUI === 'function') updateTripUI();
-        };
+        // 3. ACTUALIZAR EL CONSEJO (TIP) ACTUAL
+        const tipElement = document.getElementById('tip-content');
+        if (tipElement && econTips[lang]) {
+            // Usamos el tipIndex global para saber qué consejo está en pantalla
+            // y simplemente le cambiamos el idioma.
+            tipElement.innerText = econTips[lang][tipIndex];
+        }
+
+        // 4. Actualizar cálculos (para que el label del Tax también cambie)
+        if (typeof calculate === 'function') calculate();
+    };
         
         onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -529,18 +540,32 @@ h1 {
             "West Virginia": [{n:"Bridgeport", t:6.5}], "Wisconsin": [{n:"Milwaukee", t:5.5}], "Wyoming": [{n:"Cheyenne", t:6.0}]
         };
 
-        const econTips = [
-    " Delaware y Oregon tienen 0% de Sales Tax. Ideal para comprar Apple o lujo.",
-    "💡 En NYC, la ropa y calzado de menos de $110 están exentos de tax municipal.",
-    "💡 New Jersey tiene 0% de tax en ropa. Ideal si vas al Jersey Gardens desde NY.",
-    "💡 En Miami (7%), los outlets como Sawgrass rinden más si usás su libro de cupones.",
-    "💡 Texas ofrece 'Tax Free Shopping' para turistas extranjeros en locales adheridos.",
-    "💡 Recuerda: en EE.UU. el precio de etiqueta NUNCA incluye el impuesto de venta.",
-    "💡 Minnesota y Pennsylvania no cobran impuestos en la mayoría de la ropa y calzado.",
-    "💡 Ahorra: los estados con 'Tax Holidays' (como Florida en agosto) eliminan taxes en útiles.",
-    "💡 Si comprás online y retirás en tienda (Store Pickup), pagás el tax de esa ubicación.",
-    "💡 Las propinas (Tips) se calculan sobre el valor total CON impuestos en muchos tickets."
-];
+        const econTips = {
+    es: [
+        "Delaware y Oregon tienen 0% de Sales Tax. Ideal para comprar Apple o lujo.",
+        "En NYC, la ropa y calzado de menos de $110 están exentos de tax municipal.",
+        "New Jersey tiene 0% de tax en ropa. Ideal si vas al Jersey Gardens desde NY.",
+        "En Miami (7%), los outlets como Sawgrass rinden más si usás su libro de cupones.",
+        "Texas ofrece 'Tax Free Shopping' para turistas extranjeros en locales adheridos.",
+        "Recuerda: en EE.UU. el precio de etiqueta NUNCA incluye el impuesto de venta.",
+        "Minnesota y Pennsylvania no cobran impuestos en la mayoría de la ropa y calzado.",
+        "Ahorra: los estados con 'Tax Holidays' (como Florida en agosto) eliminan taxes en útiles.",
+        "Si comprás online y retirás en tienda (Store Pickup), pagás el tax de esa ubicación.",
+        "Las propinas (Tips) se calculan sobre el valor total CON impuestos en muchos tickets."
+    ],
+    en: [
+        "Delaware and Oregon have 0% Sales Tax. Ideal for Apple products or luxury items.",
+        "In NYC, clothing and footwear under $110 are exempt from local sales tax.",
+        "New Jersey has 0% tax on clothing. Perfect if you visit Jersey Gardens from NY.",
+        "In Miami (7%), outlets like Sawgrass are better if you use their coupon book.",
+        "Texas offers 'Tax Free Shopping' for foreign tourists at participating stores.",
+        "Remember: in the US, the sticker price NEVER includes sales tax.",
+        "Minnesota and Pennsylvania do not charge tax on most clothing and footwear.",
+        "Save more: states with 'Tax Holidays' (like Florida in August) remove taxes on supplies.",
+        "If you buy online and use Store Pickup, you pay the tax of that specific location.",
+        "Tips are calculated on the total value INCLUDING taxes on many receipts."
+    ]
+};
 
 let indiceConsejo = 0;
 
@@ -732,24 +757,10 @@ window.clicManualConsejo = () => {
         window.closeTripModal = () => document.getElementById('tripModal').style.display = 'none';
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
 
-        window.onload = () => { 
-            window.loadCities(); 
-            setInterval(updateCountdown, 1000); 
+        let tipIndex = 0;
 
-            const savedLang = localStorage.getItem('appLang') || 'es';
-            window.changeLanguage(savedLang);
+                    let tipIndex = 0;
 
-            const tipElement = document.getElementById('tip-content');
-            let tipIndex = 0;
-            
-            const rotateTip = () => {
-                tipIndex = (tipIndex + 1) % econTips.length;
-                tipElement.style.opacity = 0;
-                setTimeout(() => {
-                    tipElement.innerText = econTips[tipIndex];
-                    tipElement.style.opacity = 1;
-                }, 400);
-            };
 
             tipElement.innerText = econTips[0];
             setInterval(rotateTip, 8000);
