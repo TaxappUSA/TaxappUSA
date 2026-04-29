@@ -435,6 +435,7 @@ window.changeLanguage = (lang) => {
     });
     const tc = document.getElementById('tip-content');
     if (tc) tc.innerText = unitTips[lang][tipIndex];
+    document.title = lang === 'en' ? 'TaxUSA — Units' : 'TaxUSA — Unidades';
 };
 
 /* ── Converters logic ── */
