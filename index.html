@@ -142,7 +142,7 @@
         <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
         <a href="comparador.html" class="btn-nav"><span class="ni">🔍</span><span data-i18n="nav_compare">COMPARAR</span></a>
         <a href="unidades.html" class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
-        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()">⚙️</button>
+        <button class="btn-nav-settings" id="navProfileBtn" onclick="toggleSettings()"></button>
     </nav>
 
     <div class="countdown-box" onclick="openTripModal()">
@@ -484,6 +484,21 @@ window.onload = () => {
     if (tc) tc.innerText = econTips[lang][tipIndex];
     tipTimer = setInterval(window.cambiarConsejo, 8000);
 };
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const foto = localStorage.getItem('perfilActivoFoto');
+    const btn = document.getElementById('navProfileBtn');
+    if (foto && btn) {
+        btn.style.backgroundImage = `url('${foto}')`;
+    }
+});
+
+// Tu función para abrir el menú lateral
+function toggleSettings() {
+    document.getElementById('settingsDrawer').classList.toggle('open');
+    document.getElementById('menuOverlay').style.display = 'block';
+}
+</script>
 </script>
 </body>
 </html>
