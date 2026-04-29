@@ -221,7 +221,7 @@
         dc: { tz: "America/New_York", spots: [{ name: "🏛️ Capitol" }, { name: "🗿 Lincoln Memorial" }, { name: "🏛️ Smithsonian" }, { name: "🌹 Arlington" }] }
     };
 
-    window.changeLanguage = (lang) => {
+   window.changeLanguage = (lang) => {
         localStorage.setItem('appLang', lang);
         document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
         document.getElementById('lang-' + lang)?.classList.add('active');
@@ -235,6 +235,7 @@
         });
         const tipEl = document.getElementById('tip-text');
         if (tipEl) tipEl.innerText = tips[lang][currentTipIndex];
+        document.title = lang === 'en' ? 'TaxUSA — Itinerary' : 'TaxUSA — Itinerario';
         renderCityData();
     };
 
