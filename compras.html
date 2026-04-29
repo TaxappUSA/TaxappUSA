@@ -988,17 +988,19 @@ if (finalUSD > 0) {
     };
 
         let currentTipIndex = 0;
-        window.nextTip = () => { 
-    currentTipIndex = (currentTipIndex + 1) % shoppingTips.length; 
+window.nextTip = () => { 
+    // Detectamos el idioma actual
+    const lang = localStorage.getItem('appLang') || 'es';
+    const tips = shoppingTips[lang]; // Accedemos a la lista correcta
+    
+    currentTipIndex = (currentTipIndex + 1) % tips.length; 
     const el = document.getElementById('tip-text');
+    
     if(el) { 
         el.style.opacity = 0; 
         setTimeout(() => { 
-            // 1. Cambiamos el texto
-            el.innerText = shoppingTips[currentTipIndex]; 
-            // 2. Aplicamos Twemoji SOLO a este pequeño elemento
-            updateEmojis(el); 
-            // 3. Mostramos
+            el.innerText = tips[currentTipIndex]; 
+            if(typeof updateEmojis === 'function') updateEmojis(el); 
             el.style.opacity = 1; 
         }, 300); 
     }
@@ -1069,8 +1071,11 @@ if (finalUSD > 0) {
         };
 
         window.onload = () => { 
+    const savedLang = localStorage.getItem('appLang') || 'es';
+    
     const el = document.getElementById('tip-text');
-    if(el) el.innerText = shoppingTips[0]; 
+    // CAMBIO: Usar el idioma guardado y la lista correcta
+    if(el) el.innerText = shoppingTips[savedLang][currentTipIndex]; 
     
     setTimeout(() => {
         if(typeof twemoji !== 'undefined') {
@@ -1078,11 +1083,9 @@ if (finalUSD > 0) {
         }
     }, 500);
 
-    const savedLang = localStorage.getItem('appLang') || 'es';
     window.changeLanguage(savedLang); 
-
     setInterval(window.nextTip, 8000); 
-    fetchRates(); 
+    if(typeof fetchRates === 'function') fetchRates(); 
 };
     </script>
 
