@@ -49,6 +49,54 @@
         .st-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:3px;}
         #tip-text{font-size:.8rem;font-weight:600;color:var(--text);line-height:1.4;transition:opacity .3s;}
 
+         .wrap{width:100%;max-width:460px;}
+
+        /* --- ESTILOS DEL LOGO ACTUALIZADOS --- */
+        .app-header-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .logo-icon {
+            width: 52px;
+            height: 52px;
+            background: var(--primary); 
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .flag-stripe {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--danger); 
+        }
+        .logo-symbol {
+            color: white;
+            font-size: 26px;
+            font-weight: 900;
+        }
+        .logo-text {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--header-color);
+            letter-spacing: -1px;
+        }
+        .logo-text span {
+            color: var(--primary);
+            font-weight: 400;
+        }
+
         .rates-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
         .rate-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
         .rate-box.arg{border-top:3px solid var(--cyan);}
