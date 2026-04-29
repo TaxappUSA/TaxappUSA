@@ -257,8 +257,16 @@ h1 {
 
 /* Botón Cerrar - Rojo Aesthetic */
 .btn-close {
-    background: #ff4d4d; /* Rojo vibrante */
+    background: #e54b4b; /* Un rojo más mate/frío */
     color: white;
+    box-shadow: 0 4px 12px rgba(229, 75, 75, 0.2);
+}
+.btn-close:hover {
+    background: #d43f3f; /* Oscurece un poco al pasar el mouse */
+}  
+.btn-modal span:first-child {
+    font-size: 1.1rem;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
 }
         
         .settings-trigger { position: absolute; top: 15px; right: 15px; background: var(--box-bg); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; color: var(--text-main); }
