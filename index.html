@@ -302,7 +302,8 @@ const i18n = {
         modal_trip_title:"Mi Viaje",modal_city_label:"¿A qué ciudad vas?",modal_date_label:"Fecha del viaje",
         btn_save:"GUARDAR",btn_close:"CERRAR",trip_prefix:"Faltan para",
         footer_by:"Creado por Juan Cruz Bria",tip_label:"CONSEJO ECONÓMICO",
-        d:"d",h:"h",m:"m",s:"s"
+        d:"d",h:"h",m:"m",s:"s",
+        alert_upcoming: "🚀 El Comparador de Precios estará disponible próximamente."
     },
     en:{
         nav_expenses:"EXPENSES",nav_itinerary:"ITINERARY",nav_compare:"COMPARE",nav_units:"UNITS",
@@ -316,7 +317,8 @@ const i18n = {
         modal_trip_title:"My Trip",modal_city_label:"Where are you going?",modal_date_label:"Trip Date",
         btn_save:"SAVE",btn_close:"CLOSE",trip_prefix:"Days until",
         footer_by:"Created by Juan Cruz Bria",tip_label:"ECONOMIC TIP",
-        d:"d",h:"h",m:"m",s:"s"
+        d:"d",h:"h",m:"m",s:"s",
+        alert_upcoming: "🚀 The Price Comparator will be available soon."
     }
 };
 
@@ -344,6 +346,7 @@ window.clicConsejo = () => {
 
 window.changeLanguage = (lang) => {
     localStorage.setItem('appLang', lang);
+     document.documentElement.setAttribute('lang', lang); 
     document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('active'));
     document.getElementById('lang-' + lang)?.classList.add('active');
     document.querySelectorAll('[data-i18n]').forEach(el => {
