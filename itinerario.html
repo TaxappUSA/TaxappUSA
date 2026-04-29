@@ -214,12 +214,24 @@
         orlando: { tz: "America/New_York", spots: [{ name: "🏰 Magic Kingdom", parkId: "6" }, { name: "🚀 Epcot", parkId: "5" }, { name: "🎬 Hollywood Studios", parkId: "7" }, { name: "🦁 Animal Kingdom", parkId: "8" }, { name: "📽️ Universal Studios", parkId: "65" }, { name: "🦖 Islands of Adventure", parkId: "64" }] },
         nyc: { tz: "America/New_York", spots: [{ name: "🗽 Estatua Libertad" }, { name: "🏢 Empire State" }, { name: "🍎 Times Square" }, { name: "🌳 Central Park" }] },
         miami: { tz: "America/New_York", spots: [{ name: "🌊 South Beach" }, { name: "🛍️ Sawgrass Mills" }, { name: "🎨 Wynwood Walls" }, { name: "🛥️ Bayside Mkt" }] },
-        vegas: { tz: "America/Los_Angeles", spots: [{ name: "🎲 Bellagio Fountains" }, { name: "🎡 High Roller" }, { name: "🍸 The Strip" }, { name: "🎰 Fremont St" }] },
+        vegas: { tz: "America/Los_Angeles", spots: [{ name: "🎲 Bellagio Fountains" }, { name: "🎡 High Roller" }, { name: "🎰 Fremont St" }] },
         la: { tz: "America/Los_Angeles", spots: [{ name: "🎬 Santa Monica Pier" }, { name: "🌌 Griffith Obs" }, { name: "🎢 Universal CA" }, { name: "🌟 Walk of Fame" }] },
         sf: { tz: "America/Los_Angeles", spots: [{ name: "🌉 Golden Gate" }, { name: "⛓️ Alcatraz" }, { name: "🦀 Pier 39" }, { name: "🚋 Lombard St" }] },
         chicago: { tz: "America/Chicago", spots: [{ name: "🫘 The Bean" }, { name: "🗼 Willis Tower" }, { name: "🎡 Navy Pier" }, { name: "🖼️ Art Institute" }] },
-        dc: { tz: "America/New_York", spots: [{ name: "🏛️ Capitolio" }, { name: "🏠 Casa Blanca" }, { name: "🦒 Zoo Nacional" }, { name: "🚀 Museo Aeroespacial" }] }
-    };
+                if (localHour >= 22 || localHour < 8) { el.innerText = t.status_closed; el.className = "queue-status q-off"; }
+                else {
+                    try {
+                        const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(`<https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json>`));
+                        const data = await res.json();
+                        let tot = 0, c = 0;
+                        const rides = [];
+                        if (data.lands) data.lands.forEach(l => rides.push(...l.rides));
+                        if (data.rides) rides.push(...data.rides);
+                        rides.forEach(r => { if(r.is_open){ tot += r.wait_time; c++; } });
+                        const avg = c > 0 ? tot / c : 0;
+                        if (avg <= 20) { el.innerText = t.status_low; el.className = "queue-status q-low"; }
+                        else if (avg <= 45) { el.innerText = t.status_med; el.className = "queue-status q-med"; }
+    });
 
     window.changeLanguage = (lang) => {
         localStorage.setItem('appLang', lang);
