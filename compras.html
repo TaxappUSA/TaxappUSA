@@ -445,7 +445,7 @@ img.emoji {
         btn_save_expense: "SAVE EXPENSE",
         loading: "Loading...",
         title_footwear: "👟 Footwear (ARG → US)",
-        th_men: "M", th_women: "W", th_equiv: "US EQUIV.",
+        th_men: "M", th_women: "W", th_equiv: "US SIZE.",
         title_tops: "👕 T-Shirts / Tops",
         title_jackets: "🧥 Hoodies / Jackets",
         title_settings: "Settings",
@@ -925,23 +925,44 @@ if (finalUSD > 0) {
 }
 }
 
-        const shoppingTips = [
-            "Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa ni calzado.",
-            "Impuestos: El precio de etiqueta NO incluye el Tax (aprox. 7-9%).",
-            "Ross/Marshalls: Los mejores precios están en los racks de 'Clearance'.",
-            "Apple: Comprá 'Refurbished' en su web oficial para ahorrar un 15%.",
-            "Best Buy: Tienen una sección de 'Open Box' con productos casi nuevos rebajados.",
-            "Cupones: Descargá la app 'RetailMeNot' para descuentos en el momento.",
-            "Seguridad: Nunca dejes bolsas visibles dentro del auto estacionado.",
-            "Documentos: Llevá siempre una foto del pasaporte en el celular.",
-            "Walmart: Ideal para snacks, tecnología básica y valijas baratas.",
-            "Talles: Un 'M' en USA suele ser un 'L' en Argentina. ¡Probate siempre!",
-            "Efectivo: Siempre tené billetes de 1 y 5 USD para propinas rápidas.",
-            "Premium Outlets: Registrate en su web para recibir cuponeras VIP gratis.",
-            "Equipaje: Pesá tu valija antes de ir al aeropuerto; el límite suele ser 23kg.",
-            "Amazon Hub: Podés pedir por Amazon y retirar en lockers de 7-Eleven.",
-            "Bancos: Avisá en tu homebanking que vas a usar la tarjeta en el exterior."
-        ];
+        const shoppingTips = {
+    es: [
+        "Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa ni calzado.",
+        "Impuestos: El precio de etiqueta NO incluye el Tax (aprox. 7-9%).",
+        "Ross/Marshalls: Los mejores precios están en los racks de 'Clearance'.",
+        "Apple: Comprá 'Refurbished' en su web oficial para ahorrar un 15%.",
+        "Best Buy: Tienen una sección de 'Open Box' con productos casi nuevos rebajados.",
+        "Cupones: Descargá la app 'RetailMeNot' para descuentos en el momento.",
+        "Seguridad: Nunca dejes bolsas visibles dentro del auto estacionado.",
+        "Documentos: Llevá siempre una foto del pasaporte en el celular.",
+        "Walmart: Ideal para snacks, tecnología básica y valijas baratas.",
+        "Talles: Un 'M' en USA suele ser un 'L' en Argentina. ¡Probate siempre!",
+        "Efectivo: Siempre tené billetes de 1 y 5 USD para propinas rápidas.",
+        "Premium Outlets: Registrate en su web para recibir cuponeras VIP gratis.",
+        "Equipaje: Pesá tu valija antes de ir al aeropuerto; el límite suele ser 23kg.",
+        "Amazon Hub: Podés pedir por Amazon y retirar en lockers de 7-Eleven.",
+        "Bancos: Avisá en tu homebanking que vas a usar la tarjeta en el exterior."
+    ],
+    en: [
+        "Jersey Gardens (NJ): Tax Free! You don't pay tax on clothes or footwear.",
+        "Taxes: The tag price does NOT include Tax (approx. 7-9%).",
+        "Ross/Marshalls: Best prices are in the 'Clearance' racks.",
+        "Apple: Buy 'Refurbished' on their official web to save 15%.",
+        "Best Buy: They have an 'Open Box' section with like-new discounted products.",
+        "Coupons: Download 'RetailMeNot' app for instant discounts.",
+        "Security: Never leave visible bags inside a parked car.",
+        "Documents: Always keep a photo of your passport on your phone.",
+        "Walmart: Ideal for snacks, basic tech, and cheap suitcases.",
+        "Sizes: A US 'M' is usually an 'L' in Argentina. Always try it on!",
+        "Cash: Always keep $1 and $5 bills for quick tips.",
+        "Premium Outlets: Sign up on their website for free VIP coupon books.",
+        "Baggage: Weigh your suitcase before the airport; the limit is usually 23kg.",
+        "Amazon Hub: You can order on Amazon and pick up at 7-Eleven lockers.",
+        "Banks: Notify your bank that you will use your card abroad."
+    ]
+};
+
+let currentTipIndex = 0;
 
         let currentTipIndex = 0;
         window.nextTip = () => { 
