@@ -39,26 +39,73 @@
             color: var(--text-main);
         }
 
-        /* Selector de Idioma Aesthetic */
-        .lang-selector {
+        /* --- ESTILOS DEL SELECTOR DE IDIOMAS --- */
+        .custom-select-wrapper {
             position: absolute;
             top: 20px;
             right: 20px;
-            display: flex;
-            gap: 10px;
+            z-index: 100;
         }
-        .lang-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--input-border);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            cursor: pointer;
-        }
-        .lang-btn.active { border-color: var(--primary); color: var(--primary); }
 
+        .custom-select {
+            background: var(--card-bg);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            cursor: pointer;
+            position: relative;
+            min-width: 95px;
+            user-select: none;
+        }
+
+        .selected-lang {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+
+        .selected-lang .arrow {
+            font-size: 0.6rem;
+            color: var(--primary);
+            margin-left: auto;
+        }
+
+        .lang-options {
+            display: none;
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        .lang-options.show { display: block; }
+
+        .option {
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+
+        .option:hover { background: var(--input-bg); }
+
+        .selected-lang img, .option img {
+            width: 20px;
+            height: 14px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        /* --- ESTILOS LOGIN CARD --- */
         .login-card { 
             background: var(--card-bg); 
             padding: 2.5rem; 
@@ -131,22 +178,22 @@
 <body>
 
     <div class="custom-select-wrapper">
-    <div class="custom-select" onclick="toggleLangMenu()">
-        <div class="selected-lang" id="current-lang-display">
-            <img src="https://flagcdn.com/w20/ar.png" id="selected-flag">
-            <span>ES</span>
-            <span class="arrow">▼</span>
-        </div>
-        <div class="lang-options" id="langOptions">
-            <div class="option" onclick="applyLanguage('es')">
-                <img src="https://flagcdn.com/w20/ar.png"> ES
+        <div class="custom-select" onclick="toggleLangMenu()">
+            <div class="selected-lang" id="current-lang-display">
+                <img src="https://flagcdn.com/w20/ar.png" id="selected-flag">
+                <span>ES</span>
+                <span class="arrow">▼</span>
             </div>
-            <div class="option" onclick="applyLanguage('en')">
-                <img src="https://flagcdn.com/w20/us.png"> EN
+            <div class="lang-options" id="langOptions">
+                <div class="option" onclick="applyLanguage('es')">
+                    <img src="https://flagcdn.com/w20/ar.png"> ES
+                </div>
+                <div class="option" onclick="applyLanguage('en')">
+                    <img src="https://flagcdn.com/w20/us.png"> EN
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <div class="login-card">
         <h1 id="title" data-key="welcome">Bienvenido</h1>
@@ -198,7 +245,7 @@
             isTokenAutoRefreshEnabled: true 
         });
 
-        // --- MOTOR DE IDIOMAS ---
+        // --- DICCIONARIO I18N ---
         const i18n = {
             es: {
                 welcome: "Bienvenido",
@@ -237,28 +284,45 @@
         };
 
         let currentLang = localStorage.getItem('appLang') || 'es';
+        let isLogin = true;
+
+        // --- FUNCIONES DEL SELECTOR DE IDIOMA ---
+        window.toggleLangMenu = () => {
+            document.getElementById('langOptions').classList.toggle('show');
+        };
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.custom-select')) {
+                const menu = document.getElementById('langOptions');
+                if (menu && menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                }
+            }
+        }
 
         window.applyLanguage = (lang) => {
             currentLang = lang;
             localStorage.setItem('appLang', lang);
             
-            // UI Update
+            // Actualizar cara del selector
+            const flagImg = lang === 'es' ? 'https://flagcdn.com/w20/ar.png' : 'https://flagcdn.com/w20/us.png';
+            document.getElementById('selected-flag').src = flagImg;
+            document.querySelector('#current-lang-display span').innerText = lang.toUpperCase();
+
+            // Traducir textos fijos
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (i18n[lang][key]) el.innerText = i18n[lang][key];
             });
 
+            // Traducir placeholders
             document.querySelectorAll('[data-lp]').forEach(el => {
                 const key = el.getAttribute('data-lp');
                 if (i18n[lang][key]) el.placeholder = i18n[lang][key];
             });
 
-            // Botones selector
-            document.getElementById('btn-es').classList.toggle('active', lang === 'es');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            
-            // Actualizar textos dinámicos si el modo cambió
             updateDynamicTexts();
+            document.getElementById('langOptions').classList.remove('show');
         };
 
         const updateDynamicTexts = () => {
@@ -267,8 +331,7 @@
             document.getElementById('toggleLink').innerText = isLogin ? i18n[currentLang].noAccount : i18n[currentLang].haveAccount;
         };
 
-        let isLogin = true;
-
+        // --- LÓGICA DE FIREBASE Y AUTH ---
         window.toggleMode = () => {
             isLogin = !isLogin;
             updateDynamicTexts();
@@ -294,7 +357,7 @@
                 }
             } catch (e) { 
                 let msg = "Error: " + e.message;
-                if (e.code === 'auth/app-check-failed') msg = "reCAPTCHA Error. Try again.";
+                if (e.code === 'auth/app-check-failed') msg = "reCAPTCHA validation error.";
                 alert(msg); 
             }
         };
@@ -322,7 +385,7 @@
             }
         });
 
-        // Inicializar idioma
+        // Inicialización
         applyLanguage(currentLang);
 
     </script>
