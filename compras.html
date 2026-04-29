@@ -424,7 +424,12 @@ img.emoji {
         btn_delete_acc: "Eliminar Cuenta",
         footer_text: "Creado por Juan Cruz Bria 🇦🇷",
         nav_expenses: "INICIO", nav_itinerary: "ITINERARIO", nav_compare: "COMPARAR", nav_units: "UNIDADES",
-        label_total_spent: "Presupuesto Restante"
+        label_total_spent: "Presupuesto Restante",
+        alert_no_total: "No se detectó el total. Cargalo manualmente.",
+        alert_coming_soon: "🚀 ¡El Comparador de Precios estará disponible próximamente!",
+        confirm_delete: "¿Confirmas que querés eliminar este comprobante?",
+        error_delete: "Error al eliminar:",
+        error_snapshot: "Error en Snapshot: "
     },
     en: {
         ocr_analyzing: "Analyzing ticket... 🧐",
@@ -458,22 +463,27 @@ img.emoji {
         btn_delete_acc: "Delete Account",
         footer_text: "Created by Juan Cruz Bria 🇦🇷",
         nav_expenses: "HOME", nav_itinerary: "ITINERARY", nav_compare: "COMPARE", nav_units: "UNITS",
-        label_total_spent: "Remaining Budget"
+        label_total_spent: "Remaining Budget",
+        alert_no_total: "Total not detected. Please enter it manually.",
+        alert_coming_soon: "🚀 Price Comparator coming soon!",
+        confirm_delete: "Are you sure you want to delete this receipt?",
+        error_delete: "Error deleting:",
+        error_snapshot: "Snapshot Error: "
     }
 };
 
 window.changeLanguage = (lang) => {
     localStorage.setItem('appLang', lang);
 
-    // Actualizar botones visuales ES/EN
+    // Botones azules
     document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
     const btn = document.getElementById('lang-' + lang);
     if (btn) btn.classList.add('active');
 
-    // Traducir elementos
+    // Traducir HTML
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang][key]) {
+        if (translations[lang] && translations[lang][key]) {
             if (el.tagName === 'INPUT') {
                 el.placeholder = translations[lang][key];
             } else {
@@ -481,6 +491,14 @@ window.changeLanguage = (lang) => {
             }
         }
     });
+
+    // Traducir el Tip actual (IMPORTANTE)
+    const tipEl = document.getElementById('tip-text');
+    if (tipEl && shoppingTips[lang]) {
+        tipEl.innerText = shoppingTips[lang][currentTipIndex];
+        if(typeof twemoji !== 'undefined') twemoji.parse(tipEl);
+    }
+};
 
     // Esta es la parte que faltaba o estaba mal cerrada
     if (typeof updateEmojis === 'function') updateEmojis();
@@ -920,7 +938,8 @@ if (finalUSD > 0) {
     
     console.log(`Final detectado: ${finalUSD}`);
 } else {
-    alert("No se detectó el total. Cargalo manualmente.");
+    const lang = localStorage.getItem('appLang') || 'es';
+alert(translations[lang].alert_no_total);
 }
 }
 
@@ -1015,13 +1034,16 @@ if (finalUSD > 0) {
         };
 
         window.deleteGasto = async (id) => {
-            if (confirm("¿Confirmas que querés eliminar este comprobante?") && currentUser && perfilId) {
-                try {
-                    const docRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "gastos", id);
-                    await deleteDoc(docRef);
-                } catch (e) { console.error("Error al eliminar:", e); }
-            }
-        };
+    const lang = localStorage.getItem('appLang') || 'es';
+    if (confirm(translations[lang].confirm_delete) && currentUser && perfilId) {
+        try {
+            const docRef = doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "gastos", id);
+            await deleteDoc(docRef);
+        } catch (e) { 
+            console.error(translations[lang].error_delete, e); 
+        }
+    }
+};
 
         window.onload = () => { 
     const el = document.getElementById('tip-text');
@@ -1044,7 +1066,8 @@ if (finalUSD > 0) {
     <script>
         function avisoProximamente(event) {
             event.preventDefault();
-            alert("🚀 ¡El Comparador de Precios estará disponible próximamente!");
+            const lang = localStorage.getItem('appLang') || 'es';
+alert(translations[lang].alert_coming_soon);
         }   
 
     </script>
