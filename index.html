@@ -406,27 +406,25 @@ h1 {
         };
 
         window.changeLanguage = (lang) => {
-            localStorage.setItem('appLang', lang);
-            document.querySelectorAll('.lang-opt').forEach(opt => opt.classList.remove('active'));
-            const activeBtn = document.getElementById('lang-' + lang);
-            if (activeBtn) activeBtn.classList.add('active');
-            
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    el.innerText = translations[lang][key];
-                }
-            });
+    localStorage.setItem('appLang', lang);
+    
+    // ... (tu código de botones activos y data-i18n que ya tenés) ...
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            el.innerText = translations[lang][key];
+        }
+    });
 
-            // Esto hace que el tip cambie AL INSTANTE al tocar el botón de idioma
-            const tipElement = document.getElementById('tip-content');
-            if (tipElement) {
-                tipElement.innerText = econTips[lang][tipIndex];
-            }
+    // REFUERZO DE TIPS:
+    const tipElement = document.getElementById('tip-content');
+    if (tipElement) {
+        tipElement.innerText = econTips[lang][tipIndex];
+        tipElement.style.opacity = 1; // Asegura que sea visible
+    }
 
-            if (typeof window.calculate === 'function') window.calculate();
-            if (typeof updateTripUI === 'function') updateTripUI();
-        };
+    if (typeof window.calculate === 'function') window.calculate();
+};
         
         onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -745,33 +743,42 @@ window.clicManualConsejo = () => {
         window.logout = () => signOut(auth).then(() => window.location.replace("login.html"));
 
         // Lógica de Tips Dinámicos
-        window.onload = () => {
-            window.loadCities();
-            setInterval(updateCountdown, 1000);
-            
-            const savedLang = localStorage.getItem('appLang') || 'es';
-            window.changeLanguage(savedLang);
+        // 1. Declarar tipIndex UNA SOLA VEZ y AFUERA
+let tipIndex = 0; 
 
-            // Iniciar Tips
-            const tipElement = document.getElementById('tip-content');
-            if (tipElement) {
-                // Ponemos el primer tip inmediatamente según el idioma
-                tipElement.innerText = econTips[savedLang][tipIndex];
-                
-                const rotateTip = () => {
-                    const lang = localStorage.getItem('appLang') || 'es';
-                    const lista = econTips[lang];
-                    tipIndex = (tipIndex + 1) % lista.length;
-                    
-                    tipElement.style.opacity = 0;
-                    setTimeout(() => {
-                        tipElement.innerText = lista[tipIndex];
-                        tipElement.style.opacity = 1;
-                    }, 400);
-                };
-                setInterval(rotateTip, 8000);
-            }
+window.onload = () => {
+    // Carga inicial de datos
+    if (typeof window.loadCities === 'function') window.loadCities();
+    
+    // Iniciar contador
+    setInterval(updateCountdown, 1000);
+
+    // Aplicar idioma guardado
+    const savedLang = localStorage.getItem('appLang') || 'es';
+    window.changeLanguage(savedLang);
+
+    // Lógica de Tips
+    const tipElement = document.getElementById('tip-content');
+    if (tipElement) {
+        // Forzamos la aparición del primer tip de entrada
+        tipElement.innerText = econTips[savedLang][0];
+        tipElement.style.opacity = 1;
+
+        const rotateTip = () => {
+            const lang = localStorage.getItem('appLang') || 'es';
+            const lista = econTips[lang];
+            
+            tipIndex = (tipIndex + 1) % lista.length;
+            
+            tipElement.style.opacity = 0;
+            setTimeout(() => {
+                tipElement.innerText = lista[tipIndex];
+                tipElement.style.opacity = 1;
+            }, 400);
         };
+        setInterval(rotateTip, 8000);
+    }
+};
     </script>
 </body> 
 </html>
