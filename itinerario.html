@@ -85,13 +85,6 @@
             transition: color 0.3s ease;
         }
 
-        <div class="footer" data-i18n="footer_container">
-        <span data-i18n="footer_created">Creado por</span> 
-        <span style="font-weight: 800; color: var(--primary);">Juan Cruz Bria</span> 
-        <img src="https://flagcdn.com/w40/ar.png" style="width:18px; vertical-align: middle; margin-left: 4px;" alt="Argentina">
-    </div>
-</div>
-
         #tip-text {
     transition: opacity 0.3s ease; /* Esto hace que el texto "aparezca" suavemente */
     min-height: 2.4em; /* Evita que el contenedor salte si un tip es más largo que otro */
@@ -102,19 +95,21 @@
         .nav-bar { width: 100%; max-width: 450px; margin-bottom: 15px; display: flex; gap: 5px; }
         .btn-nav { flex: 1; padding: 10px 2px; background: var(--white); border-radius: 14px; font-weight: 800; text-align: center; text-decoration: none; font-size: 0.62rem; border: 2px solid var(--blue); color: var(--blue); white-space: nowrap }
 
-.card {
-    background: var(--white);
-    padding: 1.5rem;
-    border-radius: 24px;
-    width: 100%;
-    max-width: 450px;
-    min-height: 600px; /* Ajusta esto según el alto que desees */
+card { 
+    background: var(--white); 
+    padding: 1.5rem; 
+    border-radius: 24px; 
+    width: 100%; 
+    max-width: 450px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+    margin-bottom: 15px; 
+    position: relative;
+    
+    /* AGREGÁ ESTO PARA EL PIE DE PÁGINA */
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    margin-bottom: 15px;
-    position: relative;
-}        
+    min-height: 85vh; /* Esto asegura que la tarjeta sea alta y el nombre baje */
+}
         h2 { color: var(--primary); margin-top: 0; text-align: center; font-size: 1.4rem; margin-bottom: 10px; }
         
         .city-picker { width: 100%; padding: 10px; border-radius: 12px; border: 2px solid var(--border-color); font-weight: 800; color: var(--text-muted); margin-bottom: 15px; outline: none; background: var(--white); cursor: pointer; }
@@ -142,14 +137,14 @@
         .note-item { background: var(--white); padding: 18px; border-radius: 20px; margin-bottom: 12px; position: relative; display: flex; gap: 15px; align-items: flex-start; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color); }
         .note-text { font-size: 0.95rem; color: var(--text-main); font-weight: 600; white-space: pre-wrap; flex: 1; }
         
-.footer {
-    margin-top: auto; /* Esto es el truco: empuja el footer al final del flex-container */
-    padding-top: 30px;
-    padding-bottom: 10px;
-    text-align: center;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-weight: 600;
+.footer { 
+    /* CAMBIÁ TU .footer POR ESTE */
+    margin-top: auto; 
+    padding: 20px 0 5px 0; 
+    text-align: center; 
+    font-size: 0.75rem; 
+    color: #94a3b8; 
+    font-weight: 600; 
 }
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 1000; }
         .settings-drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--white); z-index: 1001; transition: 0.3s; padding: 25px; display: flex; flex-direction: column; box-shadow: -5px 0 15px rgba(0,0,0,0.1); color: var(--text-main); overflow-y: auto; }
@@ -258,6 +253,12 @@
     </div>
 </div>
 
+<div class="footer" data-i18n="footer_container">
+        <span data-i18n="footer_created">Creado por</span> 
+        <span style="font-weight: 800; color: var(--primary);">Juan Cruz Bria</span> 
+        <img src="https://flagcdn.com/w40/ar.png" style="width:18px; vertical-align: middle; margin-left: 4px;" alt="Argentina">
+    </div>
+</div>
    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, updateEmail, updatePassword, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
@@ -577,58 +578,61 @@ window.nextTip = () => {
     }
 }
 
-        // --- FLUJO APP ---
-        // --- FLUJO APP ---
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                
-                // 1. Verificamos perfil
-                if (!perfilId || perfilId === "null") {
-                    window.location.replace("profiles.html");
-                    return;
-                }
+    if (user) {
+        currentUser = user;
+        
+        // 1. Verificamos perfil
+        if (!perfilId || perfilId === "null") {
+            window.location.replace("profiles.html");
+            return;
+        }
 
-                // 2. Foto de perfil en el botón⚙️
-                const trigger = document.querySelector('.settings-trigger-nav');
-                if (trigger) {
-                    const imagenAMostrar = perfilFoto || user.photoURL;
-                    if (imagenAMostrar) {
-                        trigger.style.backgroundImage = `none`;
-                        trigger.style.backgroundColor = "transparent";
-                        trigger.style.borderRadius = "50%";
-                    }
-                }
-
-                try {
-                    // 3. Traemos el destino del perfil para setear el selector automáticamente
-                    const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
-                    const snap = await getDoc(profileRef);
-
-                    if (snap.exists()) {
-                        const destinoPerfil = snap.data().destino ? snap.data().destino.toLowerCase() : "orlando";
-                        
-                        // Ponemos el selector en la ciudad que corresponde al viaje
-                        const selector = document.getElementById('citySelector');
-                        if (selector) {
-                            selector.value = destinoPerfil;
-                        }
-                    }
-                    
-                    // 4. Cargamos los datos de la ciudad (Parques/Spots) y las notas
-                    renderCityData(); 
-                    listenNotes(); 
-                    
-                    // Mostramos el primer tip
-                    document.getElementById('tip-text').innerText = tips[0];
-
-                } catch (e) {
-                    console.error("Error al cargar datos del perfil:", e);
-                }
-            } else {
-                window.location.replace("login.html");
+        // 2. Foto de perfil en el botón⚙️
+        const trigger = document.querySelector('.settings-trigger-nav');
+        if (trigger) {
+            const imagenAMostrar = perfilFoto || user.photoURL;
+            if (imagenAMostrar) {
+                trigger.style.backgroundImage = `url('${imagenAMostrar}')`; // Corregido para que se vea la foto
+                trigger.style.backgroundSize = "cover";
+                trigger.style.backgroundColor = "transparent";
+                trigger.style.borderRadius = "50%";
+                trigger.innerText = ""; // Limpia el emoji de engranaje si hay foto
             }
-        });
+        }
+
+        try {
+            // 3. Traemos el destino del perfil para setear el selector automáticamente
+            const profileRef = doc(db, "usuarios", user.uid, "perfiles", perfilId);
+            const snap = await getDoc(profileRef);
+
+            if (snap.exists()) {
+                const destinoPerfil = snap.data().destino ? snap.data().destino.toLowerCase() : "orlando";
+                
+                const selector = document.getElementById('citySelector');
+                if (selector) {
+                    selector.value = destinoPerfil;
+                }
+            }
+            
+            // 4. Cargamos los datos de la ciudad (Parques/Spots) y las notas
+            renderCityData(); 
+            listenNotes(); 
+            
+            // --- CORRECCIÓN DEL UNDEFINED AQUÍ ---
+            const lang = localStorage.getItem('appLang') || 'es';
+            const tipEl = document.getElementById('tip-text');
+            if (tipEl && tips[lang]) {
+                tipEl.innerText = tips[lang][0]; // Usa el primer tip del idioma correcto
+            }
+
+        } catch (e) {
+            console.error("Error al cargar datos del perfil:", e);
+        }
+    } else {
+        window.location.replace("login.html");
+    }
+});
 
         window.addNote = async () => {
             const input = document.getElementById('noteInput');
