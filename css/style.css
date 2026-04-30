@@ -88,7 +88,7 @@ body {
     letter-spacing: -0.5px;
 }
 
-.app-logo img { width: 26px; border-radius: 3px; }
+.app-logo svg { width: 28px; height: 28px; flex-shrink: 0; }
 
 .nav-bar {
     display: flex;
