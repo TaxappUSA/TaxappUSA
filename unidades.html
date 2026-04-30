@@ -506,7 +506,8 @@ window.doDeleteAccount=async()=>{const l=localStorage.getItem('appLang')||'es',m
 onAuthStateChanged(auth, (user) => {
     if (!user) { window.location.replace('login.html'); return; }
     currentUser = user;
-    document.getElementById('userEmail').innerText = user.email;
+    document.getElementByIdconst perfilNombre = localStorage.getItem('perfilActivoNombre');
+document.getElementById('userEmail').innerText = perfilNombre || user.email;userEmail').innerText = user.email;
     const perfilId = localStorage.getItem('perfilActivoId');
     if (!perfilId) { window.location.replace('profiles.html'); return; }
     const img = perfilFoto || user.photoURL;
