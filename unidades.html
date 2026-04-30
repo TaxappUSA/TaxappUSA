@@ -142,7 +142,7 @@
         <a href="index.html" class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
         <a href="compras.html" class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_expenses">GASTOS</span></a>
         <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
-        <a href="javascript:void(0)" class="btn-nav" onclick="avisoProximamente(event)"><span class="ni">🔍</span> <span data-i18n="nav_compare">COMPARAR</span></a> 
+        <a href="comparador.html" class="btn-nav"><span class="ni">🔍</span><span data-i18n="nav_itinerary">COMPARADOR</span></a> 
         <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
     </nav>
 
@@ -530,15 +530,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
     if (tc) tc.innerText = unitTips[lang][tipIndex];
     setInterval(window.nextTip, 8000);
 });
-    window.avisoProximamente = (event) => {
-    if (event) event.preventDefault();
-    
-    // Obtenemos el idioma preferido del usuario
-    const lang = localStorage.getItem('appLang') || 'es';
-    
-    // Mostramos el mensaje correspondiente
-    alert(i18n[lang].alert_upcoming);
-};
+  
 </script>
 </body>
 </html>
