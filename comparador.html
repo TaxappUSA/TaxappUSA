@@ -53,50 +53,48 @@
         input,select{width:100%;padding:14px 16px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
         input:focus,select:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-dim);}
         input::placeholder{color:var(--text-dim);font-weight:500;}
-
-        /* Buscador */
         .search-wrap{position:relative;margin-bottom:14px;}
         .search-input{width:100%;padding:15px 50px 15px 18px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.95rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
         .search-input:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-dim);}
         .search-input::placeholder{color:var(--text-dim);font-weight:500;}
         .search-icon{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;}
-
-        /* Categorías */
         .cat-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
         .cat-btn{padding:10px 6px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text-sub);font-family:inherit;font-size:.72rem;font-weight:800;cursor:pointer;text-align:center;transition:var(--tr);display:flex;flex-direction:column;align-items:center;gap:4px;}
         .cat-btn .cat-icon{font-size:1.4rem;line-height:1;}
         .cat-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-dim);}
         .cat-btn.active{border-color:var(--primary);background:var(--primary);color:white;}
-
         .btn{width:100%;padding:15px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
         .btn:active{transform:scale(.97);}
         .btn-primary{background:var(--primary);color:white;box-shadow:0 4px 14px rgba(37,99,235,.3);}
         .btn-primary:hover{background:#1d4ed8;}
+        .btn-primary:disabled{background:#93c5fd;cursor:not-allowed;transform:none;}
         .btn-ghost{background:transparent;color:var(--text-sub);border:1.5px solid var(--border);}
-
-        /* Resultado */
+        .loading-box{display:none;text-align:center;padding:32px 20px;}
+        .loading-box.show{display:block;}
+        .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 12px;}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading-text{font-size:.85rem;font-weight:600;color:var(--text-sub);}
         .ai-result{display:none;}
         .ai-result.show{display:block;animation:fadeIn .3s ease;}
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
         .tip-box{background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:var(--radius-sm);padding:13px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px;}
         .tip-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
         .tip-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--primary);margin-bottom:3px;}
         .tip-text{font-size:.8rem;font-weight:600;color:var(--text);line-height:1.4;}
-
         .stores-grid{display:flex;flex-direction:column;gap:10px;}
-        .store-item{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;transition:var(--tr);}
-        .store-item:hover{border-color:var(--primary);background:var(--primary-dim);transform:translateX(3px);}
-        .store-left{display:flex;align-items:center;gap:12px;}
-        .store-logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
-        .store-name{font-weight:800;font-size:.9rem;color:var(--text);}
-        .store-tag{font-size:.7rem;color:var(--text-sub);font-weight:600;margin-top:2px;}
-        .store-arrow{color:var(--text-dim);font-size:1rem;flex-shrink:0;}
-
+        .product-card{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;text-decoration:none;display:block;transition:var(--tr);}
+        .product-card:hover{border-color:var(--primary);background:var(--primary-dim);transform:translateX(3px);}
+        .product-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+        .store-logo{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+        .store-name-badge{font-size:.7rem;font-weight:800;color:var(--text-sub);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:3px 8px;}
+        .product-title{font-weight:700;font-size:.88rem;color:var(--text);line-height:1.35;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+        .product-bottom{display:flex;align-items:center;justify-content:space-between;}
+        .product-price{font-size:1.15rem;font-weight:900;color:var(--primary);}
+        .product-link-label{font-size:.72rem;font-weight:700;color:var(--text-dim);}
+        .results-count{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:block;}
+        .no-results{text-align:center;padding:24px;color:var(--text-sub);font-size:.85rem;font-weight:600;}
         .app-footer{margin-top:8px;padding:12px 0;text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;}
         .app-footer img{width:16px;border-radius:2px;}
-
-        /* Settings drawer */
         .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:1000;backdrop-filter:blur(4px);}
         .settings-drawer{position:fixed;top:0;right:-300px;width:290px;height:100%;background:var(--surface);z-index:1001;transition:.3s ease;padding:28px 20px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15);border-left:1px solid var(--border);overflow-y:auto;}
         .settings-drawer.open{right:0;}
@@ -114,7 +112,6 @@
 </head>
 <body>
 <div class="wrap">
-
     <div class="app-header">
         <div class="logo">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -137,12 +134,10 @@
 
     <div class="card">
         <span class="slabel">🔍 <span data-i18n="label_search">BUSCAR PRODUCTO</span></span>
-
         <div class="search-wrap">
-            <input class="search-input" type="text" id="searchInput" data-i18n-ph="placeholder_search" placeholder="Ej: Nike Air Max, iPhone 15, Levi's 501..."/>
+            <input class="search-input" type="text" id="searchInput" placeholder="Ej: Nike Air Max, iPhone 15, Levi's 501..."/>
             <span class="search-icon">🔍</span>
         </div>
-
         <span class="slabel" data-i18n="label_category">CATEGORÍA</span>
         <div class="cat-grid-3">
             <button class="cat-btn active" data-cat="general" onclick="selectCat(this)">
@@ -155,10 +150,14 @@
                 <span class="cat-icon">👕</span><span data-i18n="cat_ropa">Ropa</span>
             </button>
         </div>
-
-        <button class="btn btn-primary" onclick="buscar()">
-            🔎 <span data-i18n="btn_search">BUSCAR EN TIENDAS</span>
+        <button class="btn btn-primary" id="btnBuscar" onclick="buscar()">
+            🔎 <span data-i18n="btn_search">BUSCAR PRECIOS REALES</span>
         </button>
+    </div>
+
+    <div class="loading-box" id="loadingBox">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loadingText">Buscando precios en tiendas de EE.UU...</div>
     </div>
 
     <div class="ai-result" id="aiResult">
@@ -170,7 +169,7 @@
             </div>
         </div>
         <div class="card">
-            <span class="slabel" id="storesLabel">BUSCAR EN ESTAS TIENDAS</span>
+            <span class="results-count" id="resultsCount"></span>
             <div class="stores-grid" id="storesGrid"></div>
         </div>
     </div>
@@ -181,7 +180,6 @@
     </div>
 </div>
 
-<!-- Settings Drawer -->
 <div class="menu-overlay" id="menuOverlay" onclick="toggleSettings()"></div>
 <div class="settings-drawer" id="settingsDrawer">
     <div class="drawer-header" data-i18n="settings_title">Ajustes</div>
@@ -217,37 +215,51 @@ const db = getFirestore(app);
 let currentUser = null;
 const perfilFoto = localStorage.getItem('perfilActivoFoto');
 
+// ── GOOGLE SEARCH CONFIG ──────────────────────────────
+const GOOGLE_API_KEY = 'AIzaSyCFuFNSoOiuIiI4SDJQx4DTs5aQ9Saz5s8';
+const GOOGLE_CX      = '50ae3d770e29d40f2';
+
 // ── I18N ──────────────────────────────────────────────
 const i18n = {
     es:{
         nav_home:"INICIO", nav_expenses:"GASTOS", nav_itinerary:"ITINERARIO", nav_units:"UNIDADES",
-        label_search:"BUSCAR PRODUCTO", placeholder_search:"Ej: Nike Air Max, iPhone 15, Levi's 501...",
-        label_category:"CATEGORÍA", cat_general:"General", cat_tech:"Tech", cat_ropa:"Ropa",
-        btn_search:"BUSCAR EN TIENDAS", tip_label:"TIP",
+        label_search:"BUSCAR PRODUCTO", label_category:"CATEGORÍA",
+        cat_general:"General", cat_tech:"Tech", cat_ropa:"Ropa",
+        btn_search:"BUSCAR PRECIOS REALES", tip_label:"TIP",
         settings_title:"Ajustes", label_language:"Idioma",
         btn_change_profile:"Cambiar Perfil", btn_theme:"Cambiar Tema",
         btn_email:"Cambiar Correo", btn_password:"Cambiar Contraseña",
         btn_logout:"Cerrar Sesión", btn_delete:"Eliminar Cuenta",
         footer_by:"Creado por Juan Cruz Bria",
-        stores_label:"BUSCAR EN ESTAS TIENDAS",
-        tip_general:"Comparar precios entre Amazon y Walmart suele dar diferencias de hasta 20%. Siempre revisá los reviews.",
-        tip_tech:"En Best Buy podés ver el producto en persona y pedir price match si lo encontrás más barato online.",
-        tip_ropa:"Revisá los outlet stores de Nike y Adidas — tienen descuentos de hasta 50% en colecciones anteriores.",
+        tip_general:"Comparar Amazon y Walmart puede mostrar diferencias de hasta 20%. Siempre revisá los reviews.",
+        tip_tech:"Best Buy hace price match si encontrás el mismo producto más barato online.",
+        tip_ropa:"Ross, TJ Maxx y Marshalls tienen los mejores precios en ropa de marca.",
+        loading_1:"Buscando precios en tiendas de EE.UU...",
+        loading_2:"Comparando resultados...",
+        loading_3:"Casi listo...",
+        no_results:"No se encontraron resultados. Probá con otro nombre.",
+        error_search:"Error al buscar. Verificá tu conexión.",
+        ver_tienda:"Ver en tienda →",
     },
     en:{
         nav_home:"HOME", nav_expenses:"EXPENSES", nav_itinerary:"ITINERARY", nav_units:"UNITS",
-        label_search:"SEARCH PRODUCT", placeholder_search:"E.g: Nike Air Max, iPhone 15, Levi's 501...",
-        label_category:"CATEGORY", cat_general:"General", cat_tech:"Tech", cat_ropa:"Clothing",
-        btn_search:"SEARCH IN STORES", tip_label:"TIP",
+        label_search:"SEARCH PRODUCT", label_category:"CATEGORY",
+        cat_general:"General", cat_tech:"Tech", cat_ropa:"Clothing",
+        btn_search:"SEARCH REAL PRICES", tip_label:"TIP",
         settings_title:"Settings", label_language:"Language",
         btn_change_profile:"Change Profile", btn_theme:"Toggle Theme",
         btn_email:"Change Email", btn_password:"Change Password",
         btn_logout:"Sign Out", btn_delete:"Delete Account",
         footer_by:"Created by Juan Cruz Bria",
-        stores_label:"SEARCH IN THESE STORES",
-        tip_general:"Comparing prices between Amazon and Walmart can show up to 20% difference. Always check reviews.",
-        tip_tech:"At Best Buy you can see the product in person and request a price match if you find it cheaper online.",
-        tip_ropa:"Check Nike and Adidas outlet stores — they have discounts up to 50% on previous collections.",
+        tip_general:"Comparing Amazon and Walmart can show up to 20% difference. Always check reviews.",
+        tip_tech:"Best Buy does price match if you find the same product cheaper online.",
+        tip_ropa:"Ross, TJ Maxx and Marshalls have the best prices on brand clothing.",
+        loading_1:"Searching prices in US stores...",
+        loading_2:"Comparing results...",
+        loading_3:"Almost ready...",
+        no_results:"No results found. Try a different product name.",
+        error_search:"Search error. Check your connection.",
+        ver_tienda:"View in store →",
     }
 };
 
@@ -260,44 +272,82 @@ window.changeLanguage = (lang) => {
         const k = el.getAttribute('data-i18n');
         if (i18n[lang]?.[k]) el.innerText = i18n[lang][k];
     });
-    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-        const k = el.getAttribute('data-i18n-ph');
-        if (i18n[lang]?.[k]) el.placeholder = i18n[lang][k];
-    });
     document.getElementById('lang-es').classList.toggle('active', lang === 'es');
     document.getElementById('lang-en').classList.toggle('active', lang === 'en');
 };
 changeLanguage(currentLang);
 
-// ── TIENDAS ───────────────────────────────────────────
-const STORES = {
-    general: [
-        { name:'Amazon',          emoji:'📦', color:'#FF9900', tag_es:'Envío rápido · Prime',           tag_en:'Fast shipping · Prime',           url: q=>`https://www.amazon.com/s?k=${encodeURIComponent(q)}` },
-        { name:'Walmart',         emoji:'🛒', color:'#0071CE', tag_es:'Precios bajos garantizados',      tag_en:'Guaranteed low prices',           url: q=>`https://www.walmart.com/search?q=${encodeURIComponent(q)}` },
-        { name:'Target',          emoji:'🎯', color:'#CC0000', tag_es:'Estilo + precio',                 tag_en:'Style + price',                   url: q=>`https://www.target.com/s?searchTerm=${encodeURIComponent(q)}` },
-        { name:'eBay',            emoji:'🏷️', color:'#E53238', tag_es:'Nuevo y usado · Ofertas',        tag_en:'New & used · Deals',              url: q=>`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}` },
-        { name:'Costco',          emoji:'🏭', color:'#005DAA', tag_es:'Mayorista · Gran volumen',        tag_en:'Wholesale · Bulk',                url: q=>`https://www.costco.com/CatalogSearch?keyword=${encodeURIComponent(q)}` },
-        { name:'Google Shopping', emoji:'🛍️', color:'#4285F4', tag_es:'Comparar todos los precios',     tag_en:'Compare all prices',              url: q=>`https://www.google.com/search?tbm=shop&q=${encodeURIComponent(q)}` },
-    ],
-    tech: [
-        { name:'Best Buy',        emoji:'💻', color:'#003B64', tag_es:'Tech & electrónica',              tag_en:'Tech & electronics',              url: q=>`https://www.bestbuy.com/site/searchpage.jsp?st=${encodeURIComponent(q)}` },
-        { name:'Amazon',          emoji:'📦', color:'#FF9900', tag_es:'Envío rápido · Prime',            tag_en:'Fast shipping · Prime',           url: q=>`https://www.amazon.com/s?k=${encodeURIComponent(q)}` },
-        { name:'Apple Store',     emoji:'🍎', color:'#555555', tag_es:'Productos Apple oficiales',       tag_en:'Official Apple products',         url: q=>`https://www.apple.com/search/${encodeURIComponent(q)}` },
-        { name:'Walmart',         emoji:'🛒', color:'#0071CE', tag_es:'Precios competitivos',            tag_en:'Competitive prices',              url: q=>`https://www.walmart.com/search?q=${encodeURIComponent(q)}` },
-        { name:'eBay',            emoji:'🏷️', color:'#E53238', tag_es:'Nuevo y reacondicionado',        tag_en:'New & refurbished',               url: q=>`https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(q)}` },
-        { name:'Costco',          emoji:'🏭', color:'#005DAA', tag_es:'Precios mayoristas',              tag_en:'Wholesale prices',                url: q=>`https://www.costco.com/CatalogSearch?keyword=${encodeURIComponent(q)}` },
-        { name:'Google Shopping', emoji:'🛍️', color:'#4285F4', tag_es:'Comparar todos los precios',     tag_en:'Compare all prices',              url: q=>`https://www.google.com/search?tbm=shop&q=${encodeURIComponent(q)}` },
-    ],
-    ropa: [
-        { name:'Nike',            emoji:'👟', color:'#111111', tag_es:'Ropa y calzado oficial',          tag_en:'Official apparel & footwear',     url: q=>`https://www.nike.com/w?q=${encodeURIComponent(q)}` },
-        { name:'Adidas',          emoji:'🏃', color:'#000000', tag_es:'Ropa y calzado oficial',          tag_en:'Official apparel & footwear',     url: q=>`https://www.adidas.com/us/search?q=${encodeURIComponent(q)}` },
-        { name:"Macy's",          emoji:'⭐', color:'#E21A1A', tag_es:'Moda y hogar',                    tag_en:'Fashion & home',                  url: q=>`https://www.macys.com/shop/featured/${encodeURIComponent(q)}` },
-        { name:'Nordstrom',       emoji:'👔', color:'#1A1A1A', tag_es:'Premium · Marcas top',            tag_en:'Premium · Top brands',            url: q=>`https://www.nordstrom.com/sr?keyword=${encodeURIComponent(q)}` },
-        { name:'Target',          emoji:'🎯', color:'#CC0000', tag_es:'Estilo + precio',                 tag_en:'Style + price',                   url: q=>`https://www.target.com/s?searchTerm=${encodeURIComponent(q)}` },
-        { name:'Amazon',          emoji:'📦', color:'#FF9900', tag_es:'Gran variedad de marcas',         tag_en:'Wide brand selection',            url: q=>`https://www.amazon.com/s?k=${encodeURIComponent(q)}` },
-        { name:'Google Shopping', emoji:'🛍️', color:'#4285F4', tag_es:'Comparar todos los precios',     tag_en:'Compare all prices',              url: q=>`https://www.google.com/search?tbm=shop&q=${encodeURIComponent(q)}` },
-    ]
+// ── HELPERS ───────────────────────────────────────────
+const STORE_EMOJIS = {
+    'amazon':'📦','walmart':'🛒','bestbuy':'💻','best buy':'💻',
+    'target':'🎯','costco':'🏭','ebay':'🏷️','apple':'🍎',
+    'nike':'👟','adidas':'🏃','macys':'⭐','nordstrom':'👔',
+    'newegg':'🖥️','samsung':'📱','microsoft':'🪟','dell':'💻',
+    'hp':'🖨️','lenovo':'💻','bhphoto':'📷','ross':'🏪',
+    'tjmaxx':'🏷️','marshalls':'🛍️','burlington':'🧥',
+    'homegoods':'🏠','dollartree':'🌳','dollargeneral':'💲',
+    'fivebelow':'5️⃣','biglots':'📦','wayfair':'🛋️',
+    'homedepot':'🔨','lowes':'🔩','gamestop':'🎮',
+    'zappos':'👠','gap':'👖','zara':'👗','footlocker':'👟',
+    'puma':'🐆','reebok':'👟','kohls':'🏬','jcpenney':'🏬',
+    'samsclub':'🏭','default':'🏪'
 };
+
+const STORE_NAMES = {
+    'amazon.com':'Amazon','walmart.com':'Walmart','bestbuy.com':'Best Buy',
+    'target.com':'Target','costco.com':'Costco','ebay.com':'eBay',
+    'apple.com':'Apple','nike.com':'Nike','adidas.com':'Adidas',
+    'macys.com':"Macy's",'nordstrom.com':'Nordstrom','newegg.com':'Newegg',
+    'samsung.com':'Samsung','microsoft.com':'Microsoft','dell.com':'Dell',
+    'hp.com':'HP','lenovo.com':'Lenovo','bhphotovideo.com':'B&H Photo',
+    'rossstores.com':'Ross','tjmaxx.com':'TJ Maxx','marshalls.com':'Marshalls',
+    'burlington.com':'Burlington','homegoods.com':'HomeGoods',
+    'dollartree.com':'Dollar Tree','dollargeneral.com':'Dollar General',
+    'fivebelow.com':'Five Below','biglots.com':'Big Lots',
+    'wayfair.com':'Wayfair','homedepot.com':'Home Depot',
+    'lowes.com':"Lowe's",'gamestop.com':'GameStop','zappos.com':'Zappos',
+    'gap.com':'Gap','zara.com':'Zara','hm.com':'H&M',
+    'footlocker.com':'Foot Locker','puma.com':'Puma','reebok.com':'Reebok',
+    'kohls.com':"Kohl's",'jcpenney.com':'JCPenney','samsclub.com':"Sam's Club",
+};
+
+const STORE_COLORS = {
+    'amazon':'#FF9900','walmart':'#0071CE','bestbuy':'#003B64',
+    'target':'#CC0000','costco':'#005DAA','ebay':'#E53238',
+    'apple':'#555555','nike':'#111111','adidas':'#000000',
+    'macys':'#E21A1A','nordstrom':'#1A1A1A','newegg':'#FF6600',
+    'ross':'#CC0000','tjmaxx':'#C8102E','marshalls':'#007A3D',
+    'dollartree':'#00843D','dollargeneral':'#FFCC00','samsung':'#1428A0',
+    'microsoft':'#00A4EF','gamestop':'#E31937',
+};
+
+function getStoreEmoji(domain) {
+    const d = (domain||'').toLowerCase().replace('www.','').replace('.com','');
+    for (const k of Object.keys(STORE_EMOJIS)) {
+        if (d.includes(k.replace(' ',''))) return STORE_EMOJIS[k];
+    }
+    return STORE_EMOJIS['default'];
+}
+
+function getStoreName(displayLink) {
+    const d = (displayLink||'').replace('www.','');
+    return STORE_NAMES[d] || d.split('.')[0].charAt(0).toUpperCase() + d.split('.')[0].slice(1);
+}
+
+function getStoreColor(domain) {
+    const d = (domain||'').toLowerCase().replace('www.','').replace('.com','');
+    for (const k of Object.keys(STORE_COLORS)) {
+        if (d.includes(k)) return STORE_COLORS[k];
+    }
+    return '#2563eb';
+}
+
+function extractPrice(snippet, title) {
+    const text = (snippet||'') + ' ' + (title||'');
+    const m = text.match(/\$\s*[\d,]+\.?\d{0,2}/);
+    if (m) return m[0].replace(/\s/,'');
+    return null;
+}
 
 // ── CATEGORÍA ─────────────────────────────────────────
 let currentCat = 'general';
@@ -307,42 +357,95 @@ window.selectCat = (el) => {
     currentCat = el.dataset.cat;
 };
 
-// ── BUSCAR ────────────────────────────────────────────
-window.buscar = () => {
-    const query = document.getElementById('searchInput').value.trim();
-    if (!query) { alert(currentLang === 'es' ? 'Escribí el nombre del producto para buscar.' : 'Type a product name to search.'); return; }
+// ── LOADING ───────────────────────────────────────────
+let loadingInterval = null;
+function startLoading() {
+    document.getElementById('btnBuscar').disabled = true;
+    document.getElementById('loadingBox').classList.add('show');
+    document.getElementById('aiResult').classList.remove('show');
+    const msgs = [i18n[currentLang].loading_1, i18n[currentLang].loading_2, i18n[currentLang].loading_3];
+    let i = 0;
+    document.getElementById('loadingText').textContent = msgs[0];
+    loadingInterval = setInterval(() => { i=(i+1)%msgs.length; document.getElementById('loadingText').textContent = msgs[i]; }, 1800);
+}
+function stopLoading() {
+    clearInterval(loadingInterval);
+    document.getElementById('loadingBox').classList.remove('show');
+    document.getElementById('btnBuscar').disabled = false;
+}
 
-    const stores = STORES[currentCat];
+// ── BUSCAR ────────────────────────────────────────────
+window.buscar = async () => {
+    const query = document.getElementById('searchInput').value.trim();
+    if (!query) {
+        alert(currentLang === 'es' ? 'Escribí el nombre del producto.' : 'Type a product name.');
+        return;
+    }
+    startLoading();
+
+    const catQuery = {
+        general: `${query} price buy`,
+        tech:    `${query} price buy site:bestbuy.com OR site:amazon.com OR site:newegg.com OR site:apple.com`,
+        ropa:    `${query} price buy site:nike.com OR site:adidas.com OR site:macys.com OR site:zappos.com OR site:amazon.com`
+    };
+
+    const url = `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_API_KEY}&cx=${GOOGLE_CX}&q=${encodeURIComponent(catQuery[currentCat])}&num=10`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        stopLoading();
+        if (data.error) throw new Error(data.error.message);
+        renderResultados(query, data.items || []);
+    } catch (err) {
+        stopLoading();
+        alert(err.message || i18n[currentLang].error_search);
+    }
+};
+
+// ── RENDER ────────────────────────────────────────────
+function renderResultados(query, items) {
     const grid = document.getElementById('storesGrid');
     grid.innerHTML = '';
 
-    stores.forEach(store => {
-        const a = document.createElement('a');
-        a.href = store.url(query);
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.className = 'store-item';
-        const tag = currentLang === 'en' ? store.tag_en : store.tag_es;
-        a.innerHTML = `
-            <div class="store-left">
-                <div class="store-logo" style="background:${store.color}22;">${store.emoji}</div>
-                <div>
-                    <div class="store-name">${store.name}</div>
-                    <div class="store-tag">${tag}</div>
-                </div>
+    if (!items.length) {
+        grid.innerHTML = `<div class="no-results">${i18n[currentLang].no_results}</div>`;
+        document.getElementById('resultsCount').textContent = '';
+        document.getElementById('aiResult').classList.add('show');
+        return;
+    }
+
+    items.forEach(item => {
+        const storeName  = getStoreName(item.displayLink);
+        const emoji      = getStoreEmoji(item.displayLink);
+        const color      = getStoreColor(item.displayLink);
+        const price      = extractPrice(item.snippet, item.title);
+
+        const card = document.createElement('a');
+        card.href = item.link;
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div class="product-top">
+                <div class="store-logo" style="background:${color}22;">${emoji}</div>
+                <span class="store-name-badge">${storeName}</span>
             </div>
-            <span class="store-arrow">→</span>
+            <div class="product-title">${item.title}</div>
+            <div class="product-bottom">
+                <span class="product-price">${price || '—'}</span>
+                <span class="product-link-label">${i18n[currentLang].ver_tienda}</span>
+            </div>
         `;
-        grid.appendChild(a);
+        grid.appendChild(card);
     });
 
     document.getElementById('tipText').textContent = i18n[currentLang]['tip_' + currentCat];
-    document.getElementById('storesLabel').textContent = i18n[currentLang].stores_label;
-
+    document.getElementById('resultsCount').textContent = `${items.length} resultados — "${query.toUpperCase()}"`;
     const result = document.getElementById('aiResult');
     result.classList.add('show');
-    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
+    result.scrollIntoView({ behavior:'smooth', block:'start' });
+}
 
 document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') buscar();
