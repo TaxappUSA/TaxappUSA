@@ -460,10 +460,8 @@ window.doDeleteAccount = async () => {
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.replace('login.html'); return; }
     currentUser = user;
-    const perfilNombre = localStorage.getItem('perfilActivoNombre');
-    const perfilNombre = localStorage.getItem('perfilActivoNombre');
-    document.getElementById('userEmail').innerText = perfilNombre || user.email;
-    if (!perfilId) { window.location.replace('profiles.html'); return; }
+const perfilNombre = localStorage.getItem('perfilActivoNombre');
+document.getElementById('userEmail').innerText = perfilNombre || user.email;    if (!perfilId) { window.location.replace('profiles.html'); return; }
 
     const img = perfilFoto || user.photoURL;
     if (img) { const btn = document.getElementById('btnSettings'); btn.style.backgroundImage = `url(${img})`; btn.innerText = ''; }
