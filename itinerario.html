@@ -155,6 +155,7 @@
     <div class="lang-selector">
         <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</button>
         <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</button>
     </div>
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
@@ -221,13 +222,30 @@
             confirm_delete_account: "ARE YOU SURE? This action will permanently delete all your data.",
             btn_theme: "Toggle Theme", btn_refresh: "Refresh App", btn_logout: "Sign Out", footer_by: "Created by Juan Cruz Bria",
             alert_upcoming: "🚀 The Price Comparator will be available soon."
+        },
+        pt: {
+            nav_home:"INÍCIO", nav_expenses:"GASTOS", nav_compare:"COMPARAR", nav_units:"UNIDADES",
+            itinerary_title: "📍 Itinerário", label_notes: "Notas e Lembretes",
+            note_placeholder: "Voos, hotéis, lembretes...", btn_add_note: "ADICIONAR NOTA",
+            tip_label: "✨ Dica de Viagem", city_orlando: "🎡 Orlando", city_nyc: "🍎 Nova York",
+            city_miami: "🏖️ Miami", city_vegas: "🎲 Las Vegas", city_la: "🎬 Los Angeles",
+            city_sf: "🌉 San Francisco", city_chicago: "🏢 Chicago", city_dc: "🏛️ Washington D.C.",
+            status_low: "BAIXA 🟢", status_med: "MED 🟡", status_high: "ALTA 🔴", status_closed: "FECHADO 🌙", status_na: "N/D",
+            settings_title: "Configurações", label_language: "Idioma", btn_change_profile: "Trocar Perfil", btn_change_email: "📧 Alterar E-mail",
+            btn_change_pass: "🔑 Alterar Senha", btn_delete_acc: "🗑️ Excluir Conta", prompt_new_email: "Digite o novo endereço de e-mail:",
+            prompt_new_pass: "Digite a nova senha (mínimo 6 caracteres):", alert_email_verify: "Um e-mail de verificação foi enviado. A alteração será aplicada após a verificação.",
+            alert_pass_success: "Senha atualizada com sucesso.", alert_reauth_required: "Erro: Reautenticação necessária para alterações sensíveis.",
+            confirm_delete_account: "TEM CERTEZA? Esta ação apagará todos os seus dados permanentemente.",
+            btn_theme: "Alternar Tema", btn_refresh: "Atualizar App", btn_logout: "Sair", footer_by: "Criado por Juan Cruz Bria",
+            alert_upcoming: "🚀 O Comparador de Preços estará disponível em breve."
         }
     };
 
     const tips = {
         es: ["Orlando: La mejor hora para filas cortas es durante el show de fuegos artificiales.","NYC: El ferry a Staten Island es gratis y pasa cerca de la Estatua de la Libertad.","Miami: Si vas de compras, el Dolphin Mall suele ser más barato que Sawgrass.","Vegas: Caminar por la Strip lleva mucho más tiempo de lo que parece.","SF: Llevá siempre un abrigo, aunque sea verano.","Universal: Bajate la app oficial para ver los tiempos de espera en tiempo real.", "NYC: Descargá la App OMNY o pagá directo con el celu en el subte.","DC: Todos los museos Smithsonian son gratis.",
 "Orlando: Reservá tus comidas con antelación si vas a los parques principales.","Vegas: Los hoteles son gigantes, calculá 15 min solo para salir a la calle.","Miami: El estacionamiento en South Beach es caro, usá apps como ParkWhiz.",],
-        en: ["Orlando: The best time for short lines is during the fireworks show.","NYC: The Staten Island Ferry is free and passes right by the Statue of Liberty.","Miami: If shopping, Dolphin Mall is often cheaper than Sawgrass Mills.","Vegas: Walking the Strip takes much longer than it looks.","SF: Always carry a jacket, even during the summer.","Universal: Get the official app to check wait times in real-time.","NYC: Download the OMNY App or pay directly with your phone in the subway.","DC: All Smithsonian museums are free of charge.","Orlando: Book your dining reservations in advance for major theme parks.","Vegas: Hotels are massive, allow 15 mins just to reach the street.","Miami: Parking in South Beach is expensive, use apps like ParkWhiz.",]
+        en: ["Orlando: The best time for short lines is during the fireworks show.","NYC: The Staten Island Ferry is free and passes right by the Statue of Liberty.","Miami: If shopping, Dolphin Mall is often cheaper than Sawgrass Mills.","Vegas: Walking the Strip takes much longer than it looks.","SF: Always carry a jacket, even during the summer.","Universal: Get the official app to check wait times in real-time.","NYC: Download the OMNY App or pay directly with your phone in the subway.","DC: All Smithsonian museums are free of charge.","Orlando: Book your dining reservations in advance for major theme parks.","Vegas: Hotels are massive, allow 15 mins just to reach the street.","Miami: Parking in South Beach is expensive, use apps like ParkWhiz.",],
+        pt: ["Orlando: O melhor horário para filas curtas é durante o show de fogos de artifício.","NYC: A balsa para Staten Island é gratuita e passa perto da Estátua da Liberdade.","Miami: Para compras, o Dolphin Mall costuma ser mais barato que o Sawgrass.","Vegas: Caminhar pela Strip leva muito mais tempo do que parece.","SF: Leve sempre um casaco, mesmo no verão.","Universal: Baixe o app oficial para ver os tempos de espera em tempo real.","NYC: Baixe o app OMNY ou pague direto com o celular no metrô.","DC: Todos os museus Smithsonian são gratuitos.","Orlando: Reserve suas refeições com antecedência nos parques principais.","Vegas: Os hotéis são enormes, calcule 15 min só para chegar à rua.","Miami: O estacionamento em South Beach é caro, use apps como ParkWhiz.",]
     };
 
     const citiesConfig = {
@@ -256,7 +274,7 @@
         });
         const tipEl = document.getElementById('tip-text');
         if (tipEl) tipEl.innerText = tips[lang][currentTipIndex];
-        document.title = lang === 'en' ? 'TaxUSA — Itinerary' : 'TaxUSA — Itinerario';
+        document.title = lang === 'en' ? 'TaxUSA — Itinerary' : lang === 'pt' ? 'TaxUSA — Itinerário' : 'TaxUSA — Itinerario';
         renderCityData();
         if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
     };
