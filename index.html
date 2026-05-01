@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TaxUSA — Inicio</title>
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#256<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TaxUSA — Inicio</title>
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -703,8 +710,8 @@ window.onload = () => {
     var ERR_EN = 'Oops, something went wrong. Check your connection and try again.';
     var ERR_PT = 'Ops, algo deu errado. Verifique sua conexão e tente novamente.';
 
-    var isEs = (lang !== 'en');
     var isPt = (lang === 'pt');
+    var isEs = (lang !== 'en' && lang !== 'pt');
     var chips  = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
     var sub    = isPt ? SUB_PT   : isEs ? SUB_ES   : SUB_EN;
     var ph     = isPt ? PH_PT    : isEs ? PH_ES    : PH_EN;
