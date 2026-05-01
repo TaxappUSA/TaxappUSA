@@ -594,25 +594,33 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
 
     var WELCOME_ES = '\u00a1Hola! Soy tu asistente de viaje para USA \ud83c\uddfa\ud83c\uddf8\n\nPuedo ayudarte con:\n\u2022 Recomendaciones de lugares\n\u2022 Consejos de compras y tiendas\n\u2022 Informaci\u00f3n sobre taxes y propinas\n\u2022 Tips de transporte y hospedaje\n\u2022 Cambio de moneda y presupuesto\n\n\u00bfEn qu\u00e9 puedo ayudarte?';
     var WELCOME_EN = 'Hi! I am your USA travel assistant \ud83c\uddfa\ud83c\uddf8\n\nI can help you with:\n\u2022 Place recommendations\n\u2022 Shopping & store tips\n\u2022 Tax & tip information\n\u2022 Transport & accommodation\n\u2022 Currency & budget advice\n\nWhat can I help you with?';
+    var WELCOME_PT = 'Ol\u00e1! Sou seu assistente de viagem para os EUA \ud83c\uddfa\ud83c\uddf8\n\nPosso te ajudar com:\n\u2022 Recomenda\u00e7\u00f5es de lugares\n\u2022 Dicas de compras e lojas\n\u2022 Informa\u00e7\u00f5es sobre taxes e gorjetas\n\u2022 Transporte e hospedagem\n\u2022 C\u00e2mbio e or\u00e7amento\n\nComo posso te ajudar?';
 
     var CHIPS_ES = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Mejores outlets', '\ud83d\udcb0 Propinas en USA', '\ud83c\udf21\ufe0f Clima en Florida', '\u2708\ufe0f Aeropuertos', '\ud83d\ude97 Alquilar auto'];
     var CHIPS_EN = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Best outlets', '\ud83d\udcb0 Tipping in USA', '\ud83c\udf21\ufe0f Florida weather', '\u2708\ufe0f Airports', '\ud83d\ude97 Rent a car'];
+    var CHIPS_PT = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Melhores outlets', '\ud83d\udcb0 Gorjetas nos EUA', '\ud83c\udf21\ufe0f Clima na Fl\u00f3rida', '\u2708\ufe0f Aeroportos', '\ud83d\ude97 Alugar carro'];
 
     var SUB_ES = 'Experto en viajes a USA \u2708\ufe0f';
     var SUB_EN = 'USA Travel Expert \u2708\ufe0f';
+    var SUB_PT = 'Especialista em viagens aos EUA \u2708\ufe0f';
     var PH_ES = 'Pregunt\u00e1 sobre tu viaje a USA...';
     var PH_EN = 'Ask about your USA trip...';
+    var PH_PT = 'Pergunte sobre sua viagem aos EUA...';
     var ERR_ES = 'Ocurri\u00f3 un error. Verific\u00e1 tu conexi\u00f3n e intent\u00e1 de nuevo.';
     var ERR_EN = 'An error occurred. Check your connection and try again.';
+    var ERR_PT = 'Ocorreu um erro. Verifique sua conex\u00e3o e tente novamente.';
 
-    var isEs = (lang !== 'en');
-    var welcome = isEs ? WELCOME_ES : WELCOME_EN;
-    var chips   = isEs ? CHIPS_ES   : CHIPS_EN;
-    var sub     = isEs ? SUB_ES     : SUB_EN;
-    var ph      = isEs ? PH_ES      : PH_EN;
-    var errMsg  = isEs ? ERR_ES     : ERR_EN;
+    var isPt = (lang === 'pt');
+    var isEs = (lang !== 'en' && lang !== 'pt');
+    var welcome = isPt ? WELCOME_PT : isEs ? WELCOME_ES : WELCOME_EN;
+    var chips   = isPt ? CHIPS_PT   : isEs ? CHIPS_ES   : CHIPS_EN;
+    var sub     = isPt ? SUB_PT     : isEs ? SUB_ES     : SUB_EN;
+    var ph      = isPt ? PH_PT      : isEs ? PH_ES      : PH_EN;
+    var errMsg  = isPt ? ERR_PT     : isEs ? ERR_ES     : ERR_EN;
 
-    var SYSTEM = isEs
+    var SYSTEM = isPt
+        ? 'Você é o Taxie, assistente de viagens para os EUA. Seu tom é claro, direto e amigável. Quando alguém pergunta sobre informações em tempo real (filas nos parques, cotações, clima atual, horários ou preços atualizados), você busca as informações antes de responder. Use marcadores e **negritos** só quando realmente ajudam; para respostas simples, uma ou duas frases diretas são suficientes. Nunca comece com "Claro!", "Com certeza!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+        : isEs
         ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni frío ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
         : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
 
@@ -799,18 +807,21 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
     }
 
     window.taxieUpdateLang = function(newLang) {
-        isEs = (newLang !== 'en');
-        SYSTEM = isEs
+        isPt = (newLang === 'pt');
+        isEs = (newLang !== 'en' && newLang !== 'pt');
+        SYSTEM = isPt
+            ? 'Você é o Taxie, assistente de viagens para os EUA. Seu tom é claro, direto e amigável. Quando alguém pergunta sobre informações em tempo real (filas nos parques, cotações, clima atual, horários ou preços atualizados), você busca as informações antes de responder. Use marcadores e **negritos** só quando realmente ajudam; para respostas simples, uma ou duas frases diretas são suficientes. Nunca comece com "Claro!", "Com certeza!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+            : isEs
             ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni frío ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
             : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
-        errMsg = isEs ? ERR_ES : ERR_EN;
+        errMsg = isPt ? ERR_PT : isEs ? ERR_ES : ERR_EN;
         var inputEl   = document.getElementById('ai-input');
         var headerSub = document.getElementById('ai-header-sub');
         var suggestEl = document.getElementById('ai-suggestions');
-        if (inputEl)   inputEl.placeholder = isEs ? PH_ES : PH_EN;
-        if (headerSub) headerSub.textContent = isEs ? SUB_ES : SUB_EN;
+        if (inputEl)   inputEl.placeholder = isPt ? PH_PT : isEs ? PH_ES : PH_EN;
+        if (headerSub) headerSub.textContent = isPt ? SUB_PT : isEs ? SUB_ES : SUB_EN;
         if (suggestEl) {
-            var newChips = isEs ? CHIPS_ES : CHIPS_EN;
+            var newChips = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
             suggestEl.innerHTML = newChips.map(function(c) {
                 return '<button class="ai-chip">' + c + '</button>';
             }).join('');
