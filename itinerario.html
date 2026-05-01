@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TaxUSA — Itinerario</title>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw" async defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
     <script>
         const _t = localStorage.getItem('theme');
         if (_t) document.documentElement.setAttribute('data-theme', _t);
@@ -76,6 +77,14 @@
         .lang-opt.active{background:var(--primary);color:white;}
         .lang-opt img{width:18px;border-radius:2px;}
     </style>
+    <script>
+        // Registrar Service Worker para cache offline y carga rápida
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(() => {});
+            });
+        }
+    </script>
 </head>
 <body>
 <div class="wrap">
@@ -273,7 +282,12 @@
                 <div id="spot-${i}" class="queue-status">...</div>
             </div>
         `).join('');
-        updateStatusDisplay(cityKey);
+        // Cargar filas de parques después del render inicial para no bloquear UI
+        if (typeof requestIdleCallback !== 'undefined') {
+            requestIdleCallback(() => updateStatusDisplay(cityKey), { timeout: 2000 });
+        } else {
+            setTimeout(() => updateStatusDisplay(cityKey), 150);
+        }
     };
 
     async function updateStatusDisplay(cityKey) {
@@ -289,7 +303,7 @@
                 if (localHour >= 22 || localHour < 8) { el.innerText = t.status_closed; el.className = "queue-status q-off"; }
                 else {
                     try {
-                        const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(`https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json`));
+                        const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(`https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json`), { signal: AbortSignal.timeout(8000) });
                         const data = await res.json();
                         let tot = 0, c = 0;
                         data.lands?.forEach(l => l.rides.forEach(r => { if(r.is_open){ tot += r.wait_time; c++; } }));
