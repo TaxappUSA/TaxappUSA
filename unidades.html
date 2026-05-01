@@ -321,6 +321,7 @@
     <div class="lang-selector">
         <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</button>
         <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</button>
     </div>
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
@@ -392,8 +393,26 @@ const i18n = {
         btn_password:"Change Password", btn_logout:"Sign Out", btn_delete:"Delete Account",
         footer_by:"Created by Juan Cruz Bria",
         alert_upcoming: "🚀 The Price Comparator will be available soon."
+    },
+    pt:{
+        nav_home:"INÍCIO", nav_expenses:"GASTOS", nav_itinerary:"ITINERÁRIO", nav_compare:"COMPARAR",
+        tip_label:"DICA ÚTIL",
+        label_converters:"Conversores",
+        grp_temp:"Clima / Temperatura", grp_speed:"Velocidade e Distância",
+        grp_weight:"Peso — Mala / Supermercado", grp_oz:"Onças — Comida / Pacotes",
+        grp_liquid:"Combustível e Bebidas", grp_length:"Altura / Objetos",
+        tip_temp:"🌞 Temperatura agradável: 68-77°F (20-25°C). Abaixo de 32°F (0°C) é congelamento.",
+        tip_speed:"⚠️ Limites comuns: 25-35 mph (cidade) | 65-70 mph (rodovia)",
+        tip_weight:"✈️ O limite de bagagem costuma ser 50 lbs = 23 kg.",
+        tip_liquid:"🥤 A garrafa de água comum é de 16.9 fl oz ≈ 500 ml.",
+        tip_length:"📐 6 ft = 182.9 cm. As placas de trânsito usam milhas.",
+        settings_title:"Configurações", label_language:"Idioma",
+        btn_change_profile:"Trocar Perfil", btn_theme:"Alternar Tema",
+        btn_update:"Atualizar App", btn_email:"Alterar E-mail",
+        btn_password:"Alterar Senha", btn_logout:"Sair", btn_delete:"Excluir Conta",
+        footer_by:"Criado por Juan Cruz Bria",
+        alert_upcoming: "🚀 O Comparador de Preços estará disponível em breve."
     }
-};
 
 const unitTips = {
     es:[
@@ -419,6 +438,18 @@ const unitTips = {
         "1 oz of cheese ≈ 28 grams. Snack packages list weight in oz.",
         "37°C (fever) = 98.6°F in US medical terms.",
         "1 mile = 1.609 km. US GPS distances are in miles."
+    ],
+    pt:[
+        "32°F = 0°C, o ponto de congelamento da água.",
+        "50 lbs é o limite padrão de bagagem em voos para os EUA.",
+        "1 galão de gasolina = 3,785 litros. O preço é mostrado por galão.",
+        "6 pés = 1,83 m — a altura média de um homem adulto nos EUA.",
+        "16,9 fl oz é a garrafa de água mais comum nos supermercados.",
+        "A velocidade nas rodovias costuma ser 65 mph ≈ 105 km/h.",
+        "1 libra (lb) = 453 gramas. O frango é vendido por libra.",
+        "1 oz de queijo ≈ 28 gramas. Pacotes de snacks listam em oz.",
+        "37°C (febre) = 98,6°F nos termos médicos americanos.",
+        "1 milha = 1,609 km. Os GPS americanos usam milhas."
     ]
 };
 
