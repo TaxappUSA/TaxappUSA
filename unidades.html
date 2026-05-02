@@ -711,8 +711,8 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
 
 <script>
 (function() {
-    var K = ['gsk_ek1Phki4XCC','aBAJPzba4WGdy','b3FYQtwTCLNL2','A2CsdC5xCQL4Qc9'].join('');
-    var GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+    
+    var GROQ_URL = 'https://taxusa-proxy.juanbria18.workers.dev';
     var MODEL = 'llama-3.3-70b-versatile';
     var lang = localStorage.getItem('appLang') || 'es';
     var perfilId   = localStorage.getItem('perfilActivoId') || 'default';
@@ -891,7 +891,6 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
             chatHistory.push({ role: 'user', content: text });
             fetch(GROQ_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + K },
                 body: JSON.stringify({
                     model: MODEL,
                     messages: [{ role: 'system', content: SYSTEM }].concat(chatHistory.slice(-14)),
@@ -910,7 +909,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
                     var tc = msg.tool_calls[0];
                     var query = '';
                     try { query = JSON.parse(tc.function.arguments).query; } catch(e) {}
-                    var searchUrl = 'https://api.groq.com/openai/v1/chat/completions';
+                    var searchUrl = 'https://taxusa-proxy.juanbria18.workers.dev';
                     var msgsWithTool = [{ role: 'system', content: SYSTEM }]
                         .concat(chatHistory.slice(-14))
                         .concat([
@@ -919,7 +918,6 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
                         ]);
                     return fetch(searchUrl, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + K },
                         body: JSON.stringify({ model: MODEL, messages: msgsWithTool, max_tokens: 800, temperature: 0.7, stream: false })
                     }).then(function(res2) { return res2.json().then(function(d2) { return { ok: res2.ok, data: d2 }; }); })
                     .then(function(r2) {
