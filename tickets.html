@@ -453,7 +453,7 @@ onAuthStateChanged(auth, user => {
     if (!localStorage.getItem('perfilActivoId')) { window.location.replace('profiles.html'); return; }
     const foto = localStorage.getItem('perfilActivoFoto') || user.photoURL;
     if (foto) { const b = document.getElementById('btnSettings'); b.style.backgroundImage=`url(${foto})`; b.innerText=''; }
-    if (typeof window.initDocs === 'function') { window.initDocs(); } else { const _iv = setInterval(() => { if (typeof window.initDocs === 'function') { clearInterval(_iv); window.initDocs(); } }, 30); }
+    initDocs();
 });
 
 window.doLogout = () => signOut(auth).then(() => window.location.replace('login.html'));
@@ -503,7 +503,7 @@ Adicione seu boarding pass, vouchers e mais.',settings_title:'Configurações',l
 };
 
 // ── Init — carga desde Firestore ───────────────────────────────────────────
-window.initDocs = async function() {
+async function initDocs() {
     showSyncBanner('Cargando documentos…', false);
     try {
         allDocs = await window.fsLoad(window._uid, perfilId);
