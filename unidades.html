@@ -712,7 +712,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
 <script>
 (function() {
     
-    var GROQ_URL = 'https://taxusa-proxy.juanbria18.workers.dev';
+    var GROQ_URL = 'https://taxusa.juanbria18.workers.dev';
     var MODEL = 'llama-3.3-70b-versatile';
     var lang = localStorage.getItem('appLang') || 'es';
     var perfilId   = localStorage.getItem('perfilActivoId') || 'default';
@@ -909,7 +909,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
                     var tc = msg.tool_calls[0];
                     var query = '';
                     try { query = JSON.parse(tc.function.arguments).query; } catch(e) {}
-                    var searchUrl = 'https://taxusa-proxy.juanbria18.workers.dev';
+                    var searchUrl = 'https://taxusa.juanbria18.workers.dev';
                     var msgsWithTool = [{ role: 'system', content: SYSTEM }]
                         .concat(chatHistory.slice(-14))
                         .concat([
