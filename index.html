@@ -976,61 +976,51 @@ window.onload = () => {
 })();
 async function updateWeather() {
     const labelEl = document.getElementById('tripLabel');
-    if (!labelEl) return;
+    const card = document.getElementById('weather-card');
+    if (!labelEl || !card) return;
     
     const label = labelEl.innerText;
-    // Evita ejecutar si todavía está cargando datos
-    if (!label || label.includes("Cargando") || label.includes("Carregando") || label.includes("Loading")) return;
+    if (!label || label.includes("Cargando") || label.includes("Carregando")) return;
 
-    // Limpia el nombre de la ciudad quitando prefijos
     const city = label.replace(/VIAJE A |TRIP TO |VIAGEM PARA /gi, '').trim();
     
     try {
-        // 1. BUSCADOR AUTOMÁTICO DE COORDENADAS (Cualquier ciudad del mundo)
+        // 1. Buscamos coordenadas de CUALQUIER ciudad
         const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=es&format=json`);
         const geoData = await geoRes.json();
         
-        // Si la API no encuentra la ciudad, no hace nada
         if (!geoData.results || geoData.results.length === 0) return;
         
         const { latitude, longitude, name } = geoData.results[0];
 
-        // 2. BUSCADOR DE CLIMA REAL (Usando la latitud y longitud encontradas)
+        // 2. Buscamos el clima real
         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         const data = await res.json();
         const w = data.current_weather;
 
-        const card = document.getElementById('weather-card');
-        if (card) card.style.display = 'block';
-        
-        // Actualizamos el nombre de la ciudad con el oficial de la API
+        // 3. ACTUALIZAMOS LA UI Y HACEMOS VISIBLE EL WIDGET
+        card.style.display = 'block'; // Esto asegura que aparezca
         document.getElementById('weather-city').innerText = name.toUpperCase();
+        document.getElementById('weather-temp').innerText = Math.round(w.temperature) + '°';
         
-        // Traducciones dinámicas
         const lang = localStorage.getItem('appLang') || 'es';
         const codes = {
             0: { es: "Despejado ☀️", pt: "Céu limpo ☀️", en: "Clear ☀️" },
             1: { es: "Despejado 🌤️", pt: "Céu limpo 🌤️", en: "Mainly clear 🌤️" },
-            2: { es: "Parcialmente nublado ⛅", pt: "Parcialmente nublado ⛅", en: "Partly cloudy ⛅" },
+            2: { es: "Nublado ⛅", pt: "Nublado ⛅", en: "Partly cloudy ⛅" },
             3: { es: "Nublado ☁️", pt: "Nublado ☁️", en: "Cloudy ☁️" },
             45: { es: "Niebla 🌫️", pt: "Névoa 🌫️", en: "Fog 🌫️" },
             61: { es: "Lluvia 🌧️", pt: "Chuva 🌧️", en: "Rain 🌧️" },
             95: { es: "Tormenta ⚡", pt: "Tempestade ⚡", en: "Storm ⚡" }
         };
         
-        const desc = codes[w.weathercode] ? codes[w.weathercode][lang] : (lang === 'es' ? "Cielo variable" : lang === 'pt' ? "Céu variável" : "Variable sky");
-        
+        const desc = codes[w.weathercode] ? codes[w.weathercode][lang] : "Cielo variable";
         document.getElementById('weather-desc').innerText = desc;
-        document.getElementById('weather-temp').innerText = Math.round(w.temperature) + '°';
+        
     } catch (e) { 
         console.error("Error en clima:", e); 
     }
 }
-
-// Mantener el listener de carga
-window.addEventListener('load', () => {
-    setTimeout(updateWeather, 2500);
-});
 </script>
 
 </body>
