@@ -979,37 +979,41 @@ async function updateWeather() {
     if (!labelEl) return;
     
     const label = labelEl.innerText;
-    // Evita ejecutar si todavía está cargando datos de Firebase
+    // Evita ejecutar si todavía está cargando datos
     if (!label || label.includes("Cargando") || label.includes("Carregando") || label.includes("Loading")) return;
 
-    // Limpia el nombre de la ciudad quitando prefijos de los 3 idiomas
+    // Limpia el nombre de la ciudad quitando prefijos
     const city = label.replace(/VIAJE A |TRIP TO |VIAGEM PARA /gi, '').trim();
     
-    const coords = {
-        "ORLANDO": { lat: 28.53, lon: -81.37 },
-        "MIAMI": { lat: 25.76, lon: -80.19 },
-        "NEW YORK": { lat: 40.71, lon: -74.00 },
-        "LOS ANGELES": { lat: 34.05, lon: -118.24 },
-        "LAS VEGAS": { lat: 36.17, lon: -115.13 }
-    };
-
-    const loc = coords[city.toUpperCase()] || coords["ORLANDO"];
-
     try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current_weather=true`);
+        // 1. BUSCADOR AUTOMÁTICO DE COORDENADAS (Cualquier ciudad del mundo)
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=es&format=json`);
+        const geoData = await geoRes.json();
+        
+        // Si la API no encuentra la ciudad, no hace nada
+        if (!geoData.results || geoData.results.length === 0) return;
+        
+        const { latitude, longitude, name } = geoData.results[0];
+
+        // 2. BUSCADOR DE CLIMA REAL (Usando la latitud y longitud encontradas)
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         const data = await res.json();
         const w = data.current_weather;
 
         const card = document.getElementById('weather-card');
         if (card) card.style.display = 'block';
         
-        // Traducciones dinámicas según el idioma de la App
+        // Actualizamos el nombre de la ciudad con el oficial de la API
+        document.getElementById('weather-city').innerText = name.toUpperCase();
+        
+        // Traducciones dinámicas
         const lang = localStorage.getItem('appLang') || 'es';
         const codes = {
             0: { es: "Despejado ☀️", pt: "Céu limpo ☀️", en: "Clear ☀️" },
             1: { es: "Despejado 🌤️", pt: "Céu limpo 🌤️", en: "Mainly clear 🌤️" },
             2: { es: "Parcialmente nublado ⛅", pt: "Parcialmente nublado ⛅", en: "Partly cloudy ⛅" },
             3: { es: "Nublado ☁️", pt: "Nublado ☁️", en: "Cloudy ☁️" },
+            45: { es: "Niebla 🌫️", pt: "Névoa 🌫️", en: "Fog 🌫️" },
             61: { es: "Lluvia 🌧️", pt: "Chuva 🌧️", en: "Rain 🌧️" },
             95: { es: "Tormenta ⚡", pt: "Tempestade ⚡", en: "Storm ⚡" }
         };
@@ -1023,6 +1027,7 @@ async function updateWeather() {
     }
 }
 
+// Mantener el listener de carga
 window.addEventListener('load', () => {
     setTimeout(updateWeather, 2500);
 });
