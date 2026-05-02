@@ -173,14 +173,13 @@
     <div class="countdown-label" id="tripLabel">Cargando viaje...</div>
     <div id="timer" style="margin-bottom: 8px;">0d 0h 0m 0s</div>
 
-    <div id="weather-card" style="display: none; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 5px; animation: fadeIn 0.5s ease;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; flex-direction: column;">
-                <span id="weather-city" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--primary);">CLIMA</span>
-                <span id="weather-desc" style="font-size: 0.8rem; color: var(--text-dim);">Cargando...</span>
-            </div>
-            <div id="weather-temp" style="font-size: 1.4rem; font-weight: 800; color: var(--text);">--°</div>
+    <div id="weather-card" style="display: none; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 5px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; flex-direction: column;">
+            <span id="weather-city" style="font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--primary);">CLIMA</span>
+            <span id="weather-desc" style="font-size: 0.8rem; color: var(--text-dim);">Cargando...</span>
         </div>
+        <div id="weather-temp" style="font-size: 1.4rem; font-weight: 800; color: var(--text);">--°</div>
     </div>
 </div>
 
@@ -467,9 +466,12 @@ window.saveTripSettings = async () => {
 };
 function updateTripUI() {
     const lang = localStorage.getItem('appLang') || 'es';
-    document.getElementById('tripLabel').innerText = `${i18n[lang].trip_prefix} ${tripData.destination} ✈️`;
+    document.getElementById('tripLabel').innerText = `${i18n[lang].trip_prefix} ${tripData.destination.toUpperCase()} ✈️`;
     document.getElementById('input-destination').value = tripData.destination;
     document.getElementById('input-date').value = tripData.date;
+
+    // 🔥 LLAMADA AL CLIMA:
+    updateWeather(); 
 }
 function updateCountdown() {
     if (!tripData.date) return;
@@ -980,12 +982,12 @@ async function updateWeather() {
     if (!labelEl || !card) return;
     
     const label = labelEl.innerText;
-    if (!label || label.includes("Cargando") || label.includes("Carregando")) return;
+    if (!label || label.includes("Cargando")) return;
 
-    const city = label.replace(/VIAJE A |TRIP TO |VIAGEM PARA /gi, '').trim();
+    // Limpia prefijos y el emoji del avión para tener solo la ciudad
+    const city = label.replace(/VIAJE A |TRIP TO |VIAGEM PARA |✈️/gi, '').trim();
     
     try {
-        // 1. Buscamos coordenadas de CUALQUIER ciudad
         const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=es&format=json`);
         const geoData = await geoRes.json();
         
@@ -993,33 +995,18 @@ async function updateWeather() {
         
         const { latitude, longitude, name } = geoData.results[0];
 
-        // 2. Buscamos el clima real
         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         const data = await res.json();
         const w = data.current_weather;
 
-        // 3. ACTUALIZAMOS LA UI Y HACEMOS VISIBLE EL WIDGET
-        card.style.display = 'block'; // Esto asegura que aparezca
+        card.style.display = 'block'; // Muestra el widget
         document.getElementById('weather-city').innerText = name.toUpperCase();
         document.getElementById('weather-temp').innerText = Math.round(w.temperature) + '°';
         
-        const lang = localStorage.getItem('appLang') || 'es';
-        const codes = {
-            0: { es: "Despejado ☀️", pt: "Céu limpo ☀️", en: "Clear ☀️" },
-            1: { es: "Despejado 🌤️", pt: "Céu limpo 🌤️", en: "Mainly clear 🌤️" },
-            2: { es: "Nublado ⛅", pt: "Nublado ⛅", en: "Partly cloudy ⛅" },
-            3: { es: "Nublado ☁️", pt: "Nublado ☁️", en: "Cloudy ☁️" },
-            45: { es: "Niebla 🌫️", pt: "Névoa 🌫️", en: "Fog 🌫️" },
-            61: { es: "Lluvia 🌧️", pt: "Chuva 🌧️", en: "Rain 🌧️" },
-            95: { es: "Tormenta ⚡", pt: "Tempestade ⚡", en: "Storm ⚡" }
-        };
+        const codes = { 0: "Despejado ☀️", 1: "Despejado 🌤️", 2: "Nublado ⛅", 3: "Nublado ☁️", 61: "Lluvia 🌧️", 95: "Tormenta ⚡" };
+        document.getElementById('weather-desc').innerText = codes[w.weathercode] || "Cielo variable";
         
-        const desc = codes[w.weathercode] ? codes[w.weathercode][lang] : "Cielo variable";
-        document.getElementById('weather-desc').innerText = desc;
-        
-    } catch (e) { 
-        console.error("Error en clima:", e); 
-    }
+    } catch (e) { console.error(e); }
 }
 </script>
 
