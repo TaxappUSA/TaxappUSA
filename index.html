@@ -150,7 +150,9 @@
         .wc-extras{display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
         .wc-extra{display:flex;align-items:center;gap:5px;font-size:.72rem;font-weight:700;color:var(--text-sub);}
         .wc-extra span:first-child{font-size:.95rem;}
-        .wc-loading{text-align:center;padding:10px 0;font-size:.8rem;color:var(--text-dim);font-weight:600;}
+        .wc-loading{text-align:center;padding:14px 0;font-size:.8rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;}
+        .wc-spinner{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--border);border-top-color:var(--primary);animation:wc-spin .75s linear infinite;flex-shrink:0;}
+        @keyframes wc-spin{to{transform:rotate(360deg);}}
         .wc-error{font-size:.75rem;color:var(--text-dim);font-weight:600;text-align:center;padding:8px 0;}
 
         .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;backdrop-filter:blur(10px);}
@@ -221,7 +223,7 @@
             <span class="wc-label" id="wc-label">Clima en destino</span>
             <button class="wc-refresh" onclick="fetchWeather()" title="Actualizar">🔄</button>
         </div>
-        <div id="wc-body"><div class="wc-loading">📡 Obteniendo clima...</div></div>
+        <div id="wc-body"><div class="wc-loading"><div class="wc-spinner"></div><span>Obteniendo clima...</span></div></div>
     </div>
 
     <div class="card">
@@ -699,7 +701,7 @@ window.fetchWeather = async function(city) {
         return;
     }
 
-    body.innerHTML = '<div class="wc-loading">📡 ' + (lang==='en'?'Fetching weather...':lang==='pt'?'Obtendo clima...':'Obteniendo clima...') + '</div>';
+    body.innerHTML = '<div class="wc-loading"><div class="wc-spinner"></div><span>' + (lang==='en'?'Fetching weather...':lang==='pt'?'Obtendo clima...':'Obteniendo clima...') + '</span></div>';
 
     try {
         
