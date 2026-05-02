@@ -52,13 +52,13 @@
         .rates-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
         .rate-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
         .rate-box.arg{border-top:3px solid var(--cyan);}
-        .rate-box.multi{border-top:3px solid var(--accent);}
+        .rate-box.multi{border-top:3px solid var(--cyan);}
         .rate-label{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
         .rate-row{display:flex;align-items:center;gap:6px;justify-content:center;}
         .rate-row span{font-size:1rem;}
         .rate-row input{padding:7px;font-size:.85rem;text-align:center;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);width:100%;font-weight:700;}
         .rate-divider{text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:800;}
-        .currency-select{padding:6px 8px;font-size:.82rem;border:1px solid var(--border);background:var(--surface-2);border-radius:8px;font-weight:800;color:var(--accent);cursor:pointer;width:100%;-webkit-appearance:none;}
+        .currency-select{padding:6px 8px;font-size:.82rem;border:1px solid var(--border);background:var(--surface-2);border-radius:8px;font-weight:800;color:var(--text-dim);cursor:pointer;width:100%;-webkit-appearance:none;}
 
         #scanner-ui{display:none;margin-bottom:14px;border-radius:var(--radius);overflow:hidden;background:#000;position:relative;width:100%;}
         #video-preview{width:100%;display:block;}
@@ -301,16 +301,124 @@
         </div>
 
         <div id="sec-talles" style="display:none;">
-            <div class="sizes-title" data-i18n="title_footwear">👟 Calzado (ARG → US)</div>
-            <div class="sizes-grid">
-                <table class="size-table"><thead><tr><th>ARG</th><th data-i18n="th_men">H</th><th data-i18n="th_women">M</th></tr></thead><tbody><tr><td>35</td><td>-</td><td>5</td></tr><tr><td>36</td><td>-</td><td>6</td></tr><tr><td>37</td><td>-</td><td>7</td></tr><tr><td>38</td><td>6</td><td>8</td></tr><tr><td>39</td><td>7</td><td>9</td></tr><tr><td>40</td><td>8</td><td>10</td></tr></tbody></table>
-                <table class="size-table"><thead><tr><th>ARG</th><th data-i18n="th_men">H</th><th data-i18n="th_women">M</th></tr></thead><tbody><tr><td>41</td><td>9</td><td>11</td></tr><tr><td>42</td><td>10</td><td>12</td></tr><tr><td>43</td><td>11</td><td>-</td></tr><tr><td>44</td><td>12</td><td>-</td></tr><tr><td>45</td><td>13</td><td>-</td></tr><tr><td>46</td><td>14</td><td>-</td></tr></tbody></table>
+
+            <!-- ── CONVERSOR INTERACTIVO ── -->
+            <div style="background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;">
+                <div style="font-size:.6rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">🔄 Conversor de Talles</div>
+                <div style="display:flex;gap:8px;margin-bottom:10px;">
+                    <select id="conv-cat" onchange="convUpdate()" style="flex:1;padding:9px 10px;font-size:.82rem;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-weight:700;font-family:inherit;">
+                        <option value="shoe-m">👟 Calzado Hombre</option>
+                        <option value="shoe-w">👟 Calzado Mujer</option>
+                        <option value="top">👕 Remera / Top</option>
+                        <option value="jacket">🧥 Buzo / Campera</option>
+                        <option value="pants">👖 Pantalón (cm)</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <div style="flex:1;">
+                        <div style="font-size:.58rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;">Talle ARG</div>
+                        <input id="conv-arg" type="text" placeholder="Ej: 42" oninput="convCalc('arg')" style="text-align:center;font-size:1rem;font-weight:900;padding:10px;">
+                    </div>
+                    <div style="font-size:1.1rem;color:var(--text-dim);padding-top:18px;">⇄</div>
+                    <div style="flex:1;">
+                        <div style="font-size:.58rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;">Talle US</div>
+                        <input id="conv-us" type="text" placeholder="Ej: 10" oninput="convCalc('us')" style="text-align:center;font-size:1rem;font-weight:900;padding:10px;">
+                    </div>
+                </div>
+                <div id="conv-note" style="margin-top:10px;font-size:.75rem;font-weight:600;color:var(--text-sub);text-align:center;min-height:18px;"></div>
             </div>
-            <div class="sizes-title" data-i18n="title_tops">👕 Remeras / Tops</div>
-            <table class="size-table" style="table-layout:auto;"><thead><tr><th>ARG</th><th data-i18n="th_equiv">EQUIV. US</th></tr></thead><tbody><tr><td>XS</td><td>S</td></tr><tr><td>S</td><td>M</td></tr><tr><td>M</td><td>L</td></tr><tr><td>L</td><td>XL</td></tr><tr><td>XL</td><td>2XL</td></tr><tr><td>2XL</td><td>3XL</td></tr></tbody></table>
-            <div class="sizes-title" data-i18n="title_jackets">🧥 Buzos / Camperas</div>
-            <table class="size-table" style="table-layout:auto;"><thead><tr><th>ARG</th><th>US SIZE</th></tr></thead><tbody><tr><td>S</td><td>XS/S</td></tr><tr><td>M</td><td>S/M</td></tr><tr><td>L</td><td>M/L</td></tr><tr><td>XL</td><td>L/XL</td></tr><tr><td>XXL</td><td>XL/XXL</td></tr></tbody></table>
+
+            <!-- ── CALZADO ── -->
+            <div style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <span>👟</span> Calzado ARG → US
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Hombre</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>38</td><td>6</td></tr><tr><td>39</td><td>7</td></tr><tr><td>40</td><td>8</td></tr><tr><td>41</td><td>9</td></tr><tr><td>42</td><td>10</td></tr><tr><td>43</td><td>11</td></tr><tr><td>44</td><td>12</td></tr><tr><td>45</td><td>13</td></tr><tr><td>46</td><td>14</td></tr>
+                    </tbody></table>
+                </div>
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Mujer</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>35</td><td>5</td></tr><tr><td>36</td><td>6</td></tr><tr><td>37</td><td>7</td></tr><tr><td>38</td><td>8</td></tr><tr><td>39</td><td>9</td></tr><tr><td>40</td><td>10</td></tr><tr><td>41</td><td>11</td></tr><tr><td>42</td><td>12</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <!-- ── ROPA ── -->
+            <div style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <span>👕</span> Ropa ARG → US
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Remeras / Tops</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>XS</td><td>S</td></tr><tr><td>S</td><td>M</td></tr><tr><td>M</td><td>L</td></tr><tr><td>L</td><td>XL</td></tr><tr><td>XL</td><td>2XL</td></tr><tr><td>2XL</td><td>3XL</td></tr>
+                    </tbody></table>
+                </div>
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Buzos / Camperas</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>S</td><td>XS/S</td></tr><tr><td>M</td><td>S/M</td></tr><tr><td>L</td><td>M/L</td></tr><tr><td>XL</td><td>L/XL</td></tr><tr><td>XXL</td><td>XL/XXL</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <!-- ── PANTALONES ── -->
+            <div style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin:14px 0 10px;display:flex;align-items:center;gap:6px;">
+                <span>👖</span> Pantalón (Cintura cm → US Waist)
+            </div>
+            <table class="size-table" style="table-layout:auto;"><thead><tr><th>ARG cm</th><th>US Waist</th><th>Talle US</th></tr></thead><tbody>
+                <tr><td>70–72</td><td>28"</td><td>28</td></tr>
+                <tr><td>73–77</td><td>30"</td><td>30</td></tr>
+                <tr><td>78–82</td><td>32"</td><td>32</td></tr>
+                <tr><td>83–87</td><td>34"</td><td>34</td></tr>
+                <tr><td>88–92</td><td>36"</td><td>36</td></tr>
+                <tr><td>93–97</td><td>38"</td><td>38</td></tr>
+                <tr><td>98–102</td><td>40"</td><td>40</td></tr>
+            </tbody></table>
+
         </div>
+
+        <script>
+        // ── Tablas de conversión ──
+        const CONV = {
+            'shoe-m': { arg:[38,39,40,41,42,43,44,45,46], us:[6,7,8,9,10,11,12,13,14] },
+            'shoe-w': { arg:[35,36,37,38,39,40,41,42],    us:[5,6,7,8,9,10,11,12] },
+            'top':    { arg:['XS','S','M','L','XL','2XL'], us:['S','M','L','XL','2XL','3XL'] },
+            'jacket': { arg:['S','M','L','XL','XXL'],      us:['XS/S','S/M','M/L','L/XL','XL/XXL'] },
+            'pants':  { arg:['70-72','73-77','78-82','83-87','88-92','93-97','98-102'], us:['28','30','32','34','36','38','40'] }
+        };
+        function convUpdate(){ document.getElementById('conv-arg').value=''; document.getElementById('conv-us').value=''; document.getElementById('conv-note').textContent=''; }
+        function convCalc(dir){
+            const cat=document.getElementById('conv-cat').value;
+            const tbl=CONV[cat]; if(!tbl)return;
+            const argEl=document.getElementById('conv-arg'), usEl=document.getElementById('conv-us'), note=document.getElementById('conv-note');
+            const isPants=(cat==='pants');
+            if(dir==='arg'){
+                const val=argEl.value.trim().toUpperCase();
+                if(!val){usEl.value='';note.textContent='';return;}
+                // Búsqueda exacta o numérica
+                let idx=-1;
+                if(isPants){
+                    const num=parseFloat(val);
+                    tbl.arg.forEach((r,i)=>{ const [lo,hi]=r.split('-').map(Number); if(num>=lo&&num<=hi) idx=i; });
+                } else {
+                    idx=tbl.arg.findIndex(a=>String(a).toUpperCase()===val);
+                }
+                if(idx>=0){ usEl.value=tbl.us[idx]; note.textContent='✅ Talle encontrado'; note.style.color='var(--success)'; }
+                else { usEl.value=''; note.textContent='⚠️ Talle no disponible en tabla'; note.style.color='var(--warn)'; }
+            } else {
+                const val=usEl.value.trim().toUpperCase();
+                if(!val){argEl.value='';note.textContent='';return;}
+                const idx=tbl.us.findIndex(u=>String(u).toUpperCase()===val);
+                if(idx>=0){ argEl.value=tbl.arg[idx]; note.textContent='✅ Talle encontrado'; note.style.color='var(--success)'; }
+                else { argEl.value=''; note.textContent='⚠️ Talle no en tabla — probá el más cercano'; note.style.color='var(--warn)'; }
+            }
+        }
+        </script>
     </div>
 
     <div class="app-footer"><span data-i18n="footer_by">Creado por Juan Cruz Bria</span><img src="https://flagcdn.com/w40/ar.png" alt="AR"></div>
