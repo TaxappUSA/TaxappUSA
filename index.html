@@ -979,31 +979,25 @@ async function updateWeather() {
     if (!labelEl) return;
     
     const label = labelEl.innerText;
-    // Evita ejecutar si todavía está cargando datos de Firebase
-    if (!label || label.includes("Cargando") || label.includes("Carregando") || label.includes("Loading")) return;
+    if (!label || label.includes("Cargando")) return;
 
-    // Limpia el nombre de la ciudad quitando prefijos de los 3 idiomas
     const city = label.replace(/VIAJE A |TRIP TO |VIAGEM PARA /gi, '').trim();
     
-    const coords = {
-        "ORLANDO": { lat: 28.53, lon: -81.37 },
-        "MIAMI": { lat: 25.76, lon: -80.19 },
-        "NEW YORK": { lat: 40.71, lon: -74.00 },
-        "LOS ANGELES": { lat: 34.05, lon: -118.24 },
-        "LAS VEGAS": { lat: 36.17, lon: -115.13 }
-    };
-
-    const loc = coords[city.toUpperCase()] || coords["ORLANDO"];
-
     try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current_weather=true`);
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=es&format=json`);
+        const geoData = await geoRes.json();
+        
+        if (!geoData.results || geoData.results.length === 0) return;
+        
+        const { latitude, longitude, name } = geoData.results[0];
+
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
         const data = await res.json();
         const w = data.current_weather;
 
-        const card = document.getElementById('weather-card');
-        if (card) card.style.display = 'block';
+        document.getElementById('weather-card').style.display = 'block';
+        document.getElementById('weather-city').innerText = name.toUpperCase();
         
-        // Traducciones dinámicas según el idioma de la App
         const lang = localStorage.getItem('appLang') || 'es';
         const codes = {
             0: { es: "Despejado ☀️", pt: "Céu limpo ☀️", en: "Clear ☀️" },
@@ -1014,18 +1008,36 @@ async function updateWeather() {
             95: { es: "Tormenta ⚡", pt: "Tempestade ⚡", en: "Storm ⚡" }
         };
         
-        const desc = codes[w.weathercode] ? codes[w.weathercode][lang] : (lang === 'es' ? "Cielo variable" : lang === 'pt' ? "Céu variável" : "Variable sky");
-        
+        const desc = codes[w.weathercode] ? codes[w.weathercode][lang] : "Cielo variable";
         document.getElementById('weather-desc').innerText = desc;
         document.getElementById('weather-temp').innerText = Math.round(w.temperature) + '°';
+        
     } catch (e) { 
-        console.error("Error en clima:", e); 
+        console.error("Error actualizando clima:", e); 
     }
 }
 
 window.addEventListener('load', () => {
     setTimeout(updateWeather, 2500);
 });
+
+window.saveTripSettings = async () => {
+    const dest = document.getElementById('input-destination').value || 'Orlando';
+    const date = document.getElementById('input-date').value || '2027-01-01';
+    tripData = { destination: dest, date };
+    
+    if (currentUser && perfilId) {
+        try { 
+            await setDoc(doc(db, 'usuarios', currentUser.uid, 'perfiles', perfilId), { trip: tripData }, { merge: true }); 
+        } catch(e) { console.error(e); }
+    }
+    
+    updateTripUI(); 
+    
+    setTimeout(updateWeather, 500); 
+    
+    closeTripModal();
+};
 </script>
 
 </body>
