@@ -22,7 +22,6 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
     <script>
-        // Apply theme before paint to avoid flash
         const _t = localStorage.getItem('theme');
         if (_t) document.documentElement.setAttribute('data-theme', _t);
         else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
@@ -180,7 +179,6 @@
         .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
     </style>
     <script>
-        // Registrar Service Worker para cache offline y carga rápida
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -353,7 +351,7 @@
     </div>
     <div class="api-note">Firebase · FlagCDN · reCAPTCHA v3</div>
 
-</div><!-- /wrap -->
+</div>
 
 <div id="tripModal" class="modal">
     <div class="modal-content">
@@ -648,7 +646,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;    
     fetchWeather(tripData.destination);
 });
 
-// ── Weather ──────────────────────────────────────────────────
+// ── Weather ────────
 const WMO = {
     0:'Despejado',1:'Mayormente despejado',2:'Parcialmente nublado',3:'Nublado',
     45:'Niebla',48:'Niebla con escarcha',
@@ -703,7 +701,7 @@ window.fetchWeather = async function(city) {
     body.innerHTML = '<div class="wc-loading">📡 ' + (lang==='en'?'Fetching weather...':lang==='pt'?'Obtendo clima...':'Obteniendo clima...') + '</div>';
 
     try {
-        // Step 1: Geocode city → lat/lon using Open-Meteo geocoding API (free, no key)
+        
         const geoRes = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(city) + '&count=1&language=' + (lang==='pt'?'pt':'es') + '&format=json');
         const geoData = await geoRes.json();
         if (!geoData.results || !geoData.results.length) throw new Error('Ciudad no encontrada');
@@ -711,7 +709,7 @@ window.fetchWeather = async function(city) {
         const { latitude, longitude, name, country_code } = geoData.results[0];
         const displayName = name + (country_code ? ', ' + country_code.toUpperCase() : '');
 
-        // Step 2: Get weather from Open-Meteo (free, no key)
+      
         const wRes = await fetch(
             'https://api.open-meteo.com/v1/forecast?latitude=' + latitude + '&longitude=' + longitude +
             '&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m' +
@@ -773,7 +771,7 @@ function renderWeather(r, city, lang) {
         '</div>';
 }
 
-// ── Split Bill ─────────────────────────────────────────────
+// ── Split Bill ───
 let splitPeople = 2;
 let splitTipPct = 0;
 let splitOpen   = false;
@@ -832,15 +830,15 @@ window.calcSplit = () => {
     res.style.display = 'block';
 };
 
-// Sync split price when main price changes
+
 const _origCalc = window.calculate;
 window.calculate = () => {
     _origCalc && _origCalc();
-    // auto-fill split price from main price field
+    
     const mainPrice = document.getElementById('price')?.value;
     const splitInput = document.getElementById('split-price');
     if (splitInput && mainPrice && !splitInput.value) {
-        // don't overwrite if user typed something in split
+        
     }
     calcSplit();
 };
