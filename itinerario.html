@@ -718,12 +718,18 @@
 
     function listenActivities() {
         if (!currentUser || !perfilId) return;
-        const q = query(collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "actividades"), orderBy("date"), orderBy("createdAt"));
-        onSnapshot(q, (sn) => {
-            const acts = sn.docs.map(d => ({ id: d.id, ...d.data() }));
-            renderActivities(acts);
-        });
-    }
+        const q = query(
+        collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "actividades"), 
+        orderBy("date", "asc")
+    );
+    
+    onSnapshot(q, (sn) => {
+        const acts = sn.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderActivities(acts);
+    }, (error) => {
+        console.error("Error en actividades:", error);
+    });
+}
 
     // ═══ Notes ═══
     window.addNote = async () => {
