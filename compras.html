@@ -3,41 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TaxUSA — Itinerario</title>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw" async defer></script>
+    <title>TaxUSA — Gastos</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet"></noscript>
-    <script>
-        const _t = localStorage.getItem('theme');
-        if (_t) document.documentElement.setAttribute('data-theme', _t);
-        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.setAttribute('data-theme','dark');
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>const _t=localStorage.getItem('theme');if(_t)document.documentElement.setAttribute('data-theme',_t);else if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-theme','dark');</script>
     <style>
-        :root {
-            --primary:#7c3aed; --primary-dim:rgba(124,58,237,0.1);
-            --accent:#2563eb; --accent-dim:rgba(37,99,235,0.1);
-            --danger:#ef4444; --success:#10b981; --warn:#f59e0b; --cyan:#0ea5e9;
-            --bg:#f1f5f9; --surface:#ffffff; --surface-2:#f8fafc;
-            --border:#e2e8f0; --input-bg:#f8fafc;
-            --text:#0f172a; --text-sub:#64748b; --text-dim:#94a3b8;
-            --header-color:#1e3a8a;
-            --radius:20px; --radius-sm:12px;
-            --shadow:0 4px 20px rgba(0,0,0,0.06); --shadow-lg:0 12px 40px rgba(0,0,0,0.1);
-            --tr:all 0.25s cubic-bezier(0.4,0,0.2,1);
-        }
-        [data-theme="dark"] {
-            --bg:#0f172a; --surface:#1e293b; --surface-2:#273549;
-            --border:#334155; --input-bg:#273549;
-            --text:#f1f5f9; --text-sub:#94a3b8; --text-dim:#64748b;
-            --header-color:#2563eb;
-            --shadow:0 4px 20px rgba(0,0,0,0.3); --shadow-lg:0 12px 40px rgba(0,0,0,0.4);
-        }
+        :root{--primary:#2563eb;--primary-dim:rgba(37,99,235,.1);--accent:#7c3aed;--accent-dim:rgba(124,58,237,.1);--danger:#ef4444;--success:#10b981;--cyan:#0ea5e9;--bg:#f1f5f9;--surface:#fff;--surface-2:#f8fafc;--border:#e2e8f0;--input-bg:#f8fafc;--text:#0f172a;--text-sub:#64748b;--text-dim:#94a3b8;--header-color:#1e3a8a;--radius:20px;--radius-sm:12px;--shadow:0 4px 20px rgba(0,0,0,.06);--shadow-lg:0 12px 40px rgba(0,0,0,.1);--tr:all .25s cubic-bezier(.4,0,.2,1);}
+        [data-theme="dark"]{--bg:#0f172a;--surface:#1e293b;--surface-2:#273549;--border:#334155;--input-bg:#273549;--text:#f1f5f9;--text-sub:#94a3b8;--text-dim:#64748b;--header-color:#2563eb;--shadow:0 4px 20px rgba(0,0,0,.3);--shadow-lg:0 12px 40px rgba(0,0,0,.4);}
         *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
-        body{font-family:'DM Sans',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 16px 100px;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;}
+        body{font-family:'DM Sans',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 16px 40px;transition:background .3s,color .3s;-webkit-font-smoothing:antialiased;}
         .wrap{width:100%;max-width:460px;}
-
-        /* Header & Nav */
         .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
         .logo{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:900;color:var(--header-color);letter-spacing:-.5px;}
         .logo svg{width:28px;height:28px;flex-shrink:0;}
@@ -47,285 +24,342 @@
         .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
         .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
         .btn-nav-set:hover{border-color:var(--primary);}
-
-        /* Card */
         .card{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;position:relative;}
-        .slabel{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:block;}
+        .slabel{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:block;}
+        input,select,textarea{width:100%;padding:13px 15px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
+        input:focus,select:focus,textarea:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-dim);}
+        input::placeholder{color:var(--text-dim);font-weight:500;}
+        .input-group{margin-bottom:12px;}
 
-        /* Inputs */
-        select,textarea,input{width:100%;padding:12px 14px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:.9rem;font-weight:600;outline:none;transition:var(--tr);-webkit-appearance:none;}
-        select:focus,textarea:focus,input:focus{border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--primary-dim);}
-        input::placeholder,textarea::placeholder{color:var(--text-dim);font-weight:500;}
-        .input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-        .input-row.trio{grid-template-columns:1fr 1fr 1fr;}
-        .input-group{display:flex;flex-direction:column;gap:4px;}
-        .input-group label{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;}
-        .input-group select,.input-group input{margin-bottom:0;}
+        .budget-card{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;padding:20px 22px;border-radius:var(--radius);width:100%;margin-bottom:14px;box-shadow:0 8px 24px rgba(37,99,235,.3);}
+        .budget-label{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;opacity:.9;margin-bottom:6px;}
+        .budget-value{font-size:2.2rem;font-weight:900;margin-bottom:14px;}
+        .budget-set{display:flex;gap:8px;background:rgba(255,255,255,.15);border-radius:12px;padding:8px 12px;align-items:center;}
+        .budget-set input{background:transparent;border:none;color:white;padding:4px 8px;font-weight:700;flex:1;width:60px;box-shadow:none!important;}
+        .budget-set input::placeholder{color:rgba(255,255,255,.7);}
+        .budget-set button{background:white;color:var(--primary);border:none;padding:8px 16px;border-radius:8px;font-weight:800;font-size:.8rem;cursor:pointer;flex-shrink:0;}
 
-        /* Tabs */
-        .tab-bar{display:flex;background:var(--surface-2);border-radius:14px;padding:4px;gap:3px;margin-bottom:16px;border:1px solid var(--border);}
-        .tab-btn{flex:1;padding:9px 4px;border:none;border-radius:10px;background:transparent;color:var(--text-sub);font-family:inherit;font-size:.72rem;font-weight:800;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;justify-content:center;gap:4px;}
-        .tab-btn.active{background:var(--surface);color:var(--primary);box-shadow:var(--shadow);}
-        .tab-btn .ti{font-size:14px;}
-        .tab-panel{display:none;}
-        .tab-panel.active{display:block;}
+        .tab-bar{display:flex;background:var(--surface-2);padding:5px;border-radius:14px;margin-bottom:16px;gap:4px;}
+        .tab-btn{flex:1;padding:11px;border:none;border-radius:10px;font-weight:800;cursor:pointer;background:transparent;color:var(--text-sub);font-size:.8rem;font-family:inherit;transition:var(--tr);}
+        .tab-btn.active{background:var(--surface);color:var(--primary);box-shadow:0 2px 8px rgba(0,0,0,.06);}
 
-        /* Queues */
-        .queues-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
-        .queue-card{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:4px;transition:var(--tr);}
-        .queue-name{font-size:.62rem;font-weight:800;color:var(--text-sub);text-transform:uppercase;letter-spacing:.5px;}
-        .queue-status{font-size:.85rem;font-weight:900;}
-        .q-low{color:var(--success);} .q-med{color:var(--warn);} .q-high{color:var(--danger);} .q-off{color:var(--text-dim);}
-
-        /* Smart tip */
-        .smart-tip{background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:var(--radius-sm);padding:13px 14px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;margin-bottom:0;}
+        .smart-tip{background:rgba(16,185,129,.08);border:1.5px solid var(--success);border-radius:var(--radius-sm);padding:13px 14px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;transition:var(--tr);}
         .smart-tip:hover{opacity:.85;}
-        .st-icon{font-size:1.1rem;flex-shrink:0;}
-        .st-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--primary);margin-bottom:3px;}
+        .st-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+        .st-label{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--success);margin-bottom:3px;}
         #tip-text{font-size:.8rem;font-weight:600;color:var(--text);line-height:1.4;transition:opacity .3s;}
 
-        /* Btns */
-        .btn{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:8px;}
+        .rates-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+        .rate-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.04);}
+        .rate-box.arg{border-top:3px solid var(--cyan);}
+        .rate-box.multi{border-top:3px solid var(--cyan);}
+        .rate-label{font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
+        .rate-row{display:flex;align-items:center;gap:6px;justify-content:center;}
+        .rate-row span{font-size:1rem;}
+        .rate-row input{padding:7px;font-size:.85rem;text-align:center;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);width:100%;font-weight:700;}
+        .rate-divider{text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:800;}
+        .currency-select{padding:6px 8px;font-size:.82rem;border:1px solid var(--border);background:var(--surface-2);border-radius:8px;font-weight:800;color:var(--text-dim);cursor:pointer;width:100%;-webkit-appearance:none;}
+
+        #scanner-ui{display:none;margin-bottom:14px;border-radius:var(--radius);overflow:hidden;background:#000;position:relative;width:100%;}
+        #video-preview{width:100%;display:block;}
+        .ocr-loading{position:absolute;inset:0;background:rgba(0,0,0,.7);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:10;gap:8px;}
+        .close-scanner{position:absolute;top:12px;right:12px;width:34px;height:34px;background:rgba(255,255,255,.2);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:800;z-index:20;border:none;}
+        .capture-btn{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);width:56px;height:56px;border-radius:50%;border:3px solid white;background:rgba(255,255,255,.25);color:white;font-size:1.4rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;}
+
+        .btn{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:.85rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
         .btn:active{transform:scale(.97);}
-        .btn-primary{background:var(--primary);color:white;box-shadow:0 4px 14px rgba(124,58,237,.3);}
-        .btn-primary:hover{background:#6d28d9;}
-        .btn-ghost{background:var(--surface-2);color:var(--text-sub);border:1.5px solid var(--border);}
-        .btn-sm{padding:8px 12px;font-size:.72rem;width:auto;}
+        .btn-primary{background:var(--primary);color:white;box-shadow:0 4px 14px rgba(37,99,235,.3);}
+        .btn-cyan{background:var(--cyan);color:white;box-shadow:0 4px 14px rgba(14,165,233,.3);}
+        .btn-ghost{background:transparent;color:var(--text-sub);border:1.5px solid var(--border);}
 
-        /* Activities */
-        .act-form{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
-        .act-list{display:flex;flex-direction:column;gap:8px;}
-        .act-group-header{display:flex;align-items:center;gap:8px;padding:6px 0 4px;border-bottom:1.5px solid var(--border);margin-bottom:4px;}
-        .act-group-date{font-size:.75rem;font-weight:900;color:var(--text-sub);}
-        .act-group-count{font-size:.6rem;font-weight:800;color:var(--text-dim);background:var(--surface-2);border:1px solid var(--border);padding:2px 7px;border-radius:20px;}
-        .act-item{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px;transition:var(--tr);}
-        .act-item.done{opacity:.55;}
-        .act-item.done .act-name{text-decoration:line-through;color:var(--text-dim);}
-        .act-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);background:var(--surface);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--tr);margin-top:1px;}
-        .act-check.checked{background:var(--success);border-color:var(--success);}
-        .act-check.checked::after{content:'✓';color:white;font-size:.75rem;font-weight:900;}
-        .act-info{flex:1;min-width:0;}
-        .act-name{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.3;}
-        .act-meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap;}
-        .act-time{font-size:.65rem;font-weight:800;color:var(--text-dim);}
-        .act-badge{font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px;}
-        .badge-vuelo{background:rgba(14,165,233,.15);color:#0ea5e9;}
-        .badge-hotel{background:rgba(124,58,237,.15);color:#7c3aed;}
-        .badge-parque{background:rgba(16,185,129,.15);color:#10b981;}
-        .badge-comida{background:rgba(245,158,11,.15);color:#f59e0b;}
-        .badge-otro{background:rgba(100,116,139,.15);color:#64748b;}
-        .act-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:1rem;line-height:1;padding:4px;flex-shrink:0;transition:var(--tr);}
-        .act-del:hover{color:var(--danger);}
-        .empty-state{text-align:center;padding:28px 20px;color:var(--text-dim);}
-        .empty-icon{font-size:2.5rem;margin-bottom:8px;}
-        .empty-text{font-size:.8rem;font-weight:600;line-height:1.5;}
+        .history-item{background:var(--surface-2);padding:13px 15px;border-radius:var(--radius-sm);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid var(--primary);}
+        .h-name{font-weight:700;font-size:.9rem;}
+        .h-right{display:flex;align-items:center;gap:10px;}
+        .h-amount{font-weight:800;color:var(--danger);font-size:.9rem;}
+        .h-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:1rem;font-weight:800;padding:4px;}
+        .h-del:hover{color:var(--danger);}
 
-        /* Progress bar */
-        .progress-card{background:var(--primary-dim);border:1.5px solid var(--primary);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;}
-        .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-        .progress-label{font-size:.65rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.8px;}
-        .progress-count{font-size:.75rem;font-weight:900;color:var(--primary);}
-        .progress-bar-bg{background:rgba(124,58,237,.15);border-radius:8px;height:8px;overflow:hidden;}
-        .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),#a855f7);border-radius:8px;transition:width .5s ease;}
+        .scanner-warn{background:rgba(245,158,11,.08);border:1.5px solid var(--warn);border-radius:var(--radius-sm);padding:11px 13px;font-size:.8rem;font-weight:700;color:var(--warn);margin-bottom:12px;display:none;}
 
-        /* Notes */
-        .note-item{background:var(--surface-2);padding:14px 16px;border-radius:var(--radius-sm);margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;border-left:4px solid var(--primary);}
-        .note-text{font-size:.88rem;font-weight:600;flex:1;margin-right:10px;line-height:1.4;}
-        .note-meta{font-size:.6rem;color:var(--text-dim);font-weight:600;margin-top:3px;}
-        .note-del{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:1rem;line-height:1;}
-        .note-del:hover{color:var(--danger);}
+        .sizes-title{font-weight:900;color:var(--primary);font-size:.85rem;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--border);display:flex;justify-content:space-between;text-transform:uppercase;}
+        .sizes-grid{display:flex;gap:8px;margin-bottom:16px;}
+        .size-table{flex:1;width:100%;border-collapse:collapse;background:var(--surface-2);border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+        .size-table th,.size-table td{padding:7px 4px;text-align:center;border:1px solid var(--border);font-size:.65rem;color:var(--text);}
+        .size-table th{background:var(--input-bg);font-weight:800;color:var(--text-sub);}
 
-        /* Checklist de viaje */
-        .checklist-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-        .checklist-item:last-child{border-bottom:none;}
-        .cl-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:var(--tr);background:var(--surface);}
-        .cl-check.checked{background:var(--success);border-color:var(--success);}
-        .cl-check.checked::after{content:'✓';color:white;font-size:.65rem;font-weight:900;}
-        .cl-label{font-size:.85rem;font-weight:600;color:var(--text);transition:var(--tr);}
-        .cl-check.checked + .cl-label{text-decoration:line-through;color:var(--text-dim);}
+        /* ── Dashboard / Resumen ── */
+        .donut-wrap{display:flex;align-items:center;justify-content:center;gap:20px;margin-bottom:20px;}
+        .donut-svg{flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(0,0,0,.1));}
+        .donut-center{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+        .donut-rel{position:relative;display:flex;align-items:center;justify-content:center;width:140px;height:140px;}
+        .donut-total-lbl{font-size:.55rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;}
+        .donut-total-val{font-size:1.3rem;font-weight:900;color:var(--text);line-height:1.1;}
+        .donut-legend{display:flex;flex-direction:column;gap:7px;flex:1;}
+        .legend-item{display:flex;align-items:center;gap:8px;cursor:pointer;}
+        .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+        .legend-name{font-size:.75rem;font-weight:700;color:var(--text-sub);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .legend-val{font-size:.75rem;font-weight:800;color:var(--text);}
+        .legend-pct{font-size:.65rem;font-weight:700;color:var(--text-dim);min-width:30px;text-align:right;}
 
-        /* Footer */
+        .cat-bars{display:flex;flex-direction:column;gap:10px;}
+        .cat-bar-row{display:flex;flex-direction:column;gap:4px;}
+        .cat-bar-top{display:flex;align-items:center;justify-content:space-between;}
+        .cat-bar-name{font-size:.75rem;font-weight:800;color:var(--text);display:flex;align-items:center;gap:5px;}
+        .cat-bar-amount{font-size:.75rem;font-weight:800;color:var(--text-sub);}
+        .cat-bar-track{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--border);}
+        .cat-bar-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+
+        .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+        .stat-box{background:var(--surface-2);border-radius:14px;padding:14px;border:1px solid var(--border);text-align:center;}
+        .stat-icon{font-size:1.3rem;margin-bottom:4px;}
+        .stat-val{font-size:1.1rem;font-weight:900;color:var(--text);line-height:1.1;}
+        .stat-lbl{font-size:.6rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+        .cat-tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+        .cat-tag{padding:5px 10px;border-radius:20px;border:1.5px solid var(--border);background:var(--input-bg);font-size:.7rem;font-weight:700;cursor:pointer;transition:var(--tr);color:var(--text-sub);font-family:inherit;}
+        .cat-tag.sel{border-color:var(--primary);background:var(--primary-dim);color:var(--primary);}
+        .cat-tag-label{font-size:.58rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;display:block;}
+
+        .empty-dash{text-align:center;padding:28px 0;color:var(--text-dim);font-size:.85rem;font-weight:600;}
+        .empty-dash span{display:block;font-size:2rem;margin-bottom:8px;}
+
         .app-footer{margin-top:8px;padding:12px 0;text-align:center;font-size:.7rem;color:var(--text-dim);font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;}
         .app-footer img{width:16px;border-radius:2px;}
-        .api-note{font-size:.55rem;color:var(--text-dim);letter-spacing:1px;text-transform:uppercase;opacity:.6;text-align:center;margin-top:4px;}
 
-        /* Settings */
         .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;z-index:1000;backdrop-filter:blur(4px);}
         .settings-drawer{position:fixed;top:0;right:-300px;width:290px;height:100%;background:var(--surface);z-index:1001;transition:.3s ease;padding:28px 20px;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.15);border-left:1px solid var(--border);overflow-y:auto;}
         .settings-drawer.open{right:0;}
         .drawer-header{font-size:1.1rem;font-weight:900;color:var(--primary);margin-bottom:4px;}
         .drawer-email{font-size:.75rem;color:var(--text-dim);font-weight:600;margin-bottom:20px;}
         .drawer-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;display:block;}
-        .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
-        .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
-        .btn-danger-text{color:var(--danger) !important;}
         .lang-selector{display:flex;background:var(--input-bg);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:14px;border:1.5px solid var(--border);}
-        .lang-opt{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.75rem;font-weight:800;color:var(--text-sub);display:flex;align-items:center;justify-content:center;gap:6px;font-family:inherit;transition:var(--tr);}
+        .lang-opt{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.75rem;font-weight:800;color:var(--text-sub);font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--tr);}
         .lang-opt img{width:18px;border-radius:2px;}
         .lang-opt.active{background:var(--primary);color:white;}
-
-        /* Divider */
-        .divider{height:1px;background:var(--border);margin:14px 0;}
+        .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
+        .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
+        .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
     </style>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(() => {});
-            });
-        }
-    </script>
 </head>
 <body>
 <div class="wrap">
     <div class="app-header">
         <a href="index.html" class="logo" style="text-decoration:none;">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
-                <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
-                <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
-                <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
-            </svg>
-            TaxUSA
-        </a>
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
+    <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
+    <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
+    <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+  </svg>
+  TaxUSA
+</a>
     </div>
-
     <nav class="nav-bar">
         <a href="index.html" class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
-        <a href="compras.html" class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_expenses">GASTOS</span></a>
+        <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
         <a href="unidades.html" class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
         <a href="tickets.html" class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">TICKETS</span></a>
-        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()">⚙️</button>
+        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
     </nav>
 
-    <!-- TABS -->
-    <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('lugares')" id="tab-lugares">
-            <span class="ti">📍</span><span data-i18n="tab_places">LUGARES</span>
-        </button>
-        <button class="tab-btn" onclick="switchTab('actividades')" id="tab-actividades">
-            <span class="ti">✅</span><span data-i18n="tab_activities">ACTIVIDADES</span>
-        </button>
-        <button class="tab-btn" onclick="switchTab('notas')" id="tab-notas">
-            <span class="ti">📝</span><span data-i18n="tab_notes">NOTAS</span>
-        </button>
-    </div>
-
-    <!-- ═══════ TAB LUGARES ═══════ -->
-    <div class="tab-panel active" id="panel-lugares">
-        <div class="card">
-            <span class="slabel" data-i18n="itinerary_title">📍 Planificador de Viaje</span>
-            <select id="citySelector" onchange="renderCityData()" style="margin-bottom:14px;">
-                <option value="orlando" data-i18n="city_orlando">🎡 Orlando</option>
-                <option value="nyc" data-i18n="city_nyc">🍎 Nueva York</option>
-                <option value="miami" data-i18n="city_miami">🏖️ Miami</option>
-                <option value="vegas" data-i18n="city_vegas">🎲 Las Vegas</option>
-                <option value="la" data-i18n="city_la">🎬 Los Ángeles</option>
-                <option value="sf" data-i18n="city_sf">🌉 San Francisco</option>
-                <option value="chicago" data-i18n="city_chicago">🏢 Chicago</option>
-                <option value="dc" data-i18n="city_dc">🏛️ Washington D.C.</option>
-            </select>
-            <div class="queues-grid" id="dynamicQueues"></div>
-            <div class="smart-tip" onclick="nextTip()">
-                <span class="st-icon">✨</span>
-                <div>
-                    <div class="st-label" data-i18n="tip_label">TIP DE VIAJE</div>
-                    <div id="tip-text">Cargando tips...</div>
-                </div>
-            </div>
+    <div class="budget-card">
+        <div class="budget-label" data-i18n="label_budget">Presupuesto Restante</div>
+        <div class="budget-value" id="disp-fondo">USD 0.00</div>
+        <div class="budget-set">
+            <input type="number" id="input-fondo" placeholder="TOTAL USD" step="0.01" inputmode="decimal">
+            <button onclick="updateFondo()" data-i18n="btn_set">SET</button>
         </div>
     </div>
 
-    <!-- ═══════ TAB ACTIVIDADES ═══════ -->
-    <div class="tab-panel" id="panel-actividades">
-        <!-- Progress bar -->
-        <div class="progress-card" id="progressCard" style="display:none;">
-            <div class="progress-header">
-                <span class="progress-label" data-i18n="progress_label">Progreso del viaje</span>
-                <span class="progress-count" id="progressCount">0/0</span>
+    <div id="scanner-ui">
+        <button class="close-scanner" onclick="stopScanner()">✕</button>
+        <div id="ocr-loader" class="ocr-loading">
+            <span id="ocr-status" data-i18n="ocr_analyzing">Analizando ticket... 🧐</span>
+            <small data-i18n="ocr_detecting">Detectando Totales y Taxes</small>
+        </div>
+        <video id="video-preview" autoplay playsinline></video>
+        <button class="capture-btn" onclick="captureTicket()">📸</button>
+    </div>
+    <canvas id="ocr-canvas" style="display:none;"></canvas>
+
+    <div class="card">
+        <div class="smart-tip" onclick="nextTip()">
+            <span class="st-icon">🛍️</span>
+            <div>
+                <div class="st-label" data-i18n="shopping_guide">GUÍA DE COMPRAS</div>
+                <div id="tip-text">Cargando consejos...</div>
             </div>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
         </div>
 
-        <!-- Formulario nueva actividad -->
-        <div class="card">
-            <span class="slabel" data-i18n="label_add_activity">➕ Nueva Actividad</span>
-            <div class="act-form">
-                <input type="text" id="actName" data-i18n-placeholder="act_placeholder" placeholder="Ej: Vuelo EZE → MCO" style="margin-bottom:0;">
-                <div class="input-row">
-                    <div class="input-group">
-                        <label data-i18n="label_date">Fecha</label>
-                        <input type="date" id="actDate">
-                    </div>
-                    <div class="input-group">
-                        <label data-i18n="label_time">Hora</label>
-                        <input type="time" id="actTime">
-                    </div>
+        <div class="tab-bar">
+            <button class="tab-btn active" id="t-gastos" onclick="showSec('gastos')" data-i18n="tab_list">GASTOS</button>
+            <button class="tab-btn" id="t-resumen" onclick="showSec('resumen')" data-i18n="tab_summary">RESUMEN</button>
+            <button class="tab-btn" id="t-talles" onclick="showSec('talles')" data-i18n="tab_sizes">TALLES</button>
+        </div>
+
+        <div id="sec-gastos">
+            <div class="scanner-warn" id="scanner-warning" data-i18n="scanner_beta_msg">⚠️ El escáner está en beta. Verificá siempre el monto detectado.</div>
+            <button class="btn btn-cyan" onclick="startScanner()">📷 <span data-i18n="btn_scan_ticket">ESCANEAR TICKET</span></button>
+
+            <!-- Exchange rates -->
+            <span class="slabel" style="margin-bottom:10px;" data-i18n="label_exchange">Cotizaciones</span>
+            <div class="rates-grid">
+                <div class="rate-box arg">
+                    <div class="rate-label" data-i18n="rate_official">Dólar Oficial</div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="oficial-usd" value="1" oninput="formatVisual(this);convert('oficial','usd')"></div>
+                    <div class="rate-divider">⇅</div>
+                    <div class="rate-row"><span></span><img src="https://flagcdn.com/20x15/ar.png" alt="Argentina"><input type="text" id="oficial-local" oninput="formatVisual(this);convert('oficial','local')"></div>
                 </div>
-                <div class="input-group">
-                    <label data-i18n="label_type">Tipo</label>
-                    <select id="actType">
-                        <option value="vuelo">✈️ <span data-i18n="type_flight">Vuelo</span></option>
-                        <option value="hotel">🏨 <span data-i18n="type_hotel">Hotel</span></option>
-                        <option value="parque">🎡 <span data-i18n="type_park">Parque</span></option>
-                        <option value="comida">🍽️ <span data-i18n="type_food">Comida</span></option>
-                        <option value="otro">📌 <span data-i18n="type_other">Otro</span></option>
+                <div class="rate-box arg">
+                    <div class="rate-label" data-i18n="rate_card">Dólar Tarjeta</div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="tarjeta-usd" value="1" oninput="formatVisual(this);convert('tarjeta','usd')"></div>
+                    <div class="rate-divider">⇅</div>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/ar.png" alt="Argentina"></span><input type="text" id="tarjeta-local" oninput="formatVisual(this);convert('tarjeta','local')"></div>
+                </div>
+                <div class="rate-box multi">
+                    <select id="select-eur" class="currency-select" onchange="updateMulti('eur')">
+                        <option value="EUR">Euro</option><option value="GBP" data-i18n="opt_pound">Libra</option>
                     </select>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="eur-usd" value="1" oninput="formatVisual(this);convert('eur','usd')"></div>
+                    <div class="rate-divider">⇅</div>
+                    <div class="rate-row"><span id="flag-eur"><img src="https://flagcdn.com/20x15/eu.png" alt="European Union"></span><input type="text" id="eur-local" oninput="formatVisual(this);convert('eur','local')"></div>
                 </div>
-                <button class="btn btn-primary" onclick="addActivity()" data-i18n="btn_add_activity">AGREGAR ACTIVIDAD</button>
-            </div>
-        </div>
-
-        <!-- Lista de actividades -->
-        <div class="card">
-            <span class="slabel" data-i18n="label_schedule">📅 Agenda</span>
-            <div class="act-list" id="activitiesList">
-                <div class="empty-state">
-                    <div class="empty-icon">🗺️</div>
-                    <div class="empty-text" data-i18n="empty_activities">Todavía no agregaste actividades.<br>¡Empezá a planificar tu viaje!</div>
+                <div class="rate-box multi">
+                    <select id="select-brl" class="currency-select" onchange="updateMulti('brl')">
+                        <option value="BRL" data-i18n="opt_real">Real</option><option value="CLP" data-i18n="opt_clp">P. Chileno</option><option value="UYU" data-i18n="opt_uyu">P. Uruguayo</option><option value="MXN" data-i18n="opt_mxn">P. Mexicano</option><option value="PEN" data-i18n="opt_pen">Sol Peruano</option><option value="COP" data-i18n="opt_cop">P. Colombiano</option>
+                    </select>
+                    <div class="rate-row"><span><img src="https://flagcdn.com/20x15/us.png" alt="United States"></span><input type="text" id="brl-usd" value="1" oninput="formatVisual(this);convert('brl','usd')"></div>
+                    <div class="rate-divider">⇅</div>
+                    <div class="rate-row"><span id="flag-brl"><img src="https://flagcdn.com/20x15/br.png" alt="Brazil"></span><input type="text" id="brl-local" oninput="formatVisual(this);convert('brl','local')"></div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- ═══════ TAB NOTAS ═══════ -->
-   <div class="tab-panel" id="panel-notas">
-    <div class="card">
-        <span class="slabel" data-i18n="label_notes">📝 Notas y Recordatorios</span>
-        <textarea id="noteInput" rows="3" data-i18n-placeholder="note_placeholder" placeholder="Vuelos, hoteles, recordatorios..." style="margin-bottom:10px;"></textarea>
-        <button class="btn btn-primary" onclick="addNote()" data-i18n="btn_add_note">AGREGAR NOTA</button>
-        <div id="notesList" style="margin-top:16px;"></div>
-    </div>
-
-    <div class="card">
-        <span class="slabel" data-i18n="label_checklist">✅ Checklist de Viaje</span>
-        
-        <div class="progress-card" id="checkProgressCard" style="display: none; margin: 10px 0 20px 0; background: var(--primary-dim); padding: 12px; border-radius: 12px;">
-            <div class="progress-info" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700;">
-                <span id="checkProgressLabel">Preparativos</span>
-                <span id="checkProgressCount">0/0</span>
+            <div class="input-group"><input type="text" id="nombre" placeholder="Producto" data-i18n-ph="placeholder_product"></div>
+            <div class="input-group"><input type="number" id="valor" placeholder="Precio USD" step="0.01" inputmode="decimal" data-i18n-ph="placeholder_price"></div>
+            <span class="cat-tag-label" data-i18n="label_cat_tag">Categoría</span>
+            <div class="cat-tag-row" id="cat-tag-row">
+                <button class="cat-tag sel" data-cat="🛍️ Compras">🛍️ Compras</button>
+                <button class="cat-tag" data-cat="👟 Ropa">👟 Ropa</button>
+                <button class="cat-tag" data-cat="🍔 Comida">🍔 Comida</button>
+                <button class="cat-tag" data-cat="🎢 Entretenimiento">🎢 Entretenimiento</button>
+                <button class="cat-tag" data-cat="🚗 Transporte">🚗 Transporte</button>
+                <button class="cat-tag" data-cat="🏨 Alojamiento">🏨 Alojamiento</button>
+                <button class="cat-tag" data-cat="💊 Farmacia">💊 Farmacia</button>
+                <button class="cat-tag" data-cat="✈️ Vuelos">✈️ Vuelos</button>
+                <button class="cat-tag" data-cat="📦 Otros">📦 Otros</button>
             </div>
-            <div class="progress-bar" style="background: var(--border); height: 8px; border-radius: 4px; overflow: hidden;">
-                <div id="checkProgressFill" style="height: 100%; width: 0%; background: var(--success); transition: width 0.3s ease;"></div>
+            <button class="btn btn-primary" onclick="addGasto()">💾 <span data-i18n="btn_save_expense">GUARDAR GASTO</span></button>
+            <div id="listaGastos"><p style="text-align:center;color:var(--text-dim);font-size:.85rem;" data-i18n="loading">Cargando...</p></div>
+        </div>
+
+        <!-- ── RESUMEN / DASHBOARD ── -->
+        <div id="sec-resumen" style="display:none;">
+            <div id="dash-empty" class="empty-dash" style="display:none;">
+                <span>🛍️</span>Aún no hay gastos cargados.<br>¡Empezá a registrar tus compras!
+            </div>
+            <div id="dash-content">
+                <!-- Stats grid -->
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-icon">💸</div>
+                        <div class="stat-val" id="dash-total">$0</div>
+                        <div class="stat-lbl" data-i18n="dash_total">Total gastado</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🧾</div>
+                        <div class="stat-val" id="dash-count">0</div>
+                        <div class="stat-lbl" data-i18n="dash_count">Compras</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-val" id="dash-avg">$0</div>
+                        <div class="stat-lbl" data-i18n="dash_avg">Promedio</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-val" id="dash-top" style="font-size:.85rem;">—</div>
+                        <div class="stat-lbl" data-i18n="dash_top">Mayor gasto</div>
+                    </div>
+                </div>
+
+                <!-- Donut chart -->
+                <span class="slabel" data-i18n="dash_by_cat">Por Categoría</span>
+                <div class="donut-wrap">
+                    <div class="donut-rel">
+                        <svg class="donut-svg" id="donut-svg" width="140" height="140" viewBox="0 0 140 140"></svg>
+                        <div class="donut-center">
+                            <div class="donut-total-lbl" id="donut-lbl">TOTAL</div>
+                            <div class="donut-total-val" id="donut-val">$0</div>
+                        </div>
+                    </div>
+                    <div class="donut-legend" id="donut-legend"></div>
+                </div>
+
+                <!-- Bar chart -->
+                <div class="cat-bars" id="cat-bars"></div>
             </div>
         </div>
 
-        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-            <input type="text" id="customCheckInput" placeholder="Agregar ítem..." style="flex:1; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 0.9rem;">
-            <button onclick="addCustomCheckItem()" style="background: var(--primary); color: white; border: none; border-radius: 10px; width: 40px; font-weight: bold; cursor: pointer;">+</button>
+        <div id="sec-talles" style="display:none;">
+
+            <!-- ── CALZADO ── -->
+            <div style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <span>👟</span> Calzado ARG → US
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Hombre</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>38</td><td>6</td></tr><tr><td>39</td><td>7</td></tr><tr><td>40</td><td>8</td></tr><tr><td>41</td><td>9</td></tr><tr><td>42</td><td>10</td></tr><tr><td>43</td><td>11</td></tr><tr><td>44</td><td>12</td></tr><tr><td>45</td><td>13</td></tr><tr><td>46</td><td>14</td></tr>
+                    </tbody></table>
+                </div>
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Mujer</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>35</td><td>5</td></tr><tr><td>36</td><td>6</td></tr><tr><td>37</td><td>7</td></tr><tr><td>38</td><td>8</td></tr><tr><td>39</td><td>9</td></tr><tr><td>40</td><td>10</td></tr><tr><td>41</td><td>11</td></tr><tr><td>42</td><td>12</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <!-- ── ROPA ── -->
+            <div style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                <span>👕</span> Ropa ARG → US
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Remeras / Tops</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>XS</td><td>S</td></tr><tr><td>S</td><td>M</td></tr><tr><td>M</td><td>L</td></tr><tr><td>L</td><td>XL</td></tr><tr><td>XL</td><td>2XL</td></tr><tr><td>2XL</td><td>3XL</td></tr>
+                    </tbody></table>
+                </div>
+                <div>
+                    <div style="font-size:.58rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;text-align:center;">Buzos / Camperas</div>
+                    <table class="size-table"><thead><tr><th>ARG</th><th>US</th></tr></thead><tbody>
+                        <tr><td>S</td><td>XS/S</td></tr><tr><td>M</td><td>S/M</td></tr><tr><td>L</td><td>M/L</td></tr><tr><td>XL</td><td>L/XL</td></tr><tr><td>XXL</td><td>XL/XXL</td></tr>
+                    </tbody></table>
+                </div>
+            </div>
+
+            <!-- ── PANTALONES ── -->
+            <div style="font-size:.6rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin:14px 0 10px;display:flex;align-items:center;gap:6px;">
+                <span>👖</span> Pantalón (Cintura cm → US Waist)
+            </div>
+            <table class="size-table" style="table-layout:auto;"><thead><tr><th>ARG cm</th><th>US Waist</th><th>Talle US</th></tr></thead><tbody>
+                <tr><td>70–72</td><td>28"</td><td>28</td></tr>
+                <tr><td>73–77</td><td>30"</td><td>30</td></tr>
+                <tr><td>78–82</td><td>32"</td><td>32</td></tr>
+                <tr><td>83–87</td><td>34"</td><td>34</td></tr>
+                <tr><td>88–92</td><td>36"</td><td>36</td></tr>
+                <tr><td>93–97</td><td>38"</td><td>38</td></tr>
+                <tr><td>98–102</td><td>40"</td><td>40</td></tr>
+            </tbody></table>
+
         </div>
 
-        <div id="travelChecklist"></div>
-    </div>
+    <div class="app-footer"><span data-i18n="footer_by">Creado por Juan Cruz Bria</span><img src="https://flagcdn.com/w40/ar.png" alt="AR"></div>
+    <div style="text-align:center;font-size:.55rem;color:var(--text-dim);font-weight:600;letter-spacing:.8px;padding-bottom:16px;opacity:.6;">FIREBASE · FLAGCDN · RECAPTCHA V3</div>
 </div>
 
-    <div class="app-footer">
-        <span data-i18n="footer_by">Creado por Juan Cruz Bria</span>
-        <img src="https://flagcdn.com/w40/ar.png" alt="AR">
-        <div class="api-note">Powered by Queue-Times.com · Dolarapi</div>
-    </div>
-</div>
-
-<!-- SETTINGS DRAWER -->
 <div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
 <div id="settingsDrawer" class="settings-drawer">
     <div class="drawer-header"><span data-i18n="settings_title">Ajustes</span></div>
@@ -338,682 +372,452 @@
     </div>
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
-    <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_refresh">Actualizar App</span></button>
-    <button class="drawer-btn" onclick="executeWithToken(changeEmail)">📧 <span data-i18n="btn_change_email">Cambiar Correo</span></button>
-    <button class="drawer-btn" onclick="executeWithToken(changePassword)">🔑 <span data-i18n="btn_change_pass">Cambiar Contraseña</span></button>
+    <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="doChangeEmail()">📧 <span data-i18n="btn_email">Cambiar Correo</span></button>
+    <button class="drawer-btn" onclick="doChangePassword()">🔑 <span data-i18n="btn_password">Cambiar Contraseña</span></button>
     <button class="drawer-btn" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
-    <div style="margin-top:auto;padding-top:20px;">
-        <button class="drawer-btn btn-danger-text" onclick="executeWithToken(deleteAccount)">🗑️ <span data-i18n="btn_delete_acc">Eliminar Cuenta</span></button>
-    </div>
+    <div style="margin-top:auto;padding-top:16px;"><button class="drawer-btn btn-danger" onclick="doDeleteAccount()">🗑️ <span data-i18n="btn_delete">Eliminar Cuenta</span></button></div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updateEmail, updatePassword, sendEmailVerification, deleteUser } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app-check.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
-        authDomain: "viajes-db538.firebaseapp.com",
-        projectId: "viajes-db538",
-        storageBucket: "viajes-db538.firebasestorage.app",
-        messagingSenderId: "237311739178",
-        appId: "1:237311739178:web:333e468b184c0402a98a53"
-    };
+const FB = { apiKey:"AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U", authDomain:"viajes-db538.firebaseapp.com", projectId:"viajes-db538", storageBucket:"viajes-db538.firebasestorage.googleapis.com", messagingSenderId:"1053003173098", appId:"1:1053003173098:web:ecf5cdc31b9cca17e2151f" };
+const app = initializeApp(FB);
+const auth = getAuth(app);
+const db = getFirestore(app);
+initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LeK6cssAAAAALxcJy-95R2nhVMmnuIyB78AQgvw'), isTokenAutoRefreshEnabled: true });
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+let currentUser = null;
+const perfilId = localStorage.getItem('perfilActivoId');
+const perfilFoto = localStorage.getItem('perfilActivoFoto');
+let presupuestoBase = 0;
+let allRates = {};
+let baseRates = { oficial:0, tarjeta:0, eur:0, brl:0 };
+const flags = {
+  EUR: '<img src="https://flagcdn.com/20x15/eu.png">',
+  GBP: '<img src="https://flagcdn.com/20x15/gb.png">',
+  CHF: '<img src="https://flagcdn.com/20x15/ch.png">',
+  BRL: '<img src="https://flagcdn.com/20x15/br.png">',
+  CLP: '<img src="https://flagcdn.com/20x15/cl.png">',
+  UYU: '<img src="https://flagcdn.com/20x15/uy.png">',
+  MXN: '<img src="https://flagcdn.com/20x15/mx.png">',
+  PEN: '<img src="https://flagcdn.com/20x15/pe.png">',
+  COP: '<img src="https://flagcdn.com/20x15/co.png">'
+};
+    let tipIndex = 0;
+let video, stream;
 
-    let currentUser = null;
-    const perfilId = localStorage.getItem('perfilActivoId');
-    const perfilFoto = localStorage.getItem('perfilActivoFoto');
-    let currentTipIndex = 0;
+const i18n = {
+    es:{ nav_home:"INICIO",nav_itinerary:"ITINERARIO",nav_compare:"COMPARAR",nav_units:"UNIDADES",label_budget:"Presupuesto Restante",btn_set:"SET",ocr_analyzing:"Analizando ticket... 🧐",ocr_detecting:"Detectando Totales y Taxes",shopping_guide:"🛍️ GUÍA DE COMPRAS",tab_list:"GASTOS",tab_summary:"RESUMEN",tab_sizes:"TALLES",scanner_beta_msg:"⚠️ El escáner está en beta. Verificá siempre el monto detectado.",btn_scan_ticket:"ESCANEAR TICKET",rate_official:"Dólar Oficial",rate_card:"Dólar Tarjeta",label_exchange:"Cotizaciones",opt_pound:"Libra",opt_real:"Real",opt_clp:"P. Chileno",opt_uyu:"P. Uruguayo",opt_mxn:"P. Mexicano",opt_pen:"Sol Peruano",opt_cop:"P. Colombiano",placeholder_product:"Producto",placeholder_price:"Precio USD",label_cat_tag:"Categoría",btn_save_expense:"GUARDAR GASTO",loading:"Cargando...",title_footwear:"👟 Calzado (ARG → US)",th_men:"H",th_women:"M",th_equiv:"EQUIV. US",title_tops:"👕 Remeras / Tops",title_jackets:"🧥 Buzos / Camperas",settings_title:"Ajustes",label_language:"Idioma",btn_change_profile:"Cambiar Perfil",btn_theme:"Cambiar Tema",btn_update:"Actualizar App",btn_email:"Cambiar Correo",btn_password:"Cambiar Contraseña",btn_logout:"Cerrar Sesión",btn_delete:"Eliminar Cuenta",footer_by:"Creado por Juan Cruz Bria",alert_no_total:"No se detectó el total. Cargalo manualmente.",alert_upcoming:"🚀 El Comparador de Precios estará disponible próximamente.",dash_total:"Total gastado",dash_count:"Compras",dash_avg:"Promedio",dash_top:"Mayor gasto",dash_by_cat:"Por Categoría",cat_flights:"Vuelos",cat_others:"Otros" },
+    en:{ nav_home:"HOME",nav_itinerary:"ITINERARY",nav_compare:"COMPARE",nav_units:"UNITS",label_budget:"Remaining Budget",btn_set:"SET",ocr_analyzing:"Analyzing ticket... 🧐",ocr_detecting:"Detecting Totals and Taxes",shopping_guide:"🛍️ SHOPPING GUIDE",tab_list:"EXPENSES",tab_summary:"SUMMARY",tab_sizes:"SIZES",scanner_beta_msg:"⚠️ Scanner is in beta. Always verify the detected amount.",btn_scan_ticket:"SCAN TICKET",rate_official:"Official Dollar",rate_card:"Card Dollar",label_exchange:"Exchange Rates",opt_pound:"Pound",opt_real:"Real",opt_clp:"Chilean P.",opt_uyu:"Uruguayan P.",opt_mxn:"Mexican P.",opt_pen:"Peruvian Sol",opt_cop:"Colombian P.",placeholder_product:"Product Name",placeholder_price:"Price in USD",label_cat_tag:"Category",btn_save_expense:"SAVE EXPENSE",loading:"Loading...",title_footwear:"👟 Footwear (ARG → US)",th_men:"M",th_women:"W",th_equiv:"US SIZE",title_tops:"👕 T-Shirts / Tops",title_jackets:"🧥 Hoodies / Jackets",settings_title:"Settings",label_language:"Language",btn_change_profile:"Change Profile",btn_theme:"Toggle Theme",btn_update:"Update App",btn_email:"Change Email",btn_password:"Change Password",btn_logout:"Sign Out",btn_delete:"Delete Account",footer_by:"Created by Juan Cruz Bria",alert_no_total:"Total not detected. Please enter it manually.",alert_upcoming:"🚀 The Price Comparator will be available soon.",dash_total:"Total spent",dash_count:"Purchases",dash_avg:"Average",dash_top:"Biggest expense",dash_by_cat:"By Category",cat_flights:"Flights",cat_others:"Others" },
+    pt:{ nav_home:"INÍCIO",nav_itinerary:"ITINERÁRIO",nav_compare:"COMPARAR",nav_units:"UNIDADES",label_budget:"Orçamento Restante",btn_set:"SET",ocr_analyzing:"Analisando ticket... 🧐",ocr_detecting:"Detectando Totais e Taxes",shopping_guide:"🛍️ GUIA DE COMPRAS",tab_list:"GASTOS",tab_summary:"RESUMO",tab_sizes:"TAMANHOS",scanner_beta_msg:"⚠️ O scanner está em beta. Verifique sempre o valor detectado.",btn_scan_ticket:"ESCANEAR TICKET",rate_official:"Dólar Oficial",rate_card:"Dólar Cartão",label_exchange:"Cotações",opt_pound:"Libra",opt_real:"Real",opt_clp:"P. Chileno",opt_uyu:"P. Uruguaio",opt_mxn:"P. Mexicano",opt_pen:"Sol Peruano",opt_cop:"P. Colombiano",placeholder_product:"Produto",placeholder_price:"Preço USD",label_cat_tag:"Categoria",btn_save_expense:"SALVAR GASTO",loading:"Carregando...",title_footwear:"👟 Calçados (BRL → US)",th_men:"H",th_women:"M",th_equiv:"EQUIV. US",title_tops:"👕 Camisetas / Tops",title_jackets:"🧥 Moletons / Jaquetas",settings_title:"Configurações",label_language:"Idioma",btn_change_profile:"Trocar Perfil",btn_theme:"Alternar Tema",btn_update:"Atualizar App",btn_email:"Alterar E-mail",btn_password:"Alterar Senha",btn_logout:"Sair",btn_delete:"Excluir Conta",footer_by:"Criado por Juan Cruz Bria",alert_no_total:"Total não detectado. Por favor insira manualmente.",alert_upcoming:"🚀 O Comparador de Preços estará disponível em breve.",dash_total:"Total gasto",dash_count:"Compras",dash_avg:"Média",dash_top:"Maior gasto",dash_by_cat:"Por Categoria",cat_flights:"Voos",cat_others:"Outros" }
+};
 
-    
-    const i18n = {
-        es: {
-            nav_home:"INICIO", nav_expenses:"GASTOS", nav_units:"UNIDADES",
-            tab_places:"LUGARES", tab_activities:"ACTIVIDADES", tab_notes:"NOTAS",
-            itinerary_title:"📍 Planificador de Viaje",
-            tip_label:"✨ Tip de Viaje",
-            city_orlando:"🎡 Orlando", city_nyc:"🍎 Nueva York", city_miami:"🏖️ Miami",
-            city_vegas:"🎲 Las Vegas", city_la:"🎬 Los Ángeles", city_sf:"🌉 San Francisco",
-            city_chicago:"🏢 Chicago", city_dc:"🏛️ Washington D.C.",
-            status_low:"BAJA 🟢", status_med:"MED 🟡", status_high:"ALTA 🔴", status_closed:"CERRADO 🌙", status_na:"N/A",
-            label_add_activity:"➕ Nueva Actividad", act_placeholder:"Ej: Vuelo EZE → MCO",
-            label_date:"Fecha", label_time:"Hora", label_type:"Tipo",
-            type_flight:"✈️ Vuelo", type_hotel:"🏨 Hotel", type_park:"🎡 Parque",
-            type_food:"🍽️ Comida", type_other:"📌 Otro",
-            btn_add_activity:"AGREGAR ACTIVIDAD",
-            label_schedule:"📅 Agenda",
-            empty_activities:"Todavía no agregaste actividades.\n¡Empezá a planificar tu viaje!",
-            progress_label:"Progreso del viaje",
-            label_notes:"📝 Notas y Recordatorios", note_placeholder:"Vuelos, hoteles, recordatorios...", btn_add_note:"AGREGAR NOTA",
-            label_checklist:"✅ Checklist de Viaje",
-            settings_title:"Ajustes", label_language:"Idioma",
-            btn_change_profile:"Cambiar Perfil", btn_theme:"Cambiar Tema", btn_refresh:"Actualizar App",
-            btn_change_email:"Cambiar Correo", btn_change_pass:"Cambiar Contraseña",
-            btn_logout:"Cerrar Sesión", btn_delete_acc:"Eliminar Cuenta",
-            footer_by:"Creado por Juan Cruz Bria",
-            prompt_new_email:"Ingresa el nuevo correo electrónico:",
-            prompt_new_pass:"Ingresa la nueva contraseña (mínimo 6 caracteres):",
-            alert_email_verify:"Se ha enviado un correo de verificación. El cambio se aplicará tras verificar.",
-            alert_pass_success:"Contraseña actualizada con éxito.",
-            alert_reauth_required:"Error: Reautenticación requerida para cambios sensibles.",
-            confirm_delete_account:"¿ESTÁS SEGURO? Esta acción borrará todos tus datos de forma permanente.",
-            confirm_delete:"¿Eliminar?",
-        },
-        en: {
-            nav_home:"HOME", nav_expenses:"EXPENSES", nav_units:"UNITS",
-            tab_places:"PLACES", tab_activities:"ACTIVITIES", tab_notes:"NOTES",
-            itinerary_title:"📍 Trip Planner",
-            tip_label:"✨ Travel Tip",
-            city_orlando:"🎡 Orlando", city_nyc:"🍎 New York", city_miami:"🏖️ Miami",
-            city_vegas:"🎲 Las Vegas", city_la:"🎬 Los Angeles", city_sf:"🌉 San Francisco",
-            city_chicago:"🏢 Chicago", city_dc:"🏛️ Washington D.C.",
-            status_low:"LOW 🟢", status_med:"MED 🟡", status_high:"HIGH 🔴", status_closed:"CLOSED 🌙", status_na:"N/A",
-            label_add_activity:"➕ New Activity", act_placeholder:"E.g.: Flight EZE → MCO",
-            label_date:"Date", label_time:"Time", label_type:"Type",
-            type_flight:"✈️ Flight", type_hotel:"🏨 Hotel", type_park:"🎡 Park",
-            type_food:"🍽️ Food", type_other:"📌 Other",
-            btn_add_activity:"ADD ACTIVITY",
-            label_schedule:"📅 Schedule",
-            empty_activities:"No activities added yet.\nStart planning your trip!",
-            progress_label:"Trip progress",
-            label_notes:"📝 Notes & Reminders", note_placeholder:"Flights, hotels, reminders...", btn_add_note:"ADD NOTE",
-            label_checklist:"✅ Travel Checklist",
-            settings_title:"Settings", label_language:"Language",
-            btn_change_profile:"Change Profile", btn_theme:"Toggle Theme", btn_refresh:"Refresh App",
-            btn_change_email:"Change Email", btn_change_pass:"Change Password",
-            btn_logout:"Sign Out", btn_delete_acc:"Delete Account",
-            footer_by:"Created by Juan Cruz Bria",
-            prompt_new_email:"Enter your new email address:",
-            prompt_new_pass:"Enter new password (min 6 characters):",
-            alert_email_verify:"Verification email sent. Changes will apply after verification.",
-            alert_pass_success:"Password updated successfully.",
-            alert_reauth_required:"Error: Re-authentication required for sensitive changes.",
-            confirm_delete_account:"ARE YOU SURE? This action will permanently delete all your data.",
-            confirm_delete:"Delete?",
-        },
-        pt: {
-            nav_home:"INÍCIO", nav_expenses:"GASTOS", nav_units:"UNIDADES",
-            tab_places:"LUGARES", tab_activities:"ATIVIDADES", tab_notes:"NOTAS",
-            itinerary_title:"📍 Planejador de Viagem",
-            tip_label:"✨ Dica de Viagem",
-            city_orlando:"🎡 Orlando", city_nyc:"🍎 Nova York", city_miami:"🏖️ Miami",
-            city_vegas:"🎲 Las Vegas", city_la:"🎬 Los Angeles", city_sf:"🌉 San Francisco",
-            city_chicago:"🏢 Chicago", city_dc:"🏛️ Washington D.C.",
-            status_low:"BAIXA 🟢", status_med:"MED 🟡", status_high:"ALTA 🔴", status_closed:"FECHADO 🌙", status_na:"N/D",
-            label_add_activity:"➕ Nova Atividade", act_placeholder:"Ex: Voo EZE → MCO",
-            label_date:"Data", label_time:"Hora", label_type:"Tipo",
-            type_flight:"✈️ Voo", type_hotel:"🏨 Hotel", type_park:"🎡 Parque",
-            type_food:"🍽️ Comida", type_other:"📌 Outro",
-            btn_add_activity:"ADICIONAR ATIVIDADE",
-            label_schedule:"📅 Agenda",
-            empty_activities:"Nenhuma atividade adicionada.\nComece a planejar sua viagem!",
-            progress_label:"Progresso da viagem",
-            label_notes:"📝 Notas e Lembretes", note_placeholder:"Voos, hotéis, lembretes...", btn_add_note:"ADICIONAR NOTA",
-            label_checklist:"✅ Checklist de Viagem",
-            settings_title:"Configurações", label_language:"Idioma",
-            btn_change_profile:"Trocar Perfil", btn_theme:"Alternar Tema", btn_refresh:"Atualizar App",
-            btn_change_email:"Alterar Email", btn_change_pass:"Alterar Senha",
-            btn_logout:"Sair", btn_delete_acc:"Excluir Conta",
-            footer_by:"Criado por Juan Cruz Bria",
-            prompt_new_email:"Digite o novo endereço de email:",
-            prompt_new_pass:"Digite a nova senha (mínimo 6 caracteres):",
-            alert_email_verify:"Email de verificação enviado. As alterações serão aplicadas após verificação.",
-            alert_pass_success:"Senha atualizada com sucesso.",
-            alert_reauth_required:"Erro: Reautenticação necessária para mudanças sensíveis.",
-            confirm_delete_account:"TEM CERTEZA? Esta ação excluirá todos os seus dados permanentemente.",
-            confirm_delete:"Excluir?",
-        }
-    };
+const shoppingTips = {
+    es:["Jersey Gardens (NJ): ¡Tax Free! No pagás impuesto en ropa ni calzado.","El precio de etiqueta NO incluye el Tax (aprox. 7-9%).","Ross/Marshalls: Los mejores precios están en los racks de 'Clearance'.","Apple: Comprá 'Refurbished' en su web oficial para ahorrar un 15%.","Best Buy: Tienen sección 'Open Box' con productos casi nuevos rebajados.","Cupones: Descargá 'RetailMeNot' para descuentos en el momento.","Seguridad: Nunca dejes bolsas visibles dentro del auto estacionado.","Un 'M' en USA suele ser un 'L' en Argentina. ¡Probate siempre!","Siempre tené billetes de $1 y $5 USD para propinas rápidas.","Premium Outlets: Registrate en su web para recibir cuponeras VIP gratis.","Pesá tu valija antes de ir al aeropuerto; el límite suele ser 23 kg.","Avisá en tu homebanking que vas a usar la tarjeta en el exterior."],
+    en:["Jersey Gardens (NJ): Tax Free! No tax on clothing or footwear.","The price tag does NOT include sales tax (approx. 7-9%).","Ross Stores / Marshalls: Best deals are in the Clearance racks.","Apple: Buy Refurbished on their official site to save around 15%.","Best Buy has an Open Box section with nearly new discounted products.","Download RetailMeNot for instant in-store discounts.","Safety: Never leave shopping bags visible inside a parked car.","A Medium (M) in the US is usually a Large (L). Always try things on!","Always carry $1 and $5 bills for quick tips.","Premium Outlets: Sign up for free VIP coupon booklets.","Weigh your suitcase before the airport; limit is usually 23 kg (50 lb).","Notify your bank that you'll be using your card abroad."],
+    pt:["Jersey Gardens (NJ): Tax Free! Sem imposto em roupas e calçados.","O preço na etiqueta NÃO inclui o imposto (aprox. 7-9%).","Ross / Marshalls: Os melhores preços estão nas gôndolas de 'Clearance'.","Apple: Compre 'Refurbished' no site oficial para economizar até 15%.","Best Buy tem seção 'Open Box' com produtos quase novos com desconto.","Baixe o RetailMeNot para cupons de desconto na hora da compra.","Segurança: Nunca deixe sacolas visíveis dentro do carro estacionado.","Um 'M' nos EUA costuma ser um 'G' no Brasil. Sempre experimente!","Tenha sempre notas de $1 e $5 USD para gorjetas rápidas.","Premium Outlets: Cadastre-se no site para receber cupons VIP grátis.","Pese sua mala antes do aeroporto; o limite costuma ser 23 kg.","Avise seu banco que vai usar o cartão no exterior."]
+};
 
-    // ═══ Tips ═══
-    const tips = {
-        es: [
-            "Comprá los tickets de Disney con anticipación — hasta 20% más barato.",
-            "En NYC, la tarjeta OMNY funciona como Sube en el subte.",
-            "Los outlets suelen tener mejores precios de jueves a sábado.",
-            "En Florida, la mayoría de hoteles cobran resort fee aparte. Preguntá antes.",
-            "El Uber Pool en grandes ciudades ahorra hasta 40% vs taxi.",
-            "En Vegas, los buffets de lunes a jueves son más baratos y menos llenos.",
-            "Las atracciones de Universal abren antes que Disney — ideal para madrugadores.",
-            "Siempre avisá a tu banco antes de viajar para evitar bloqueos de tarjeta.",
-            "En Miami, South Beach tiene estacionamiento gratis después de las 21hs.",
-            "Las tiendas Target suelen tener mejores precios que Walmart en electrónica."
-        ],
-        en: [
-            "Buy Disney tickets in advance — up to 20% cheaper.",
-            "In NYC, the OMNY card works like a transit pass on the subway.",
-            "Outlets usually have better prices Thursday through Saturday.",
-            "In Florida, most hotels charge resort fees separately. Ask upfront.",
-            "Uber Pool in big cities saves up to 40% vs a taxi.",
-            "In Vegas, buffets Monday–Thursday are cheaper and less crowded.",
-            "Universal opens before Disney — perfect for early birds.",
-            "Always notify your bank before traveling to avoid card blocks.",
-            "In Miami, South Beach has free parking after 9 PM.",
-            "Target stores often have better prices than Walmart on electronics."
-        ],
-        pt: [
-            "Compre ingressos da Disney com antecedência — até 20% mais barato.",
-            "Em NYC, o cartão OMNY funciona como o bilhete Único no metrô.",
-            "Outlets costumam ter melhores preços de quinta a sábado.",
-            "Na Flórida, a maioria dos hotéis cobra resort fee separado. Pergunte antes.",
-            "O Uber Pool em grandes cidades economiza até 40% vs táxi.",
-            "Em Vegas, os buffets de segunda a quinta são mais baratos e menos cheios.",
-            "A Universal abre antes da Disney — ideal para quem acorda cedo.",
-            "Avise seu banco antes de viajar para evitar bloqueios no cartão.",
-            "Em Miami, South Beach tem estacionamento gratuito após as 21h.",
-            "As lojas Target costumam ter preços melhores que o Walmart em eletrônicos."
-        ]
-    };
+const knownStores = ["ROSS","MARSHALLS","WALMART","APPLE","BEST BUY","TARGET","TJ MAXX","MACY'S","ZARA","H&M","NIKE","ADIDAS","AMAZON","COSTCO","FOOT LOCKER","JD SPORTS","BATH & BODY WORKS"];
 
-    // ═══ Cities ═══
-    const citiesConfig = {
-        orlando: { tz:'America/New_York', spots:[
-            {name:'Magic Kingdom',parkId:6},{name:'EPCOT',parkId:5},
-            {name:'Universal Studios',parkId:13},{name:'Islands of Adventure',parkId:14},
-            {name:'Disney Hollywood',parkId:7},{name:'Animal Kingdom',parkId:8}
-        ]},
-        nyc: { tz:'America/New_York', spots:[
-            {name:'Times Square'},{name:'Central Park'},{name:'Brooklyn Bridge'},{name:'The Met'}
-        ]},
-        miami: { tz:'America/New_York', spots:[
-            {name:'South Beach'},{name:'Wynwood'},{name:'Brickell'},{name:'Bayside'}
-        ]},
-        vegas: { tz:'America/Los_Angeles', spots:[
-            {name:'The Strip'},{name:'Fremont St.'},{name:'High Roller'},{name:'Bellagio'}
-        ]},
-        la: { tz:'America/Los_Angeles', spots:[
-            {name:'Hollywood'},{name:'Santa Monica'},{name:'Beverly Hills'},{name:'Griffith Park'}
-        ]},
-        sf: { tz:'America/Los_Angeles', spots:[
-            {name:'Golden Gate'},{name:'Fisherman\'s Wharf'},{name:'Alcatraz'},{name:'Union Square'}
-        ]},
-        chicago: { tz:'America/Chicago', spots:[
-            {name:'Millennium Park'},{name:'Navy Pier'},{name:'The Mag Mile'},{name:'Art Institute'}
-        ]},
-        dc: { tz:'America/New_York', spots:[
-            {name:'National Mall'},{name:'Smithsonian'},{name:'Capitol Hill'},{name:'Georgetown'}
-        ]}
-    };
+window.formatVisual = (inp) => {
+    let v = inp.value.replace(/[^\d.]/g,'');
+    let p = v.split('.');
+    if(p.length>2) v = p[0]+'.'+p.slice(1).join('');
+    if(v==='') return;
+    let int = p[0].replace(/\B(?=(\d{3})+(?!\d))/g,',');
+    inp.value = v.includes('.') ? int+'.'+(p[1]||'').substring(0,2) : int;
+};
+function cleanVal(s){ return parseFloat((s||'').toString().replace(/,/g,''))||0; }
+function fmt(n){ return parseFloat(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
-    // ═══ Checklist items ═══
-    const checklistItems = {
-        es: ['🛂 Pasaporte vigente','💳 Tarjeta avisada al banco','🔌 Adaptador de corriente','💊 Seguro médico / medicamentos','🧳 Valija con medidas de aerolínea','📱 SIM internacional / eSIM','💵 Dólares en efectivo','🔒 Candado TSA','📄 Reservas impresas o en favoritos','🗺️ Google Maps de la zona offline','🎟️ Cuponeras de Outlets descargadas', '🚗 Licencia de conducir física' ],
-        en: ['🛂 Valid passport','💳 Bank notified','🔌 Power adapter','💊 Travel insurance / meds','🧳 Carry-on within airline limits','📱 International SIM / eSIM','💵 Cash dollars','🔒 TSA lock','📄 Reservations saved or printed','🎒 Carry-on backpack', '🗺️ Offline Google Maps of the area', '🎟️ Outlet Coupon Books downloaded', '🚗 Physical driver\'s license' ],
-        pt: ['🛂 Passaporte válido','💳 Banco avisado','🔌 Adaptador de energia','💊 Seguro de saúde / remédios','🧳 Mala dentro dos limites da cia aérea','📱 SIM internacional / eSIM','💵 Dólares em espécie','🔒 Cadeado TSA','📄 Reservas salvas ou impressas','🎒 Mochila de mão para o voo', '🗺️ Google Maps da área em offline', '🎟️ Cupons de desconto dos Outlets', '🚗 Carteira de motorista física'  ]
-    };
+window.nextTip = () => {
+    const lang = localStorage.getItem('appLang')||'es';
+    const list = shoppingTips[lang];
+    tipIndex = (tipIndex+1)%list.length;
+    const el = document.getElementById('tip-text');
+    if(el){ el.style.opacity=0; setTimeout(()=>{el.innerText=list[tipIndex];el.style.opacity=1;},300); }
+};
 
-    // ═══ Tab switching ═══
-    window.switchTab = (tab) => {
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('panel-' + tab).classList.add('active');
-        document.getElementById('tab-' + tab).classList.add('active');
-    };
+window.changeLanguage = (lang) => {
+    localStorage.setItem('appLang',lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.querySelectorAll('.lang-opt').forEach(o=>o.classList.remove('active'));
+    document.getElementById('lang-'+lang)?.classList.add('active');
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const k=el.getAttribute('data-i18n');
+        if(i18n[lang]?.[k]) el.innerText=i18n[lang][k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+        const k=el.getAttribute('data-i18n-ph');
+        if(i18n[lang]?.[k]) el.placeholder=i18n[lang][k];
+    });
+    const el=document.getElementById('tip-text');
+    if(el) el.innerText=shoppingTips[lang][tipIndex];
+    document.title = lang === 'en' ? 'TaxUSA — Expenses' : lang === 'pt' ? 'TaxUSA — Gastos' : 'TaxUSA — Gastos';
+    if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
+};
 
-    // ═══ Queues ═══
-    window.renderCityData = async () => {
-        const cityKey = document.getElementById('citySelector').value;
-        const container = document.getElementById('dynamicQueues');
-        const cityData = citiesConfig[cityKey];
-        container.innerHTML = cityData.spots.map((s, i) => `
-            <div class="queue-card">
-                <div class="queue-name">${s.name}</div>
-                <div id="spot-${i}" class="queue-status q-off">...</div>
-            </div>
-        `).join('');
-        if (typeof requestIdleCallback !== 'undefined') {
-            requestIdleCallback(() => updateStatusDisplay(cityKey), { timeout: 2000 });
-        } else {
-            setTimeout(() => updateStatusDisplay(cityKey), 150);
-        }
-    };
+async function fetchRates(){
+    try{
+        const r1=await fetch('https://dolarapi.com/v1/dolares');
+        const d1=await r1.json();
+        baseRates.oficial=d1.find(d=>d.casa==='oficial')?.venta||0;
+        baseRates.tarjeta=d1.find(d=>d.casa==='tarjeta')?.venta||0;
+        const r2=await fetch('https://open.er-api.com/v6/latest/USD');
+        const d2=await r2.json();
+        allRates=d2.rates;
+        baseRates.eur=allRates.EUR; baseRates.brl=allRates.BRL;
+        document.getElementById('oficial-local').value=fmt(baseRates.oficial);
+        document.getElementById('tarjeta-local').value=fmt(baseRates.tarjeta);
+        document.getElementById('eur-local').value=fmt(baseRates.eur);
+        document.getElementById('brl-local').value=fmt(baseRates.brl);
+    }catch(e){console.error(e);}
+}
+window.updateMulti=(type)=>{
+    const code=document.getElementById(`select-${type}`).value;
+    baseRates[type]=allRates[code];
+    document.getElementById(`flag-${type}`).innerHTML = flags[code];;
+    document.getElementById(`${type}-usd`).value='1.00';
+    document.getElementById(`${type}-local`).value=fmt(baseRates[type]);
+};
+window.convert=(type,dir)=>{
+    const u=document.getElementById(`${type}-usd`),l=document.getElementById(`${type}-local`);
+    const r=baseRates[type];
+    if(dir==='usd') l.value=fmt(cleanVal(u.value)*r);
+    else u.value=fmt(cleanVal(l.value)/r);
+};
 
-    async function updateStatusDisplay(cityKey) {
-        const cityData = citiesConfig[cityKey];
-        const lang = localStorage.getItem('appLang') || 'es';
-        const t = i18n[lang];
-        const localHour = parseInt(new Intl.DateTimeFormat("en-US", { timeZone: cityData.tz, hour: "numeric", hour12: false }).format(new Date()));
-        for (let i = 0; i < cityData.spots.length; i++) {
-            const el = document.getElementById(`spot-${i}`);
-            if (!el) continue;
-            if (cityKey === 'orlando' && cityData.spots[i].parkId) {
-                if (localHour >= 22 || localHour < 8) { el.innerText = t.status_closed; el.className = "queue-status q-off"; }
-                else {
-                    try {
-                        const res = await fetch("https://corsproxy.io/?" + encodeURIComponent(`https://queue-times.com/parks/${cityData.spots[i].parkId}/queue_times.json`), { signal: AbortSignal.timeout(8000) });
-                        const data = await res.json();
-                        let tot = 0, c = 0;
-                        data.lands?.forEach(l => l.rides.forEach(r => { if(r.is_open){ tot += r.wait_time; c++; } }));
-                        const avg = c > 0 ? tot / c : 0;
-                        if (avg <= 20) { el.innerText = t.status_low; el.className = "queue-status q-low"; }
-                        else if (avg <= 45) { el.innerText = t.status_med; el.className = "queue-status q-med"; }
-                        else { el.innerText = t.status_high; el.className = "queue-status q-high"; }
-                    } catch(e) { el.innerText = t.status_na; el.className = "queue-status q-off"; }
-                }
-            } else {
-                if (localHour >= 23 || localHour < 7) { el.innerText = t.status_closed; el.className = "queue-status q-off"; }
-                else if (localHour >= 12 && localHour <= 19) { el.innerText = t.status_high; el.className = "queue-status q-high"; }
-                else if (localHour >= 9 && localHour < 12) { el.innerText = t.status_med; el.className = "queue-status q-med"; }
-                else { el.innerText = t.status_low; el.className = "queue-status q-low"; }
-            }
-        }
-    }
-
-    // ═══ Tips ═══
-    window.nextTip = () => {
-        const lang = localStorage.getItem('appLang') || 'es';
-        const el = document.getElementById('tip-text');
-        if (!el) return;
-        el.style.opacity = 0;
-        setTimeout(() => {
-            currentTipIndex = (currentTipIndex + 1) % tips[lang].length;
-            el.innerText = tips[lang][currentTipIndex];
-            el.style.opacity = 1;
-        }, 300);
-    };
-
-    // ═══ Activities ═══
-    const typeIconMap = { vuelo:'✈️', hotel:'🏨', parque:'🎡', comida:'🍽️', otro:'📌' };
-
-    window.addActivity = async () => {
-    const nameEl = document.getElementById('actName');
-    const dateEl = document.getElementById('actDate');
-    const name = nameEl.value.trim();
-    const date = dateEl.value;
-    const time = document.getElementById('actTime').value;
-    const type = document.getElementById('actType').value;
-
-    if (!name || !date) {
-        nameEl.focus();
-        return;
-    }
-
-    if (currentUser && perfilId) {
-        try {
-            await addDoc(collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "actividades"), {
-                name, 
-                date, 
-                time: time || '', 
-                type, 
-                done: false, 
-                createdAt: Date.now() 
-            });
-            
-            nameEl.value = '';
-            dateEl.value = '';
-            document.getElementById('actTime').value = '';
-        } catch(e) { 
-            console.error("Error al guardar actividad:", e);
-            alert("Error al guardar. Reintente.");
-        }
+window.updateFondo=async()=>{
+    const v=parseFloat(document.getElementById('input-fondo').value);
+    if(isNaN(v)||v<0){alert('Monto inválido.');return;}
+    if(currentUser&&perfilId){
+        try{
+            await updateDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId),{presupuesto:v});
+            presupuestoBase=v;
+        }catch(e){alert('Error al guardar.');}
     }
 };
 
-    window.toggleActivity = async (id, currentDone) => {
-        if (currentUser && perfilId) {
-            try {
-                await updateDoc(doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "actividades", id), { done: !currentDone });
-            } catch(e) {}
+window.addGasto=async()=>{
+    const n=document.getElementById('nombre').value;
+    const v=parseFloat(document.getElementById('valor').value);
+    const selTag=document.querySelector('#cat-tag-row .cat-tag.sel');
+    const cat=selTag?selTag.dataset.cat:'📦 Otros';
+    if(!n||isNaN(v)||v<=0||!currentUser||!perfilId){alert('Completá nombre y precio.');return;}
+    try{
+        await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),{nombre:n,valor:v,cat:cat,fecha:Date.now()});
+        document.getElementById('nombre').value='';
+        document.getElementById('valor').value='';
+    }catch(e){console.error(e);}
+};
+window.deleteGasto=async(id)=>{
+    if(!confirm('¿Eliminar este gasto?')||!currentUser||!perfilId)return;
+    try{await deleteDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos',id));}
+    catch(e){console.error(e);}
+};
+
+let allGastos=[];
+
+const CAT_COLORS={'🛍️ Compras':'#2563eb','👟 Ropa':'#7c3aed','🍔 Comida':'#f59e0b','🎢 Entretenimiento':'#0ea5e9','🚗 Transporte':'#10b981','🏨 Alojamiento':'#8b5cf6','💊 Farmacia':'#ef4444','✈️ Vuelos':'#0284c7','📦 Otros':'#94a3b8'};
+function catColor(cat){return CAT_COLORS[cat]||'#94a3b8';}
+
+function listenGastos(){
+    if(!currentUser||!perfilId)return;
+    const q=query(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),orderBy('fecha','desc'));
+    onSnapshot(q,(snap)=>{
+        const c=document.getElementById('listaGastos');
+        let total=0; allGastos=[];
+        if(snap.empty){
+            c.innerHTML='<p style="text-align:center;color:var(--text-dim);font-size:.85rem;">No hay gastos.</p>';
+            updateBudgetDisplay(0); renderDashboard([]); return;
         }
-    };
-
-    window.deleteActivity = async (id) => {
-        const lang = localStorage.getItem('appLang') || 'es';
-        if (confirm(i18n[lang].confirm_delete)) {
-            await deleteDoc(doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "actividades", id));
-        }
-    };
-
-    function renderActivities(acts) {
-        const lang = localStorage.getItem('appLang') || 'es';
-        const container = document.getElementById('activitiesList');
-        const progressCard = document.getElementById('progressCard');
-        const progressFill = document.getElementById('progressFill');
-        const progressCount = document.getElementById('progressCount');
-
-        if (acts.length === 0) {
-            progressCard.style.display = 'none';
-            container.innerHTML = `<div class="empty-state"><div class="empty-icon">🗺️</div><div class="empty-text">${i18n[lang].empty_activities.replace('\n','<br>')}</div></div>`;
-            return;
-        }
-
-        // Progress
-        const done = acts.filter(a => a.done).length;
-        const pct = Math.round((done / acts.length) * 100);
-        progressCard.style.display = 'block';
-        progressCount.textContent = `${done}/${acts.length}`;
-        progressFill.style.width = pct + '%';
-
-        // Group by date
-        const grouped = {};
-        acts.forEach(a => {
-            const k = a.date || 'sin-fecha';
-            if (!grouped[k]) grouped[k] = [];
-            grouped[k].push(a);
+        snap.docs.forEach(d=>{
+            const data=d.data(),val=parseFloat(data.valor)||0;
+            total+=val; allGastos.push({...data,id:d.id,valor:val});
         });
-
-        const sortedDates = Object.keys(grouped).sort();
-        container.innerHTML = sortedDates.map(dateKey => {
-            const dayActs = grouped[dateKey];
-            const dateLabel = dateKey === 'sin-fecha' ? '📌' : formatDate(dateKey, lang);
-            const dayDone = dayActs.filter(a => a.done).length;
-            return `
-                <div>
-                    <div class="act-group-header">
-                        <span class="act-group-date">${dateLabel}</span>
-                        <span class="act-group-count">${dayDone}/${dayActs.length}</span>
-                    </div>
-                    ${dayActs.sort((a,b) => (a.time||'99:99').localeCompare(b.time||'99:99')).map(act => `
-                        <div class="act-item ${act.done ? 'done' : ''}" id="act-item-${act.id}">
-                            <div class="act-check ${act.done ? 'checked' : ''}" onclick="toggleActivity('${act.id}', ${act.done})"></div>
-                            <div class="act-info">
-                                <div class="act-name">${typeIconMap[act.type] || '📌'} ${act.name}</div>
-                                <div class="act-meta">
-                                    ${act.time ? `<span class="act-time">🕐 ${act.time}</span>` : ''}
-                                    <span class="act-badge badge-${act.type}">${getBadgeLabel(act.type, lang)}</span>
-                                </div>
-                            </div>
-                            <button class="act-del" onclick="deleteActivity('${act.id}')">✕</button>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }).join('');
-    }
-
-    function formatDate(dateStr, lang) {
-        try {
-            const d = new Date(dateStr + 'T12:00:00');
-            const opts = { weekday: 'short', day: 'numeric', month: 'short' };
-            const locale = lang === 'en' ? 'en-US' : lang === 'pt' ? 'pt-BR' : 'es-AR';
-            return d.toLocaleDateString(locale, opts).toUpperCase();
-        } catch { return dateStr; }
-    }
-
-    function getBadgeLabel(type, lang) {
-        const labels = {
-            es: { vuelo:'Vuelo', hotel:'Hotel', parque:'Parque', comida:'Comida', otro:'Otro' },
-            en: { vuelo:'Flight', hotel:'Hotel', parque:'Park', comida:'Food', otro:'Other' },
-            pt: { vuelo:'Voo', hotel:'Hotel', parque:'Parque', comida:'Comida', otro:'Outro' }
-        };
-        return labels[lang]?.[type] || type;
-    }
-
-    function listenActivities() {
-        if (!currentUser || !perfilId) return;
-        const q = query(
-        collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "actividades"), 
-        orderBy("date", "asc")
-    );
-    
-    onSnapshot(q, (sn) => {
-        const acts = sn.docs.map(d => ({ id: d.id, ...d.data() }));
-        renderActivities(acts);
-    }, (error) => {
-        console.error("Error en actividades:", error);
+        c.innerHTML=allGastos.map(g=>`<div class="history-item" style="border-left-color:${catColor(g.cat||'📦 Otros')}"><div><div class="h-name">${g.nombre}</div><div style="font-size:.62rem;color:var(--text-dim);margin-top:1px;">${g.cat||'📦 Otros'}</div></div><div class="h-right"><div class="h-amount">-$${fmt(g.valor)}</div><button class="h-del" onclick="deleteGasto('${g.id}')">✕</button></div></div>`).join('');
+        updateBudgetDisplay(total);
+        renderDashboard(allGastos);
     });
 }
-
-    // ═══ Notes ═══
-    window.addNote = async () => {
-        const input = document.getElementById('noteInput');
-        const text = input.value.trim();
-        if (text && currentUser && perfilId) {
-            try {
-                await addDoc(collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas"), { text, createdAt: Date.now() });
-                input.value = "";
-            } catch(e) { console.error(e); }
-        }
-    };
-
-    function listenNotes() {
-        if (!currentUser || !perfilId) return;
-        const q = query(collection(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas"), orderBy("createdAt", "desc"));
-        onSnapshot(q, (sn) => {
-            const lang = localStorage.getItem('appLang') || 'es';
-            const notesList = document.getElementById('notesList');
-            if (sn.docs.length === 0) {
-                notesList.innerHTML = '';
-                return;
-            }
-            notesList.innerHTML = sn.docs.map(d => {
-                const ts = d.data().createdAt ? new Date(d.data().createdAt).toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'pt' ? 'pt-BR' : 'es-AR') : '';
-                return `
-                <div class="note-item">
-                    <div>
-                        <div class="note-text">${d.data().text}</div>
-                        ${ts ? `<div class="note-meta">${ts}</div>` : ''}
-                    </div>
-                    <button class="note-del" onclick="window.deleteNote('${d.id}')">✕</button>
-                </div>`;
-            }).join('');
-        });
-    }
-
-    window.deleteNote = async (id) => {
-        const lang = localStorage.getItem('appLang') || 'es';
-        if (confirm(i18n[lang].confirm_delete)) await deleteDoc(doc(db, "usuarios", currentUser.uid, "perfiles", perfilId, "notas", id));
-    };
-
-    
-    // ═══ Checklist ═══
-window.addCustomCheckItem = () => {
-    const input = document.getElementById('customCheckInput');
-    const text = input.value.trim();
-    if (!text) return;
-
-    const key = 'custom_checklist_' + (perfilId || 'default');
-    const customItems = JSON.parse(localStorage.getItem(key) || '[]');
-    customItems.push(text);
-    localStorage.setItem(key, JSON.stringify(customItems));
-    
-    input.value = '';
-    renderChecklist(localStorage.getItem('appLang') || 'es');
-};
-
-function renderChecklist(lang) {
-    const baseItems = checklistItems[lang] || checklistItems.es;
-    const customKey = 'custom_checklist_' + (perfilId || 'default');
-    const customItems = JSON.parse(localStorage.getItem(customKey) || '[]');
-    
-    const allItems = [...baseItems, ...customItems];
-    
-    const statusKey = 'checklist_status_' + (perfilId || 'default');
-    const savedStatus = JSON.parse(localStorage.getItem(statusKey) || '{}');
-    const container = document.getElementById('travelChecklist');
-    
-    if (!container) return;
-
-    container.innerHTML = allItems.map((item, i) => {
-        const isChecked = savedStatus[i] || false;
-        const isCustom = i >= baseItems.length; 
-
-        return `
-            <div class="checklist-item" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                <div class="cl-check ${isChecked ? 'checked' : ''}" onclick="toggleChecklist(${i})"></div>
-                <span class="cl-label" style="flex: 1; ${isChecked ? 'text-decoration: line-through; opacity: 0.5;' : ''}">${item}</span>
-                ${isCustom ? `<button onclick="removeCustomItem(${i - baseItems.length})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold; padding: 0 5px;">✕</button>` : ''}
-            </div>
-        `;
-    }).join('');
+function updateBudgetDisplay(spent){
+    const el=document.getElementById('disp-fondo');
+    if(el) el.innerText='USD '+fmt(presupuestoBase-spent);
 }
 
-window.toggleChecklist = (idx) => {
-    const statusKey = 'checklist_status_' + (perfilId || 'default');
-    const savedStatus = JSON.parse(localStorage.getItem(statusKey) || '{}');
-    
-    savedStatus[idx] = !savedStatus[idx];
-    localStorage.setItem(statusKey, JSON.stringify(savedStatus));
-    
-    renderChecklist(localStorage.getItem('appLang') || 'es');
-};
-
-window.removeCustomItem = (customIdx) => {
-    const customKey = 'custom_checklist_' + (perfilId || 'default');
-    let customItems = JSON.parse(localStorage.getItem(customKey) || '[]');
-    
-    customItems.splice(customIdx, 1);
-    localStorage.setItem(customKey, JSON.stringify(customItems));
-    
-    const statusKey = 'checklist_status_' + (perfilId || 'default');
-    localStorage.removeItem(statusKey);
-    
-    renderChecklist(localStorage.getItem('appLang') || 'es');
-};
-
-    
-    window.changeLanguage = (lang) => {
-        localStorage.setItem('appLang', lang);
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (i18n[lang]?.[key]) el.textContent = i18n[lang][key];
-        });
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-            const key = el.getAttribute('data-i18n-placeholder');
-            if (i18n[lang]?.[key]) el.placeholder = i18n[lang][key];
-        });
-        document.querySelectorAll('.lang-opt').forEach(b => b.classList.remove('active'));
-        const btn = document.getElementById('lang-' + lang);
-        if (btn) btn.classList.add('active');
-
-        
-        const actType = document.getElementById('actType');
-        if (actType) {
-            const types = [
-                ['vuelo', i18n[lang].type_flight],
-                ['hotel', i18n[lang].type_hotel],
-                ['parque', i18n[lang].type_park],
-                ['comida', i18n[lang].type_food],
-                ['otro', i18n[lang].type_other],
-            ];
-            const cur = actType.value;
-            actType.innerHTML = types.map(([v, l]) => `<option value="${v}">${l}</option>`).join('');
-            actType.value = cur;
-        }
-
-        const tipEl = document.getElementById('tip-text');
-        if (tipEl) tipEl.innerText = tips[lang][currentTipIndex];
-        document.title = lang === 'en' ? 'TaxUSA — Itinerary' : lang === 'pt' ? 'TaxUSA — Itinerário' : 'TaxUSA — Itinerario';
-        renderCityData();
-        renderChecklist(lang);
-        if (window.taxieUpdateLang) window.taxieUpdateLang(lang);
-    };
-
-    // ═══ Settings ═══
-    window.toggleSettings = () => {
-        const d = document.getElementById('settingsDrawer');
-        const open = d.classList.toggle('open');
-        document.getElementById('menuOverlay').style.display = open ? 'block' : 'none';
-    };
-    window.toggleDarkMode = () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const next = isDark ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    };
-    window.changeProfile = () => { localStorage.removeItem('perfilActivoId'); window.location.href = "profiles.html"; };
-    window.doLogout = () => signOut(auth).then(() => window.location.replace("login.html"));
-
-    
-    window.executeWithToken = (fn) => fn();
-    window.changeEmail = () => {};
-    window.changePassword = () => {};
-    window.deleteAccount = () => {};
-
-    // ═══ Auth ═══
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            if (!perfilId) { window.location.replace("profiles.html"); return; }
-            const perfilNombre = localStorage.getItem('perfilActivoNombre');
-            document.getElementById('userEmail').innerText = perfilNombre || user.email;
-            const img = perfilFoto || user.photoURL;
-            if (img) {
-                const btn = document.getElementById('btnSettings');
-                btn.style.backgroundImage = `url(${img})`;
-                btn.innerText = '';
-            }
-            try {
-                const snap = await getDoc(doc(db, "usuarios", user.uid, "perfiles", perfilId));
-                if (snap.exists() && snap.data().destino) {
-                    const sel = document.getElementById('citySelector');
-                    if (sel) sel.value = snap.data().destino.toLowerCase();
-                }
-            } catch(e) {}
-            renderCityData();
-            listenNotes();
-            listenActivities();
-            const lang = localStorage.getItem('appLang') || 'es';
-            window.changeLanguage(lang);
-            setInterval(window.nextTip, 8000);
-        } else { window.location.replace("login.html"); }
+function renderDashboard(gastos){
+    const empty=document.getElementById('dash-empty');
+    const content=document.getElementById('dash-content');
+    if(!empty||!content)return;
+    if(!gastos||!gastos.length){empty.style.display='block';content.style.display='none';return;}
+    empty.style.display='none'; content.style.display='block';
+    const total=gastos.reduce((s,g)=>s+g.valor,0);
+    const count=gastos.length;
+    const top=gastos.reduce((a,b)=>b.valor>a.valor?b:a,gastos[0]);
+    document.getElementById('dash-total').textContent='$'+fmt(total);
+    document.getElementById('dash-count').textContent=count;
+    document.getElementById('dash-avg').textContent='$'+fmt(total/count);
+    document.getElementById('dash-top').textContent=top.nombre.substring(0,13)+(top.nombre.length>13?'…':'');
+    document.getElementById('donut-val').textContent='$'+fmt(total);
+    // Group by cat
+    const bycat={};
+    gastos.forEach(g=>{const c=g.cat||'📦 Otros';bycat[c]=(bycat[c]||0)+g.valor;});
+    const cats=Object.entries(bycat).sort((a,b)=>b[1]-a[1]);
+    // Donut SVG
+    const svg=document.getElementById('donut-svg');
+    const cx=70,cy=70,R=58,r=38;
+    let angle=-Math.PI/2, paths='';
+    cats.forEach(([cat,val])=>{
+        const a=(val/total)*2*Math.PI;
+        const x1=cx+R*Math.cos(angle),y1=cy+R*Math.sin(angle);
+        const x2=cx+R*Math.cos(angle+a),y2=cy+R*Math.sin(angle+a);
+        const xi1=cx+r*Math.cos(angle),yi1=cy+r*Math.sin(angle);
+        const xi2=cx+r*Math.cos(angle+a),yi2=cy+r*Math.sin(angle+a);
+        const lg=a>Math.PI?1:0, col=catColor(cat);
+        paths+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} A${R},${R} 0 ${lg},1 ${x2.toFixed(1)},${y2.toFixed(1)} L${xi2.toFixed(1)},${yi2.toFixed(1)} A${r},${r} 0 ${lg},0 ${xi1.toFixed(1)},${yi1.toFixed(1)} Z" fill="${col}" opacity="0.93" stroke="var(--surface)" stroke-width="2"/>`;
+        angle+=a;
     });
+    svg.innerHTML=paths;
+    // Legend
+    document.getElementById('donut-legend').innerHTML=cats.slice(0,5).map(([cat,val])=>`<div class="legend-item"><div class="legend-dot" style="background:${catColor(cat)}"></div><div class="legend-name">${cat}</div><div class="legend-val">$${fmt(val)}</div><div class="legend-pct">${Math.round(val/total*100)}%</div></div>`).join('');
+    // Bars
+    document.getElementById('cat-bars').innerHTML=cats.map(([cat,val])=>`<div class="cat-bar-row"><div class="cat-bar-top"><div class="cat-bar-name">${cat}</div><div class="cat-bar-amount">$${fmt(val)} <span style="color:var(--text-dim);font-weight:600;">${Math.round(val/total*100)}%</span></div></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:${Math.round(val/total*100)}%;background:${catColor(cat)};"></div></div></div>`).join('');
+}
+
+window.showSec=(s)=>{
+    ['gastos','resumen','talles'].forEach(id=>{
+        const el=document.getElementById('sec-'+id);
+        if(el)el.style.display=s===id?'block':'none';
+        const tb=document.getElementById('t-'+id);
+        if(tb)tb.className=s===id?'tab-btn active':'tab-btn';
+    });
+    if(s==='resumen')renderDashboard(allGastos);
+};
+
+// Category tag selector
+document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('#cat-tag-row .cat-tag').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            document.querySelectorAll('#cat-tag-row .cat-tag').forEach(b=>b.classList.remove('sel'));
+            btn.classList.add('sel');
+        });
+    });
+});
+
+window.startScanner=async()=>{
+    document.getElementById('scanner-ui').style.display='block';
+    document.getElementById('scanner-warning').style.display='block';
+    video=document.getElementById('video-preview');
+    try{
+        stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+        video.srcObject=stream;
+    }catch(e){alert('Cámara no disponible.');stopScanner();}
+};
+window.stopScanner=()=>{
+    if(stream)stream.getTracks().forEach(t=>t.stop());
+    document.getElementById('scanner-ui').style.display='none';
+    document.getElementById('ocr-loader').style.display='none';
+};
+window.captureTicket=async()=>{
+    const loader=document.getElementById('ocr-loader');
+    loader.style.display='flex';
+    const canvas=document.getElementById('ocr-canvas');
+    canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+    canvas.getContext('2d').drawImage(video,0,0);
+    try{
+        const worker=await Tesseract.createWorker('eng');
+        const {data:{text}}=await worker.recognize(canvas.toDataURL('image/jpeg',0.9));
+        await worker.terminate();
+        parseTicket(text);
+        stopScanner();
+    }catch(e){alert('Error OCR.');loader.style.display='none';}
+};
+function parseTicket(text){
+    const lines=text.toUpperCase().split('\n').map(l=>l.trim()).filter(l=>l);
+    let store='Compra',total=0,subtotal=0,taxes=0,montoEnt=0,vuelto=0,all=[];
+    for(let s of knownStores){if(text.toUpperCase().includes(s)){store=s;break;}}
+    const kwTotal=["TOTAL","GRAND TOTAL","AMOUNT DUE","TOTAL PAYABLE","SALE TOTAL"];
+    const kwPay=["VISA","MASTERCARD","DEBIT","CASH","AMEX"];
+    const kwChange=["CHANGE","CHANGE DUE","CASH BACK"];
+    const kwSub=["SUBTOTAL","SUB TOTAL","MDSE TOTAL"];
+    const kwTax=["TAX","SALES TAX"];
+    const kwEx=["TOTAL ITEMS","ITEMS","UNIT PRICE"];
+    lines.forEach(l=>{
+        const m=l.match(/\d{1,3}(?:,\d{3})*(?:\.\d{2})|\d+(?:\.\d{2})/g);
+        if(!m)return;
+        m.forEach(str=>{
+            const v=parseFloat(str.replace(/,/g,''));if(isNaN(v))return;
+            all.push(v);
+            if(kwChange.some(k=>l.includes(k))) vuelto=Math.max(vuelto,v);
+            else if(kwSub.some(k=>l.includes(k))) subtotal=v;
+            else if(kwTax.some(k=>l.includes(k))) taxes+=v;
+            else if(kwPay.some(k=>l.includes(k))){ if(v>montoEnt) montoEnt=v; }
+            else if(kwTotal.some(k=>l.includes(k))&&!kwEx.some(k=>l.includes(k))){ if(v>total) total=v; }
+        });
+    });
+    let final=total>0?total:subtotal>0?(subtotal+taxes):montoEnt>0?(montoEnt-vuelto):all.length>0?Math.max(...all.filter(v=>v>=.5&&v<=5000)):0;
+    document.getElementById('nombre').value=store;
+    if(final>0) document.getElementById('valor').value=final.toFixed(2);
+    else alert(i18n[localStorage.getItem('appLang')||'es'].alert_no_total);
+}
+
+window.toggleSettings=()=>{
+    const d=document.getElementById('settingsDrawer'),open=d.classList.toggle('open');
+    document.getElementById('menuOverlay').style.display=open?'block':'none';
+};
+window.toggleDarkMode=()=>{
+    const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+    const next=isDark?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    localStorage.setItem('theme',next);
+};
+window.changeProfile=()=>{localStorage.removeItem('perfilActivoId');window.location.href='profiles.html';};
+window.doLogout=()=>signOut(auth).then(()=>window.location.replace('login.html'));
+window.doChangeEmail=async()=>{if(!currentUser)return;const l=localStorage.getItem('appLang')||'es',m={es:{p:"Ingresá tu nuevo correo:",s:"Verificación enviada.",e:"Error: "},en:{p:"Enter your new email:",s:"Verification sent.",e:"Error: "}},t=m[l],e=prompt(t.p);if(e){try{await verifyBeforeUpdateEmail(currentUser,e);alert(t.s);}catch(er){alert(t.e+er.message);}}};
+window.doChangePassword=async()=>{if(!currentUser)return;const l=localStorage.getItem('appLang')||'es',m={es:{s:"Correo de recuperación enviado.",e:"Error: "},en:{s:"Recovery email sent.",e:"Error: "}},t=m[l];try{await sendPasswordResetEmail(auth,currentUser.email);alert(t.s);}catch(er){alert(t.e+er.message);}};
+window.doDeleteAccount=async()=>{const l=localStorage.getItem('appLang')||'es',m={es:{c:"¿Eliminar cuenta permanentemente?",e:"Reautenticación requerida. Cerrá sesión y volvé a entrar para eliminar tu cuenta."},en:{c:"Permanently delete account?",e:"Re-authentication required. Please log out and back in to delete your account."}},t=m[l];if(!confirm(t.c))return;try{await deleteUser(currentUser);window.location.replace('login.html');}catch(e){alert(t.e);}};   
+onAuthStateChanged(auth,async(user)=>{
+    if(!user){window.location.replace('login.html');return;}
+    currentUser=user;
+    const perfilNombre = localStorage.getItem('perfilActivoNombre');
+document.getElementById('userEmail').innerText = perfilNombre || user.email;
+    if(!perfilId){window.location.replace('profiles.html');return;}
+    const img=perfilFoto||user.photoURL;
+    if(img){const b=document.getElementById('btnSettings');b.style.backgroundImage=`url(${img})`;b.innerText='';}
+    try{
+        const snap=await getDoc(doc(db,'usuarios',user.uid,'perfiles',perfilId));
+        if(snap.exists()&&snap.data().presupuesto!==undefined){
+            presupuestoBase=Number(snap.data().presupuesto);
+            document.getElementById('input-fondo').value=presupuestoBase;
+        }
+    }catch(e){console.error(e);}
+    fetchRates();
+    listenGastos();
+    const lang=localStorage.getItem('appLang')||'es';
+    window.changeLanguage(lang);
+    document.getElementById('tip-text').innerText=shoppingTips[lang][0];
+    setInterval(window.nextTip,8000);
+});
+
 </script>
 
 <!-- ═══════════════ TAXUSA AI CHAT ═══════════════ -->
 <style>
 #ai-bubble {
-    position: fixed; bottom: 24px; left: 20px;
-    width: 54px; height: 54px; border-radius: 50%;
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
-    border: none; cursor: pointer; z-index: 3000;
-    display: flex; align-items: center; justify-content: center;
+    position: fixed; bottom: 24px; left: 20px; z-index: 3000;
+    width: 56px; height: 56px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8);
     box-shadow: 0 4px 20px rgba(37,99,235,0.45);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .2s, box-shadow .2s;
 }
 #ai-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(37,99,235,0.55); }
 #ai-bubble:active { transform: scale(0.95); }
 #ai-bubble svg { width: 26px; height: 26px; }
-#ai-badge { position: absolute; top: -3px; right: -3px; width: 16px; height: 16px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none; }
+#ai-badge {
+    position:absolute; top:6px; right:6px; width:10px; height:10px;
+    background:#22c55e; border-radius:50%; border:2px solid #1e3a8a; display:none;
+}
 #ai-chat {
-    position: fixed; bottom: 88px; left: 16px;
+    position: fixed; bottom: 88px; left: 16px; z-index: 2999;
     width: min(360px, calc(100vw - 32px));
-    height: min(520px, calc(100vh - 120px));
-    background: var(--surface, #1e293b);
-    border-radius: 24px; border: 1px solid var(--border, #334155);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    display: none; flex-direction: column; overflow: hidden;
-    z-index: 2999; animation: chatIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    width: 340px; max-height: 520px; border-radius: 16px; overflow: hidden;
+    display: none; flex-direction: column;
+    background: var(--card, #1e293b);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.45);
+    border: 1px solid var(--border, #334155);
+    animation: chatIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
 }
 #ai-chat.open { display: flex; }
-@keyframes chatIn { from { opacity:0; transform: scale(0.88) translateY(16px); } to { opacity:1; transform: scale(1) translateY(0); } }
-#ai-header { background: linear-gradient(135deg, #1e3a8a, #2563eb); padding: 14px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-#ai-header svg { width: 22px; height: 22px; flex-shrink: 0; }
-.ai-header-text { flex: 1; }
-.ai-header-title { font-size: 0.9rem; font-weight: 800; color: white; line-height: 1; }
-.ai-header-sub { font-size: 0.65rem; color: rgba(255,255,255,0.75); font-weight: 600; margin-top: 2px; }
-#ai-close { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.15); border: none; color: white; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s; }
-#ai-close:hover { background: rgba(255,255,255,0.25); }
-#ai-messages { flex: 1; overflow-y: auto; padding: 14px 14px 8px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-#ai-messages::-webkit-scrollbar { width: 4px; }
-#ai-messages::-webkit-scrollbar-thumb { background: var(--border, #334155); border-radius: 4px; }
-.ai-msg { max-width: 88%; padding: 10px 13px; border-radius: 16px; font-size: 0.82rem; font-weight: 600; line-height: 1.45; word-break: break-word; }
-.ai-msg.bot { background: var(--surface-2, #273549); color: var(--text, #f1f5f9); border-bottom-left-radius: 4px; align-self: flex-start; border: 1px solid var(--border, #334155); }
-.ai-msg.user { background: #2563eb; color: white; border-bottom-right-radius: 4px; align-self: flex-end; }
-.ai-msg.typing { display: flex; gap: 5px; align-items: center; padding: 12px 16px; }
-.ai-dot { width: 7px; height: 7px; background: var(--text-dim, #64748b); border-radius: 50%; animation: aiDot 1.2s infinite; }
-.ai-dot:nth-child(2) { animation-delay: 0.2s; }
-.ai-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes aiDot { 0%,60%,100% { transform: translateY(0); opacity:0.4; } 30% { transform: translateY(-5px); opacity:1; } }
-#ai-suggestions { padding: 0 14px 10px; display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
-.ai-chip { background: var(--primary-dim, rgba(37,99,235,0.12)); border: 1px solid rgba(37,99,235,0.25); color: #2563eb; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-.ai-chip:hover { background: #2563eb; color: white; }
-#ai-input-area { padding: 10px 12px 12px; display: flex; gap: 8px; align-items: flex-end; border-top: 1px solid var(--border, #334155); flex-shrink: 0; background: var(--surface, #1e293b); }
-#ai-input { flex: 1; background: var(--input-bg, #273549); border: 1.5px solid var(--border, #334155); border-radius: 12px; padding: 10px 13px; color: var(--text, #f1f5f9); font-family: inherit; font-size: 0.85rem; font-weight: 600; outline: none; resize: none; max-height: 80px; line-height: 1.4; transition: 0.2s; }
-#ai-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
-#ai-input::placeholder { color: var(--text-dim, #64748b); font-weight: 500; }
-#ai-send { width: 38px; height: 38px; border-radius: 50%; background: #2563eb; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px rgba(37,99,235,0.35); transition: 0.2s; }
-#ai-send:hover { background: #1d4ed8; transform: scale(1.05); }
-#ai-send:disabled { background: var(--border, #334155); cursor: not-allowed; transform: none; }
-#ai-send svg { width: 16px; fill: white; }
+@keyframes chatIn {
+    from { opacity:0; transform:translateY(16px) scale(0.96); }
+    to   { opacity:1; transform:translateY(0)   scale(1); }
+}
+#ai-header {
+    display:flex; align-items:center; gap:10px; padding:12px 14px;
+    background: linear-gradient(135deg,#2563eb,#1d4ed8); flex-shrink:0;
+}
+#ai-header svg { width:22px; height:22px; flex-shrink:0; }
+.ai-header-text { flex:1; }
+.ai-header-title { font-size:0.9rem; font-weight:800; color:white; line-height:1; }
+.ai-header-sub   { font-size:0.65rem; color:rgba(255,255,255,0.75); font-weight:600; margin-top:2px; }
+#ai-close {
+    background:rgba(255,255,255,0.15); border:none; color:white; cursor:pointer;
+    width:24px; height:24px; border-radius:50%; font-size:0.75rem; display:flex;
+    align-items:center; justify-content:center; transition:background .15s;
+}
+#ai-close:hover { background:rgba(255,255,255,0.3); }
+#ai-messages {
+    flex:1; overflow-y:auto; padding:12px 12px 4px; display:flex;
+    flex-direction:column; gap:8px; scroll-behavior:smooth;
+}
+#ai-messages::-webkit-scrollbar { width:4px; }
+#ai-messages::-webkit-scrollbar-track { background:transparent; }
+#ai-messages::-webkit-scrollbar-thumb { background:var(--border,#334155); border-radius:4px; }
+.ai-msg {
+    max-width:88%; padding:9px 12px; border-radius:12px; font-size:0.82rem;
+    line-height:1.5; word-break:break-word; animation:msgIn .18s ease;
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.ai-msg.user {
+    align-self:flex-end; background:#2563eb; color:white; border-bottom-right-radius:4px;
+}
+.ai-msg.bot {
+    align-self:flex-start; background:var(--hover,#273548); color:var(--text,#e2e8f0);
+    border-bottom-left-radius:4px;
+}
+.ai-msg.bot ul  { margin:4px 0 4px 0; padding-left:18px; }
+.ai-msg.bot li  { margin:2px 0; }
+.ai-msg.bot p   { margin:4px 0; }
+.ai-msg.bot strong { color:#93c5fd; }
+.ai-msg.bot h3  { font-size:0.85rem; font-weight:700; margin:6px 0 2px; color:#93c5fd; }
+.ai-msg.bot a   { color:#60a5fa; text-decoration:underline; }
+.ai-msg.bot.typing {
+    display:flex; gap:5px; align-items:center; padding:10px 14px;
+}
+.ai-dot {
+    width:7px; height:7px; background:var(--muted,#64748b); border-radius:50%;
+    animation:dot .9s infinite ease-in-out;
+}
+.ai-dot:nth-child(2){animation-delay:.18s}
+.ai-dot:nth-child(3){animation-delay:.36s}
+@keyframes dot { 0%,80%,100%{transform:scale(0.7);opacity:.5} 40%{transform:scale(1);opacity:1} }
+#ai-suggestions {
+    display:flex; gap:6px; flex-wrap:wrap; padding:6px 10px 2px; flex-shrink:0;
+}
+.ai-chip {
+    background:var(--hover,#273548); border:1px solid var(--border,#334155);
+    color:var(--text,#e2e8f0); border-radius:20px; padding:4px 10px; font-size:0.72rem;
+    cursor:pointer; transition:background .15s, transform .1s; white-space:nowrap;
+}
+.ai-chip:hover { background:var(--border,#334155); transform:scale(1.04); }
+#ai-input-area {
+    display:flex; gap:6px; padding:10px; border-top:1px solid var(--border,#334155);
+    flex-shrink:0; background:var(--card,#1e293b);
+}
+#ai-input {
+    flex:1; background:var(--hover,#273548); border:1px solid var(--border,#334155);
+    border-radius:10px; padding:8px 12px; color:var(--text,#e2e8f0); font-size:0.83rem;
+    resize:none; outline:none; line-height:1.4; max-height:80px; overflow-y:auto; font-family:inherit;
+}
+#ai-input:focus { border-color:#2563eb; }
+#ai-send {
+    width:36px; height:36px; border-radius:10px; border:none; background:#2563eb;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:background .15s, transform .1s; flex-shrink:0; align-self:flex-end;
+}
+#ai-send:hover { background:#1d4ed8; transform:scale(1.05); }
+#ai-send:disabled { background:var(--border,#334155); cursor:not-allowed; transform:none; }
+#ai-send svg { width:16px; fill:white; }
 </style>
 
-<button id="ai-bubble" aria-label="Asistente de viaje">
+<button id="ai-bubble" aria-label="Taxie — Asistente de viaje">
     <span id="ai-badge"></span>
     <svg viewBox="0 0 32 32" fill="none">
         <rect width="32" height="32" rx="8" fill="white" fill-opacity="0.15"/>
@@ -1031,10 +835,10 @@ window.removeCustomItem = (customIdx) => {
             <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
         </svg>
         <div class="ai-header-text">
-            <div class="ai-header-title">TaxUSA Asistente</div>
-            <div class="ai-header-sub" id="ai-header-sub">Experto en viajes a USA ✈️</div>
+            <div class="ai-header-title">Taxie ✈️</div>
+            <div class="ai-header-sub" id="ai-header-sub">Tu guia de viaje a USA</div>
         </div>
-        <button id="ai-close">✕</button>
+        <button id="ai-close">x</button>
     </div>
     <div id="ai-messages"></div>
     <div id="ai-suggestions"></div>
@@ -1054,52 +858,93 @@ window.removeCustomItem = (customIdx) => {
     var lang = localStorage.getItem('appLang') || 'es';
     var perfilId   = localStorage.getItem('perfilActivoId') || 'default';
     var HISTORY_KEY = 'taxie_history_' + perfilId;
+
     var chatHistory = [];
-    try { var saved = localStorage.getItem(HISTORY_KEY); if (saved) chatHistory = JSON.parse(saved); } catch(e) { chatHistory = []; }
-    var isOpen = false, isLoading = false, hasShownWelcome = false;
+    try {
+        var saved = localStorage.getItem(HISTORY_KEY);
+        if (saved) chatHistory = JSON.parse(saved);
+    } catch(e) { chatHistory = []; }
 
-    var WELCOME_ES = '¡Hola! Soy tu asistente de viaje para USA 🇺🇸\n\nPuedo ayudarte con:\n• Recomendaciones de lugares\n• Consejos de compras y tiendas\n• Información sobre taxes y propinas\n• Tips de transporte y hospedaje\n• Cambio de moneda y presupuesto\n\n¿En qué puedo ayudarte?';
-    var WELCOME_EN = 'Hi! I am your USA travel assistant 🇺🇸\n\nI can help you with:\n• Place recommendations\n• Shopping & store tips\n• Tax & tip information\n• Transport & accommodation\n• Currency & budget advice\n\nWhat can I help you with?';
-    var WELCOME_PT = 'Olá! Sou seu assistente de viagem para os EUA 🇺🇸\n\nPosso te ajudar com:\n• Recomendações de lugares\n• Dicas de compras e lojas\n• Informações sobre taxes e gorjetas\n• Transporte e hospedagem\n• Câmbio e orçamento\n\nComo posso te ajudar?';
+    var isOpen = false;
+    var isLoading = false;
+    var hasShownWelcome = false;
 
-    var CHIPS_ES = ['🏰 Disney Orlando', '🛍️ Mejores outlets', '💰 Propinas en USA', '🌡️ Clima en Florida', '✈️ Aeropuertos', '🚗 Alquilar auto'];
-    var CHIPS_EN = ['🏰 Disney Orlando', '🛍️ Best outlets', '💰 Tipping in USA', '🌡️ Florida weather', '✈️ Airports', '🚗 Rent a car'];
-    var CHIPS_PT = ['🏰 Disney Orlando', '🛍️ Melhores outlets', '💰 Gorjetas nos EUA', '🌡️ Clima na Flórida', '✈️ Aeroportos', '🚗 Alugar carro'];
+    var WELCOME_ES = '\u00a1Hola! Soy **Taxie** \ud83d\uddfd\u2708\ufe0f\n\nTu asistente personal para viajes a USA. Puedo ayudarte con:\n\n\u2022 \ud83c\udff0 Destinos y parques tematicos\n\u2022 \ud83d\udecd\ufe0f Outlets y compras sin tax\n\u2022 \ud83d\udcb5 Propinas, impuestos y presupuesto\n\u2022 \ud83c\udfe8 Hoteles y transporte\n\u2022 \ud83c\udf24\ufe0f Clima y documentacion\n\n\u00bfEn que puedo ayudarte hoy?';
+    var WELCOME_EN = 'Hi! I am **Taxie** \ud83d\uddfd\u2708\ufe0f\n\nYour personal USA travel guide. I can help you with:\n\n\u2022 \ud83c\udff0 Destinations & theme parks\n\u2022 \ud83d\udecd\ufe0f Outlets & tax-free shopping\n\u2022 \ud83d\udcb5 Tips, taxes & budgeting\n\u2022 \ud83c\udfe8 Hotels & transportation\n\u2022 \ud83c\udf24\ufe0f Weather & travel documents\n\nWhat can I help you with today?';
+    var WELCOME_PT = 'Ol\u00e1! Sou o **Taxie** \ud83d\uddfd\u2708\ufe0f\n\nSeu assistente pessoal para viagens aos EUA. Posso te ajudar com:\n\n\u2022 \ud83c\udff0 Destinos e parques tem\u00e1ticos\n\u2022 \ud83d\udecd\ufe0f Outlets e compras sem tax\n\u2022 \ud83d\udcb5 Gorjetas, impostos e or\u00e7amento\n\u2022 \ud83c\udfe8 Hot\u00e9is e transporte\n\u2022 \ud83c\udf24\ufe0f Clima e documenta\u00e7\u00e3o\n\nComo posso te ajudar hoje?';
 
-    var SUB_ES = 'Experto en viajes a USA ✈️', SUB_EN = 'USA Travel Expert ✈️', SUB_PT = 'Especialista em viagens aos EUA ✈️';
-    var PH_ES = 'Preguntá sobre tu viaje a USA...', PH_EN = 'Ask about your USA trip...', PH_PT = 'Pergunte sobre sua viagem aos EUA...';
-    var ERR_ES = 'Ocurrió un error. Verificá tu conexión e intentá de nuevo.', ERR_EN = 'An error occurred. Check your connection and try again.', ERR_PT = 'Ocorreu um erro. Verifique sua conexão e tente novamente.';
+    var CHIPS_ES = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Mejores outlets', '\ud83d\udcb0 Propinas en USA', '\ud83c\udf21\ufe0f Clima en Florida', '\u2708\ufe0f Aeropuertos', '\ud83d\ude97 Alquilar auto'];
+    var CHIPS_EN = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Best outlets', '\ud83d\udcb0 Tipping in USA', '\ud83c\udf21\ufe0f Florida weather', '\u2708\ufe0f Airports', '\ud83d\ude97 Rent a car'];
+    var CHIPS_PT = ['\ud83c\udff0 Disney Orlando', '\ud83d\udecd\ufe0f Melhores outlets', '\ud83d\udcb0 Gorjetas nos EUA', '\ud83c\udf21\ufe0f Clima na Fl\u00f3rida', '\u2708\ufe0f Aeroportos', '\ud83d\ude97 Alugar carro'];
 
-    var isPt = (lang === 'pt'), isEs = (lang !== 'en' && lang !== 'pt');
-    var welcome = isPt ? WELCOME_PT : isEs ? WELCOME_ES : WELCOME_EN;
-    var chips = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
-    var sub = isPt ? SUB_PT : isEs ? SUB_ES : SUB_EN;
-    var ph = isPt ? PH_PT : isEs ? PH_ES : PH_EN;
-    var errMsg = isPt ? ERR_PT : isEs ? ERR_ES : ERR_EN;
+    var SUB_ES = 'Tu guia de viaje a USA \ud83d\uddfa\ufe0f';
+    var SUB_EN = 'Your USA Travel Guide \ud83d\uddfa\ufe0f';
+    var SUB_PT = 'Seu guia de viagem aos EUA \ud83d\uddfa\ufe0f';
+    var PH_ES  = 'Preguntale a Taxie sobre tu viaje...';
+    var PH_EN  = 'Ask Taxie about your trip...';
+    var PH_PT  = 'Pergunte ao Taxie sobre sua viagem...';
+    var ERR_ES = 'Ups, algo fallo. Verifica tu conexion e intenta de nuevo.';
+    var ERR_EN = 'Oops, something went wrong. Check your connection and try again.';
+    var ERR_PT = 'Ops, algo deu errado. Verifique sua conex\u00e3o e tente novamente.';
 
-    var SYSTEM = isEs
-        ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable. Cuando alguien pregunta por info en tiempo real buscás la info antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan. Nunca empezás con "¡Claro!" ni frases de relleno. Solo respondés sobre viajes a USA. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
-        : isPt
-        ? 'Você é o Taxie, assistente de viagens para os EUA. Tom claro, direto e amigável. Responda apenas sobre viagens aos EUA. Data: ' + new Date().toLocaleDateString('pt-BR') + '.'
-        : 'You are Taxie, a USA travel assistant. Clear, direct, warm tone. Only answer about USA travel. Today: ' + new Date().toLocaleDateString('en-US') + '.';
+    var isPt = (lang === 'pt');
+    var isEs = (lang !== 'en' && lang !== 'pt');
+    var chips  = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
+    var sub    = isPt ? SUB_PT   : isEs ? SUB_ES   : SUB_EN;
+    var ph     = isPt ? PH_PT    : isEs ? PH_ES    : PH_EN;
+    var errMsg = isPt ? ERR_PT   : isEs ? ERR_ES   : ERR_EN;
 
-    function saveHistory() { try { localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-40))); } catch(e) {} }
+    var SYSTEM = isPt
+        ? 'Voc\u00ea \u00e9 o Taxie, assistente de viagens para os EUA. Seu tom \u00e9 claro, direto e amig\u00e1vel. Quando algu\u00e9m pergunta sobre informa\u00e7\u00f5es em tempo real (filas nos parques, cota\u00e7\u00f5es, clima atual, hor\u00e1rios ou pre\u00e7os atualizados), voc\u00ea busca as informa\u00e7\u00f5es antes de responder. Use marcadores e **negritos** s\u00f3 quando realmente ajudam; para respostas simples, uma ou duas frases diretas s\u00e3o suficientes. Nunca comece com "Claro!", "Com certeza!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+        : isEs
+        ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni fr\u00edo ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+        : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
+
+    function saveHistory() {
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-40))); } catch(e) {}
+    }
+
+    function formatBotText(text) {
+        var html = text
+            .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        var lines = html.split('\n');
+        var result = [];
+        var inList = false;
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].trim();
+            var isBullet = /^[\u2022\-\*]\s/.test(line);
+            if (isBullet) {
+                if (!inList) { result.push('<ul>'); inList = true; }
+                result.push('<li>' + line.replace(/^[\u2022\-\*]\s+/,'') + '</li>');
+            } else {
+                if (inList) { result.push('</ul>'); inList = false; }
+                if (line !== '') result.push('<p>' + line + '</p>');
+            }
+        }
+        if (inList) result.push('</ul>');
+        return result.join('');
+    }
 
     function init() {
-        var bubble = document.getElementById('ai-bubble');
-        var chatEl = document.getElementById('ai-chat');
+        var bubble     = document.getElementById('ai-bubble');
+        var chatEl     = document.getElementById('ai-chat');
         var messagesEl = document.getElementById('ai-messages');
-        var inputEl = document.getElementById('ai-input');
-        var sendBtn = document.getElementById('ai-send');
-        var suggestEl = document.getElementById('ai-suggestions');
-        var headerSub = document.getElementById('ai-header-sub');
-        var closeBtn = document.getElementById('ai-close');
+        var inputEl    = document.getElementById('ai-input');
+        var sendBtn    = document.getElementById('ai-send');
+        var suggestEl  = document.getElementById('ai-suggestions');
+        var headerSub  = document.getElementById('ai-header-sub');
+        var closeBtn   = document.getElementById('ai-close');
+
         if (!bubble || !chatEl) return;
+
         if (headerSub) headerSub.textContent = sub;
-        if (inputEl) inputEl.placeholder = ph;
+        if (inputEl)   inputEl.placeholder   = ph;
 
         if (suggestEl) {
-            suggestEl.innerHTML = chips.map(function(c) { return '<button class="ai-chip">' + c + '</button>'; }).join('');
+            suggestEl.innerHTML = chips.map(function(c) {
+                return '<button class="ai-chip">' + c + '</button>';
+            }).join('');
             suggestEl.querySelectorAll('.ai-chip').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     if (inputEl) inputEl.value = btn.textContent;
@@ -1112,13 +957,20 @@ window.removeCustomItem = (customIdx) => {
         function toggleChat() {
             isOpen = !isOpen;
             if (isOpen) {
-                chatEl.style.display = 'flex'; chatEl.offsetHeight; chatEl.classList.add('open');
+                chatEl.style.display = 'flex';
+                chatEl.offsetHeight;
+                chatEl.classList.add('open');
                 if (!hasShownWelcome) {
                     hasShownWelcome = true;
                     if (chatHistory.length > 0) {
-                        chatHistory.forEach(function(m) { addMessage(m.role === 'user' ? 'user' : 'bot', m.content, true); });
+                        chatHistory.forEach(function(m) {
+                            addMessage(m.role === 'user' ? 'user' : 'bot', m.content, true);
+                        });
                         if (suggestEl) suggestEl.style.display = 'none';
-                    } else { setTimeout(function() { addMessage('bot', welcome); }, 200); }
+                    } else {
+                        var welcome = isPt ? WELCOME_PT : isEs ? WELCOME_ES : WELCOME_EN;
+                        setTimeout(function() { addMessage('bot', welcome); }, 200);
+                    }
                 }
                 setTimeout(function() { if (inputEl) inputEl.focus(); }, 300);
             } else {
@@ -1129,9 +981,11 @@ window.removeCustomItem = (customIdx) => {
 
         bubble.addEventListener('click', function(e) { e.stopPropagation(); toggleChat(); });
         if (closeBtn) closeBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleChat(); });
+
         document.addEventListener('click', function(e) {
             if (isOpen && !chatEl.contains(e.target) && !bubble.contains(e.target)) {
-                isOpen = false; chatEl.classList.remove('open');
+                isOpen = false;
+                chatEl.classList.remove('open');
                 setTimeout(function() { chatEl.style.display = 'none'; }, 250);
             }
         });
@@ -1140,77 +994,132 @@ window.removeCustomItem = (customIdx) => {
             if (!messagesEl) return;
             var div = document.createElement('div');
             div.className = 'ai-msg ' + (role === 'user' ? 'user' : 'bot');
-            if (role === 'user') { div.textContent = text; }
-            else {
-                var html = text
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                    .replace(/\n/g, '<br>');
-                div.innerHTML = html;
+            if (role === 'user') {
+                div.textContent = text;
+            } else {
+                div.innerHTML = formatBotText(text);
             }
+            if (silent) div.style.animation = 'none';
             messagesEl.appendChild(div);
-            if (!silent) messagesEl.scrollTop = messagesEl.scrollHeight;
+            messagesEl.scrollTop = messagesEl.scrollHeight;
         }
 
         function showTyping() {
+            if (!messagesEl) return;
             var div = document.createElement('div');
-            div.className = 'ai-msg bot typing'; div.id = 'typing-indicator';
+            div.className = 'ai-msg bot typing';
+            div.id = 'ai-typing';
             div.innerHTML = '<div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>';
-            messagesEl.appendChild(div); messagesEl.scrollTop = messagesEl.scrollHeight;
+            messagesEl.appendChild(div);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
         }
-        function hideTyping() { var t = document.getElementById('typing-indicator'); if (t) t.remove(); }
 
-        window._taxieSend = sendMessage;
+        function hideTyping() {
+            var el = document.getElementById('ai-typing');
+            if (el) el.remove();
+        }
 
         function sendMessage() {
-            if (!inputEl || isLoading) return;
+            window._taxieSend = sendMessage;
+            if (!inputEl) return;
             var text = inputEl.value.trim();
-            if (!text) return;
-            chatHistory.push({ role: 'user', content: text });
-            saveHistory(); addMessage('user', text);
-            inputEl.value = ''; inputEl.style.height = 'auto';
+            if (!text || isLoading) return;
+            inputEl.value = '';
+            inputEl.style.height = 'auto';
+            addMessage('user', text);
             if (suggestEl) suggestEl.style.display = 'none';
-            isLoading = true; if (sendBtn) sendBtn.disabled = true;
+            isLoading = true;
+            if (sendBtn) sendBtn.disabled = true;
             showTyping();
-
+            chatHistory.push({ role: 'user', content: text });
             fetch(GROQ_URL, {
                 method: 'POST',
-                body: JSON.stringify({ model: MODEL, messages: [{ role: 'system', content: SYSTEM }].concat(chatHistory.slice(-14)), max_tokens: 800, temperature: 0.7, stream: false })
+                body: JSON.stringify({
+                    model: MODEL,
+                    messages: [{ role: 'system', content: SYSTEM }].concat(chatHistory.slice(-14)),
+                    max_tokens: 800,
+                    temperature: 0.7,
+                    stream: false,
+                    tools: [{ type: 'function', function: { name: 'web_search', description: 'Search the web for real-time information like park wait times, exchange rates, current weather, store hours or updated prices.', parameters: { type: 'object', properties: { query: { type: 'string', description: 'Search query' } }, required: ['query'] } } }],
+                    tool_choice: 'auto'
+                })
             })
             .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
             .then(function(r) {
                 if (!r.ok) throw new Error(r.data.error && r.data.error.message || 'API error');
-                var reply = r.data.choices && r.data.choices[0] && r.data.choices[0].message && r.data.choices[0].message.content || errMsg;
-                chatHistory.push({ role: 'assistant', content: reply }); saveHistory();
-                hideTyping(); addMessage('bot', reply);
+                var msg = r.data.choices && r.data.choices[0] && r.data.choices[0].message;
+                if (msg && msg.tool_calls && msg.tool_calls.length > 0) {
+                    var tc = msg.tool_calls[0];
+                    var query = '';
+                    try { query = JSON.parse(tc.function.arguments).query; } catch(e) {}
+                    var msgsWithTool = [{ role: 'system', content: SYSTEM }]
+                        .concat(chatHistory.slice(-14))
+                        .concat([
+                            { role: 'assistant', content: null, tool_calls: msg.tool_calls },
+                            { role: 'tool', tool_call_id: tc.id, content: 'No se pudo obtener resultado en tiempo real para: ' + query + '. Respondé con lo que sabés e indicá que los datos pueden no ser del momento exacto.' }
+                        ]);
+                    return fetch(GROQ_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ model: MODEL, messages: msgsWithTool, max_tokens: 800, temperature: 0.7, stream: false })
+                    }).then(function(res2) { return res2.json().then(function(d2) { return { ok: res2.ok, data: d2 }; }); })
+                    .then(function(r2) {
+                        if (!r2.ok) throw new Error(r2.data.error && r2.data.error.message || 'API error');
+                        var reply2 = r2.data.choices && r2.data.choices[0] && r2.data.choices[0].message && r2.data.choices[0].message.content || errMsg;
+                        chatHistory.push({ role: 'assistant', content: reply2 });
+                        saveHistory();
+                        hideTyping();
+                        addMessage('bot', reply2);
+                    });
+                }
+                var reply = msg && msg.content || errMsg;
+                chatHistory.push({ role: 'assistant', content: reply });
+                saveHistory();
+                hideTyping();
+                addMessage('bot', reply);
             })
-            .catch(function(e) { hideTyping(); addMessage('bot', errMsg); console.error('[TaxUSA Chat]', e); })
-            .finally(function() { isLoading = false; if (sendBtn) sendBtn.disabled = false; if (inputEl) inputEl.focus(); });
+            .catch(function(e) {
+                hideTyping();
+                addMessage('bot', errMsg);
+                console.error('[Taxie]', e);
+            })
+            .finally(function() {
+                isLoading = false;
+                if (sendBtn) sendBtn.disabled = false;
+                if (inputEl) inputEl.focus();
+            });
         }
 
         if (sendBtn) sendBtn.addEventListener('click', sendMessage);
         if (inputEl) {
-            inputEl.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-            inputEl.addEventListener('input', function() { this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 80) + 'px'; });
+            inputEl.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+            });
+            inputEl.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+            });
         }
     }
 
     window.taxieUpdateLang = function(newLang) {
-        isPt = (newLang === 'pt'); isEs = (newLang !== 'en' && newLang !== 'pt');
-        SYSTEM = isEs
-            ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable. Solo respondés sobre viajes a USA. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
-            : isPt
-            ? 'Você é o Taxie, assistente de viagens para os EUA. Responda apenas sobre viagens aos EUA. Data: ' + new Date().toLocaleDateString('pt-BR') + '.'
-            : 'You are Taxie, a USA travel assistant. Only answer about USA travel. Today: ' + new Date().toLocaleDateString('en-US') + '.';
+        isEs = (newLang !== 'en' && newLang !== 'pt');
+        isPt = (newLang === 'pt');
+        SYSTEM = isPt
+            ? 'Voc\u00ea \u00e9 o Taxie, assistente de viagens para os EUA. Seu tom \u00e9 claro, direto e amig\u00e1vel. Quando algu\u00e9m pergunta sobre informa\u00e7\u00f5es em tempo real, voc\u00ea busca as informa\u00e7\u00f5es antes de responder. Use marcadores e **negritos** s\u00f3 quando realmente ajudam. Nunca comece com "Claro!" ou frases de preenchimento. Responda apenas sobre viagens aos EUA. Data atual: ' + new Date().toLocaleDateString('pt-BR') + '.'
+            : isEs
+            ? 'Eres Taxie, asistente de viajes a USA. Tu tono es claro, directo y amable — ni frío ni demasiado informal. Cuando alguien pregunta por info en tiempo real (filas en parques, cotizaciones, clima actual, horarios o precios actualizados), buscás la información actualizada antes de responder. Usás viñetas y **negritas** solo cuando realmente ayudan a organizar la info; si la respuesta es simple, una o dos oraciones directas son suficientes. Nunca empezás con "¡Claro!", "¡Por supuesto!" ni frases de relleno. Solo respondés sobre viajes a USA; si preguntan otra cosa, lo aclarás brevemente y redirigís. Fecha actual: ' + new Date().toLocaleDateString('es-AR') + '.'
+            : 'You are Taxie, a USA travel assistant. Your tone is clear, direct and warm — not overly casual, not robotic. When someone asks for real-time info (park wait times, exchange rates, current weather, updated prices), search for current data before answering. Use bullet points and **bold** only when they genuinely help organize information; for simple questions, one or two direct sentences are better. Never open with "Of course!", "Great question!" or filler phrases. Only answer about USA travel; redirect anything off-topic without making it awkward. Today\'s date: ' + new Date().toLocaleDateString('en-US') + '.';
         errMsg = isPt ? ERR_PT : isEs ? ERR_ES : ERR_EN;
-        var inputEl = document.getElementById('ai-input');
+        var inputEl   = document.getElementById('ai-input');
         var headerSub = document.getElementById('ai-header-sub');
         var suggestEl = document.getElementById('ai-suggestions');
-        if (inputEl) inputEl.placeholder = isPt ? PH_PT : isEs ? PH_ES : PH_EN;
+        if (inputEl)   inputEl.placeholder = isPt ? PH_PT : isEs ? PH_ES : PH_EN;
         if (headerSub) headerSub.textContent = isPt ? SUB_PT : isEs ? SUB_ES : SUB_EN;
         if (suggestEl) {
             var newChips = isPt ? CHIPS_PT : isEs ? CHIPS_ES : CHIPS_EN;
-            suggestEl.innerHTML = newChips.map(function(c) { return '<button class="ai-chip">' + c + '</button>'; }).join('');
+            suggestEl.innerHTML = newChips.map(function(c) {
+                return '<button class="ai-chip">' + c + '</button>';
+            }).join('');
             suggestEl.querySelectorAll('.ai-chip').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     var inp = document.getElementById('ai-input');
@@ -1222,10 +1131,14 @@ window.removeCustomItem = (customIdx) => {
         }
     };
 
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
-    else { init(); }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();
 </script>
 <!-- ═══════════════ FIN TAXUSA AI CHAT ═══════════════ -->
+
 </body>
 </html>
