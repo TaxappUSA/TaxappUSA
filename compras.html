@@ -139,40 +139,27 @@
         .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
         .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
         .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
-
-        /* ── Toast ── */
-        #toast-container{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;}
-        .toast{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 18px;font-size:.82rem;font-weight:700;color:var(--text);box-shadow:var(--shadow-lg);animation:toastIn .25s ease;max-width:calc(100vw - 40px);text-align:center;}
-        .toast.success{border-color:var(--success);background:rgba(16,185,129,.08);}
-        .toast.warn{border-color:var(--warn);background:rgba(245,158,11,.08);}
-        .toast.error{border-color:var(--danger);background:rgba(239,68,68,.08);}
-        @keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateY(8px)}}
-
-        /* ── Budget negative state ── */
-        .budget-value.over-budget{color:#fca5a5;}
     </style>
 </head>
 <body>
-<div id="toast-container"></div>
 <div class="wrap">
     <div class="app-header">
-        <a href="index.html" class="logo" style="text-decoration:none;">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
-                <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
-                <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
-                <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
-            </svg>
-            TaxUSA
-        </a>
+        <div class="logo">
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="8" fill="#1e3a8a"/>
+    <rect x="0" y="10" width="32" height="4" fill="#ef4444"/>
+    <rect x="0" y="18" width="32" height="4" fill="#ef4444"/>
+    <polygon points="16,4 18.4,11 26,11 20,15.5 22.4,22.5 16,18 9.6,22.5 12,15.5 6,11 13.6,11" fill="#ffffff"/>
+  </svg>
+  TaxUSA
+</div>
     </div>
     <nav class="nav-bar">
         <a href="index.html" class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
         <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
         <a href="unidades.html" class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
         <a href="tickets.html" class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">TICKETS</span></a>
-        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()">⚙️</button>
+        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
     </nav>
 
     <div class="budget-card">
@@ -377,26 +364,13 @@ const flags = {
   PEN: '<img src="https://flagcdn.com/20x15/pe.png">',
   COP: '<img src="https://flagcdn.com/20x15/co.png">'
 };
-let tipIndex = 0;
+    let tipIndex = 0;
 let video, stream;
 
-window.showToast = (msg, type = '', duration = 3000) => {
-    const c = document.getElementById('toast-container');
-    if (!c) return;
-    const t = document.createElement('div');
-    t.className = 'toast' + (type ? ' ' + type : '');
-    t.textContent = msg;
-    c.appendChild(t);
-    setTimeout(() => {
-        t.style.animation = 'toastOut .25s ease forwards';
-        setTimeout(() => t.remove(), 280);
-    }, duration);
-};
-
 const i18n = {
-    es:{ nav_home:"INICIO",nav_tickets:"TICKETS",nav_itinerary:"ITINERARIO",nav_compare:"COMPARAR",nav_units:"UNIDADES",label_budget:"Presupuesto Restante",btn_set:"SET",ocr_analyzing:"Analizando ticket... 🧐",ocr_detecting:"Detectando Totales y Taxes",shopping_guide:"🛍️ GUÍA DE COMPRAS",tab_list:"GASTOS",tab_summary:"RESUMEN",tab_sizes:"TALLES",scanner_beta_msg:"⚠️ El escáner está en beta. Verificá siempre el monto detectado.",btn_scan_ticket:"ESCANEAR TICKET",rate_official:"Dólar Oficial",rate_card:"Dólar Tarjeta",label_exchange:"Cotizaciones",opt_pound:"Libra",opt_swiss:"F. Suizo",opt_real:"Real",opt_clp:"P. Chileno",opt_uyu:"P. Uruguayo",opt_mxn:"P. Mexicano",opt_pen:"Sol Peruano",opt_cop:"P. Colombiano",placeholder_product:"Producto",placeholder_price:"Precio USD",label_cat_tag:"Categoría",btn_save_expense:"GUARDAR GASTO",loading:"Cargando...",title_footwear:"👟 Calzado (ARG → US)",th_men:"H",th_women:"M",th_equiv:"EQUIV. US",title_tops:"👕 Remeras / Tops",title_jackets:"🧥 Buzos / Camperas",settings_title:"Ajustes",label_language:"Idioma",btn_change_profile:"Cambiar Perfil",btn_theme:"Cambiar Tema",btn_update:"Actualizar App",btn_email:"Cambiar Correo",btn_password:"Cambiar Contraseña",btn_logout:"Cerrar Sesión",btn_delete:"Eliminar Cuenta",footer_by:"Creado por Juan Cruz Bria",alert_no_total:"No se detectó el total. Cargalo manualmente.",alert_upcoming:"🚀 El Comparador de Precios estará disponible próximamente.",dash_total:"Total gastado",dash_count:"Compras",dash_avg:"Promedio",dash_top:"Mayor gasto",dash_by_cat:"Por Categoría",cat_flights:"Vuelos",cat_others:"Otros" },
-    en:{ nav_home:"HOME",nav_tickets:"TICKETS",nav_itinerary:"ITINERARY",nav_compare:"COMPARE",nav_units:"UNITS",label_budget:"Remaining Budget",btn_set:"SET",ocr_analyzing:"Analyzing ticket... 🧐",ocr_detecting:"Detecting Totals and Taxes",shopping_guide:"🛍️ SHOPPING GUIDE",tab_list:"EXPENSES",tab_summary:"SUMMARY",tab_sizes:"SIZES",scanner_beta_msg:"⚠️ Scanner is in beta. Always verify the detected amount.",btn_scan_ticket:"SCAN TICKET",rate_official:"Official Dollar",rate_card:"Card Dollar",label_exchange:"Exchange Rates",opt_pound:"Pound",opt_swiss:"Swiss F.",opt_real:"Real",opt_clp:"Chilean P.",opt_uyu:"Uruguayan P.",opt_mxn:"Mexican P.",opt_pen:"Peruvian Sol",opt_cop:"Colombian P.",placeholder_product:"Product Name",placeholder_price:"Price in USD",label_cat_tag:"Category",btn_save_expense:"SAVE EXPENSE",loading:"Loading...",title_footwear:"👟 Footwear (ARG → US)",th_men:"M",th_women:"W",th_equiv:"US SIZE",title_tops:"👕 T-Shirts / Tops",title_jackets:"🧥 Hoodies / Jackets",settings_title:"Settings",label_language:"Language",btn_change_profile:"Change Profile",btn_theme:"Toggle Theme",btn_update:"Update App",btn_email:"Change Email",btn_password:"Change Password",btn_logout:"Sign Out",btn_delete:"Delete Account",footer_by:"Created by Juan Cruz Bria",alert_no_total:"Total not detected. Please enter it manually.",alert_upcoming:"🚀 The Price Comparator will be available soon.",dash_total:"Total spent",dash_count:"Purchases",dash_avg:"Average",dash_top:"Biggest expense",dash_by_cat:"By Category",cat_flights:"Flights",cat_others:"Others" },
-    pt:{ nav_home:"INÍCIO",nav_tickets:"TICKETS",nav_itinerary:"ITINERÁRIO",nav_compare:"COMPARAR",nav_units:"UNIDADES",label_budget:"Orçamento Restante",btn_set:"SET",ocr_analyzing:"Analisando ticket... 🧐",ocr_detecting:"Detectando Totais e Taxes",shopping_guide:"🛍️ GUIA DE COMPRAS",tab_list:"GASTOS",tab_summary:"RESUMO",tab_sizes:"TAMANHOS",scanner_beta_msg:"⚠️ O scanner está em beta. Verifique sempre o valor detectado.",btn_scan_ticket:"ESCANEAR TICKET",rate_official:"Dólar Oficial",rate_card:"Dólar Cartão",label_exchange:"Cotações",opt_pound:"Libra",opt_swiss:"F. Suíço",opt_real:"Real",opt_clp:"P. Chileno",opt_uyu:"P. Uruguaio",opt_mxn:"P. Mexicano",opt_pen:"Sol Peruano",opt_cop:"P. Colombiano",placeholder_product:"Produto",placeholder_price:"Preço USD",label_cat_tag:"Categoria",btn_save_expense:"SALVAR GASTO",loading:"Carregando...",title_footwear:"👟 Calçados (BRL → US)",th_men:"H",th_women:"M",th_equiv:"EQUIV. US",title_tops:"👕 Camisetas / Tops",title_jackets:"🧥 Moletons / Jaquetas",settings_title:"Configurações",label_language:"Idioma",btn_change_profile:"Trocar Perfil",btn_theme:"Alternar Tema",btn_update:"Atualizar App",btn_email:"Alterar E-mail",btn_password:"Alterar Senha",btn_logout:"Sair",btn_delete:"Excluir Conta",footer_by:"Criado por Juan Cruz Bria",alert_no_total:"Total não detectado. Por favor insira manualmente.",alert_upcoming:"🚀 O Comparador de Preços estará disponível em breve.",dash_total:"Total gasto",dash_count:"Compras",dash_avg:"Média",dash_top:"Maior gasto",dash_by_cat:"Por Categoria",cat_flights:"Voos",cat_others:"Outros" }
+    es:{ nav_home:"INICIO",nav_itinerary:"ITINERARIO",nav_compare:"COMPARAR",nav_units:"UNIDADES",label_budget:"Presupuesto Restante",btn_set:"SET",ocr_analyzing:"Analizando ticket... 🧐",ocr_detecting:"Detectando Totales y Taxes",shopping_guide:"🛍️ GUÍA DE COMPRAS",tab_list:"GASTOS",tab_summary:"RESUMEN",tab_sizes:"TALLES",scanner_beta_msg:"⚠️ El escáner está en beta. Verificá siempre el monto detectado.",btn_scan_ticket:"ESCANEAR TICKET",rate_official:"Dólar Oficial",rate_card:"Dólar Tarjeta",label_exchange:"Cotizaciones",opt_pound:"Libra",opt_swiss:"F. Suizo",opt_real:"Real",opt_clp:"P. Chileno",opt_uyu:"P. Uruguayo",opt_mxn:"P. Mexicano",opt_pen:"Sol Peruano",opt_cop:"P. Colombiano",placeholder_product:"Producto",placeholder_price:"Precio USD",label_cat_tag:"Categoría",btn_save_expense:"GUARDAR GASTO",loading:"Cargando...",title_footwear:"👟 Calzado (ARG → US)",th_men:"H",th_women:"M",th_equiv:"EQUIV. US",title_tops:"👕 Remeras / Tops",title_jackets:"🧥 Buzos / Camperas",settings_title:"Ajustes",label_language:"Idioma",btn_change_profile:"Cambiar Perfil",btn_theme:"Cambiar Tema",btn_update:"Actualizar App",btn_email:"Cambiar Correo",btn_password:"Cambiar Contraseña",btn_logout:"Cerrar Sesión",btn_delete:"Eliminar Cuenta",footer_by:"Creado por Juan Cruz Bria",alert_no_total:"No se detectó el total. Cargalo manualmente.",alert_upcoming:"🚀 El Comparador de Precios estará disponible próximamente.",dash_total:"Total gastado",dash_count:"Compras",dash_avg:"Promedio",dash_top:"Mayor gasto",dash_by_cat:"Por Categoría",cat_flights:"Vuelos",cat_others:"Otros" },
+    en:{ nav_home:"HOME",nav_itinerary:"ITINERARY",nav_compare:"COMPARE",nav_units:"UNITS",label_budget:"Remaining Budget",btn_set:"SET",ocr_analyzing:"Analyzing ticket... 🧐",ocr_detecting:"Detecting Totals and Taxes",shopping_guide:"🛍️ SHOPPING GUIDE",tab_list:"EXPENSES",tab_summary:"SUMMARY",tab_sizes:"SIZES",scanner_beta_msg:"⚠️ Scanner is in beta. Always verify the detected amount.",btn_scan_ticket:"SCAN TICKET",rate_official:"Official Dollar",rate_card:"Card Dollar",label_exchange:"Exchange Rates",opt_pound:"Pound",opt_swiss:"Swiss F.",opt_real:"Real",opt_clp:"Chilean P.",opt_uyu:"Uruguayan P.",opt_mxn:"Mexican P.",opt_pen:"Peruvian Sol",opt_cop:"Colombian P.",placeholder_product:"Product Name",placeholder_price:"Price in USD",label_cat_tag:"Category",btn_save_expense:"SAVE EXPENSE",loading:"Loading...",title_footwear:"👟 Footwear (ARG → US)",th_men:"M",th_women:"W",th_equiv:"US SIZE",title_tops:"👕 T-Shirts / Tops",title_jackets:"🧥 Hoodies / Jackets",settings_title:"Settings",label_language:"Language",btn_change_profile:"Change Profile",btn_theme:"Toggle Theme",btn_update:"Update App",btn_email:"Change Email",btn_password:"Change Password",btn_logout:"Sign Out",btn_delete:"Delete Account",footer_by:"Created by Juan Cruz Bria",alert_no_total:"Total not detected. Please enter it manually.",alert_upcoming:"🚀 The Price Comparator will be available soon.",dash_total:"Total spent",dash_count:"Purchases",dash_avg:"Average",dash_top:"Biggest expense",dash_by_cat:"By Category",cat_flights:"Flights",cat_others:"Others" },
+    pt:{ nav_home:"INÍCIO",nav_itinerary:"ITINERÁRIO",nav_compare:"COMPARAR",nav_units:"UNIDADES",label_budget:"Orçamento Restante",btn_set:"SET",ocr_analyzing:"Analisando ticket... 🧐",ocr_detecting:"Detectando Totais e Taxes",shopping_guide:"🛍️ GUIA DE COMPRAS",tab_list:"GASTOS",tab_summary:"RESUMO",tab_sizes:"TAMANHOS",scanner_beta_msg:"⚠️ O scanner está em beta. Verifique sempre o valor detectado.",btn_scan_ticket:"ESCANEAR TICKET",rate_official:"Dólar Oficial",rate_card:"Dólar Cartão",label_exchange:"Cotações",opt_pound:"Libra",opt_swiss:"F. Suíço",opt_real:"Real",opt_clp:"P. Chileno",opt_uyu:"P. Uruguaio",opt_mxn:"P. Mexicano",opt_pen:"Sol Peruano",opt_cop:"P. Colombiano",placeholder_product:"Produto",placeholder_price:"Preço USD",label_cat_tag:"Categoria",btn_save_expense:"SALVAR GASTO",loading:"Carregando...",title_footwear:"👟 Calçados (BRL → US)",th_men:"H",th_women:"M",th_equiv:"EQUIV. US",title_tops:"👕 Camisetas / Tops",title_jackets:"🧥 Moletons / Jaquetas",settings_title:"Configurações",label_language:"Idioma",btn_change_profile:"Trocar Perfil",btn_theme:"Alternar Tema",btn_update:"Atualizar App",btn_email:"Alterar E-mail",btn_password:"Alterar Senha",btn_logout:"Sair",btn_delete:"Excluir Conta",footer_by:"Criado por Juan Cruz Bria",alert_no_total:"Total não detectado. Por favor insira manualmente.",alert_upcoming:"🚀 O Comparador de Preços estará disponível em breve.",dash_total:"Total gasto",dash_count:"Compras",dash_avg:"Média",dash_top:"Maior gasto",dash_by_cat:"Por Categoria",cat_flights:"Voos",cat_others:"Outros" }
 };
 
 const shoppingTips = {
@@ -464,7 +438,7 @@ async function fetchRates(){
 window.updateMulti=(type)=>{
     const code=document.getElementById(`select-${type}`).value;
     baseRates[type]=allRates[code];
-    document.getElementById(`flag-${type}`).innerHTML = flags[code];
+    document.getElementById(`flag-${type}`).innerHTML = flags[code];;
     document.getElementById(`${type}-usd`).value='1.00';
     document.getElementById(`${type}-local`).value=fmt(baseRates[type]);
 };
@@ -477,36 +451,31 @@ window.convert=(type,dir)=>{
 
 window.updateFondo=async()=>{
     const v=parseFloat(document.getElementById('input-fondo').value);
-    if(isNaN(v)||v<0){showToast('⚠️ Monto inválido.','warn');return;}
+    if(isNaN(v)||v<0){alert('Monto inválido.');return;}
     if(currentUser&&perfilId){
         try{
             await updateDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId),{presupuesto:v});
             presupuestoBase=v;
-            showToast('💰 Presupuesto actualizado.','success');
-        }catch(e){showToast('❌ Error al guardar.','error');}
+        }catch(e){alert('Error al guardar.');}
     }
 };
 
 window.addGasto=async()=>{
-    const n=document.getElementById('nombre').value.trim();
+    const n=document.getElementById('nombre').value;
     const v=parseFloat(document.getElementById('valor').value);
     const selTag=document.querySelector('#cat-tag-row .cat-tag.sel');
     const cat=selTag?selTag.dataset.cat:'📦 Otros';
-    if(!n||isNaN(v)||v<=0){showToast('⚠️ Completá nombre y precio válido.','warn');return;}
-    if(!currentUser||!perfilId){showToast('❌ Sin sesión activa.','error');return;}
+    if(!n||isNaN(v)||v<=0||!currentUser||!perfilId){alert('Completá nombre y precio.');return;}
     try{
         await addDoc(collection(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos'),{nombre:n,valor:v,cat:cat,fecha:Date.now()});
         document.getElementById('nombre').value='';
         document.getElementById('valor').value='';
-        showToast('✅ Gasto guardado.','success',2000);
-    }catch(e){console.error(e);showToast('❌ Error al guardar el gasto.','error');}
+    }catch(e){console.error(e);}
 };
 window.deleteGasto=async(id)=>{
-    if(!currentUser||!perfilId)return;
-    try{
-        await deleteDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos',id));
-        showToast('🗑️ Gasto eliminado.','',1800);
-    }catch(e){console.error(e);showToast('❌ Error al eliminar.','error');}
+    if(!confirm('¿Eliminar este gasto?')||!currentUser||!perfilId)return;
+    try{await deleteDoc(doc(db,'usuarios',currentUser.uid,'perfiles',perfilId,'gastos',id));}
+    catch(e){console.error(e);}
 };
 
 let allGastos=[];
@@ -535,10 +504,7 @@ function listenGastos(){
 }
 function updateBudgetDisplay(spent){
     const el=document.getElementById('disp-fondo');
-    if(!el)return;
-    const remaining=presupuestoBase-spent;
-    el.innerText='USD '+fmt(remaining);
-    el.classList.toggle('over-budget', presupuestoBase>0 && remaining<0);
+    if(el) el.innerText='USD '+fmt(presupuestoBase-spent);
 }
 
 function renderDashboard(gastos){
@@ -607,7 +573,7 @@ window.startScanner=async()=>{
     try{
         stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
         video.srcObject=stream;
-    }catch(e){showToast('📷 Cámara no disponible.','warn');stopScanner();}
+    }catch(e){alert('Cámara no disponible.');stopScanner();}
 };
 window.stopScanner=()=>{
     if(stream)stream.getTracks().forEach(t=>t.stop());
@@ -626,7 +592,7 @@ window.captureTicket=async()=>{
         await worker.terminate();
         parseTicket(text);
         stopScanner();
-    }catch(e){showToast('❌ Error al procesar la imagen.','error');loader.style.display='none';}
+    }catch(e){alert('Error OCR.');loader.style.display='none';}
 };
 function parseTicket(text){
     const lines=text.toUpperCase().split('\n').map(l=>l.trim()).filter(l=>l);
@@ -654,7 +620,7 @@ function parseTicket(text){
     let final=total>0?total:subtotal>0?(subtotal+taxes):montoEnt>0?(montoEnt-vuelto):all.length>0?Math.max(...all.filter(v=>v>=.5&&v<=5000)):0;
     document.getElementById('nombre').value=store;
     if(final>0) document.getElementById('valor').value=final.toFixed(2);
-    else showToast('⚠️ ' + i18n[localStorage.getItem('appLang')||'es'].alert_no_total,'warn',4000);
+    else alert(i18n[localStorage.getItem('appLang')||'es'].alert_no_total);
 }
 
 window.toggleSettings=()=>{
@@ -669,33 +635,9 @@ window.toggleDarkMode=()=>{
 };
 window.changeProfile=()=>{localStorage.removeItem('perfilActivoId');window.location.href='profiles.html';};
 window.doLogout=()=>signOut(auth).then(()=>window.location.replace('login.html'));
-window.doChangeEmail=async()=>{
-    if(!currentUser)return;
-    const lang=localStorage.getItem('appLang')||'es';
-    const prompts={es:'Ingresá tu nuevo correo:',en:'Enter your new email:',pt:'Digite seu novo e-mail:'};
-    const e=prompt(prompts[lang]||prompts.es);
-    if(e){
-        try{await verifyBeforeUpdateEmail(currentUser,e);showToast('✉️ Verificación enviada a tu nuevo correo.','success');}
-        catch(er){showToast('❌ '+er.message,'error',5000);}
-    }
-};
-window.doChangePassword=async()=>{
-    if(!currentUser)return;
-    try{
-        await sendPasswordResetEmail(auth,currentUser.email);
-        showToast('🔑 Correo de recuperación enviado.','success');
-    }catch(er){showToast('❌ '+er.message,'error',5000);}
-};
-window.doDeleteAccount=async()=>{
-    const lang=localStorage.getItem('appLang')||'es';
-    const msgs={es:'¿Eliminar cuenta permanentemente?',en:'Permanently delete account?',pt:'Excluir conta permanentemente?'};
-    if(!confirm(msgs[lang]||msgs.es))return;
-    try{
-        await deleteDoc(doc(db,'usuarios',currentUser.uid));
-        await deleteUser(currentUser);
-        window.location.replace('login.html');
-    }catch(e){showToast('⚠️ Se requiere reautenticación. Cerrá sesión y volvé a ingresar.','error',6000);}
-};
+window.doChangeEmail=async()=>{if(!currentUser)return;const l=localStorage.getItem('appLang')||'es',m={es:{p:"Ingresá tu nuevo correo:",s:"Verificación enviada.",e:"Error: "},en:{p:"Enter your new email:",s:"Verification sent.",e:"Error: "}},t=m[l],e=prompt(t.p);if(e){try{await verifyBeforeUpdateEmail(currentUser,e);alert(t.s);}catch(er){alert(t.e+er.message);}}};
+window.doChangePassword=async()=>{if(!currentUser)return;const l=localStorage.getItem('appLang')||'es',m={es:{s:"Correo de recuperación enviado.",e:"Error: "},en:{s:"Recovery email sent.",e:"Error: "}},t=m[l];try{await sendPasswordResetEmail(auth,currentUser.email);alert(t.s);}catch(er){alert(t.e+er.message);}};
+window.doDeleteAccount=async()=>{const l=localStorage.getItem('appLang')||'es',m={es:{c:"¿Eliminar cuenta permanentemente?",e:"Reautenticación requerida. Cerrá sesión y volvé a entrar para eliminar tu cuenta."},en:{c:"Permanently delete account?",e:"Re-authentication required. Please log out and back in to delete your account."}},t=m[l];if(!confirm(t.c))return;try{await deleteUser(currentUser);window.location.replace('login.html');}catch(e){alert(t.e);}};   
 onAuthStateChanged(auth,async(user)=>{
     if(!user){window.location.replace('login.html');return;}
     currentUser=user;
@@ -703,9 +645,7 @@ onAuthStateChanged(auth,async(user)=>{
 document.getElementById('userEmail').innerText = perfilNombre || user.email;
     if(!perfilId){window.location.replace('profiles.html');return;}
     const img=perfilFoto||user.photoURL;
-    const b=document.getElementById('btnSettings');
-    if(img&&b){b.style.backgroundImage=`url(${img})`;b.innerText='';}
-    else if(b){b.innerText='⚙️';}
+    if(img){const b=document.getElementById('btnSettings');b.style.backgroundImage=`url(${img})`;b.innerText='';}
     try{
         const snap=await getDoc(doc(db,'usuarios',user.uid,'perfiles',perfilId));
         if(snap.exists()&&snap.data().presupuesto!==undefined){
@@ -743,7 +683,7 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
 #ai-chat {
     position: fixed; bottom: 88px; left: 16px; z-index: 2999;
     width: min(360px, calc(100vw - 32px));
-    max-height: 520px; border-radius: 16px; overflow: hidden;
+    width: 340px; max-height: 520px; border-radius: 16px; overflow: hidden;
     display: none; flex-direction: column;
     background: var(--card, #1e293b);
     box-shadow: 0 8px 40px rgba(0,0,0,0.45);
