@@ -369,7 +369,7 @@
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            if (user.emailVerified) window.location.replace('profiles.html');
+            if (user.emailVerified) window.location.replace('selector.html');
             else { alert(i18n[currentLang].noVerif); await signOut(auth); }
         }
     });
