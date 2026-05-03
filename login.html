@@ -242,7 +242,14 @@
             regOk: "¡Registro exitoso! Se envió verificación a ",
             noVerif: "Tu cuenta aún no fue verificada.",
             resetOk: "Correo de recuperación enviado.",
-            resetEmail: "Ingresá tu correo arriba primero."
+            resetEmail: "Ingresá tu correo arriba primero.",
+            errInvalidCredential: "Usuario o contraseña incorrectos. Volvé a intentarlo.",
+            errTooManyRequests: "Demasiados intentos fallidos. Esperá unos minutos e intentá de nuevo.",
+            errUserNotFound: "No existe una cuenta con ese correo.",
+            errWrongPassword: "Contraseña incorrecta. Volvé a intentarlo.",
+            errInvalidEmail: "El correo ingresado no es válido.",
+            errNetworkFailed: "Sin conexión a internet. Revisá tu red e intentá de nuevo.",
+            errDefault: "Ocurrió un error. Volvé a intentarlo."
         },
         en: {
             welcome: "Welcome", create: "Create Account",
@@ -256,7 +263,14 @@
             regOk: "Registration successful! Verification sent to ",
             noVerif: "Your account hasn't been verified yet.",
             resetOk: "Recovery email sent.",
-            resetEmail: "Please enter your email above first."
+            resetEmail: "Please enter your email above first.",
+            errInvalidCredential: "Incorrect email or password. Please try again.",
+            errTooManyRequests: "Too many failed attempts. Please wait a few minutes and try again.",
+            errUserNotFound: "No account found with that email.",
+            errWrongPassword: "Incorrect password. Please try again.",
+            errInvalidEmail: "The email address is not valid.",
+            errNetworkFailed: "No internet connection. Check your network and try again.",
+            errDefault: "An error occurred. Please try again."
         },
         pt: {
             welcome: "Bem-vindo", create: "Criar Conta",
@@ -270,7 +284,14 @@
             regOk: "Cadastro realizado! Verificação enviada para ",
             noVerif: "Sua conta ainda não foi verificada.",
             resetOk: "E-mail de recuperação enviado.",
-            resetEmail: "Digite seu e-mail acima primeiro."
+            resetEmail: "Digite seu e-mail acima primeiro.",
+            errInvalidCredential: "E-mail ou senha incorretos. Tente novamente.",
+            errTooManyRequests: "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
+            errUserNotFound: "Não existe conta com esse e-mail.",
+            errWrongPassword: "Senha incorreta. Tente novamente.",
+            errInvalidEmail: "O endereço de e-mail não é válido.",
+            errNetworkFailed: "Sem conexão com a internet. Verifique sua rede e tente novamente.",
+            errDefault: "Ocorreu um erro. Tente novamente."
         }
     };
 
@@ -324,9 +345,17 @@
                 location.reload();
             }
         } catch(e) {
-            let msg = e.message;
-            if (e.code === 'auth/app-check-failed') msg = 'reCAPTCHA validation error.';
-            alert(msg);
+            const t = i18n[currentLang];
+            const errorMap = {
+                'auth/invalid-credential':   t.errInvalidCredential,
+                'auth/wrong-password':       t.errWrongPassword,
+                'auth/user-not-found':       t.errUserNotFound,
+                'auth/invalid-email':        t.errInvalidEmail,
+                'auth/too-many-requests':    t.errTooManyRequests,
+                'auth/network-request-failed': t.errNetworkFailed,
+                'auth/app-check-failed':     t.errDefault,
+            };
+            alert(errorMap[e.code] || t.errDefault);
         }
     };
 
@@ -335,7 +364,7 @@
         const t = i18n[currentLang];
         if (!email) { alert(t.resetEmail); return; }
         try { await sendPasswordResetEmail(auth, email); alert(t.resetOk); }
-        catch(e) { alert(e.message); }
+        catch(e) { alert(i18n[currentLang].errDefault); }
     };
 
     onAuthStateChanged(auth, async (user) => {
