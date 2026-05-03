@@ -231,12 +231,12 @@
                     </div>
                     <div class="card-tagline" id="txt-usa-tag">Asistente de viaje · Estados Unidos</div>
                     <div class="features">
-                        <span class="feat-pill">💵 Tax & propinas</span>
-                        <span class="feat-pill">🏰 Parques</span>
-                        <span class="feat-pill">🛍️ Outlets</span>
-                        <span class="feat-pill">📍 Itinerarios</span>
-                        <span class="feat-pill">⚖️ Unidades</span>
-                        <span class="feat-pill">👥 Gastos Grupales </span>
+                        <span class="feat-pill" id="feat-tax">💵 Tax &amp; propinas</span>
+                        <span class="feat-pill" id="feat-parks">🏰 Parques</span>
+                        <span class="feat-pill" id="feat-outlets">🛍️ Outlets</span>
+                        <span class="feat-pill" id="feat-itin">📍 Itinerarios</span>
+                        <span class="feat-pill" id="feat-units">⚖️ Unidades</span>
+                        <span class="feat-pill" id="feat-group">👥 Gastos grupales</span>
                     </div>
                 </div>
                 <div class="card-arrow">→</div>
@@ -299,7 +299,13 @@
             eu_tag: 'Asistente de viaje · Europa',
             soon: 'Próximamente',
             footer: 'Creado por Juan Cruz Bria',
-            soon_msg: '🚀 TaxEurope estará disponible próximamente. ¡Gracias por la paciencia!'
+            soon_msg: '🚀 TaxEurope estará disponible próximamente. ¡Gracias por la paciencia!',
+            feat_tax: '💵 Tax & propinas',
+            feat_parks: '🏰 Parques',
+            feat_outlets: '🛍️ Outlets',
+            feat_itin: '📍 Itinerarios',
+            feat_units: '⚖️ Unidades',
+            feat_group: '👥 Gastos grupales',
         },
         en: {
             title: 'Where are you traveling?',
@@ -308,7 +314,13 @@
             eu_tag: 'Travel Assistant · Europe',
             soon: 'Coming soon',
             footer: 'Created by Juan Cruz Bria',
-            soon_msg: '🚀 TaxEurope will be available soon. Thanks for your patience!'
+            soon_msg: '🚀 TaxEurope will be available soon. Thanks for your patience!',
+            feat_tax: '💵 Tax & tips',
+            feat_parks: '🏰 Parks',
+            feat_outlets: '🛍️ Outlets',
+            feat_itin: '📍 Itineraries',
+            feat_units: '⚖️ Unit converter',
+            feat_group: '👥 Group expenses',
         },
         pt: {
             title: 'Para onde você vai?',
@@ -317,7 +329,13 @@
             eu_tag: 'Assistente de viagem · Europa',
             soon: 'Em breve',
             footer: 'Criado por Juan Cruz Bria',
-            soon_msg: '🚀 TaxEurope estará disponível em breve. Obrigado pela paciência!'
+            soon_msg: '🚀 TaxEurope estará disponível em breve. Obrigado pela paciência!',
+            feat_tax: '💵 Impostos & gorjetas',
+            feat_parks: '🏰 Parques',
+            feat_outlets: '🛍️ Outlets',
+            feat_itin: '📍 Roteiros',
+            feat_units: '⚖️ Conversor de unidades',
+            feat_group: '👥 Gastos em grupo',
         }
     };
 
@@ -337,6 +355,11 @@
         document.getElementById('selFlag').src = `https://flagcdn.com/w20/${flags[lang]}.png`;
         document.getElementById('selCode').textContent = lang.toUpperCase();
         document.documentElement.setAttribute('lang', lang);
+        // Feature pills
+        ['tax','parks','outlets','itin','units','group'].forEach(k => {
+            const el = document.getElementById('feat-' + k);
+            if (el && t['feat_' + k]) el.textContent = t['feat_' + k];
+        });
     }
 
     function toggleLang() {
