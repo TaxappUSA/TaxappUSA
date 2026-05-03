@@ -5,13 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TaxUSA — Inicio</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#256<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TaxUSA — Inicio</title>
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -228,6 +221,38 @@
         .poo-key.empty{border:none;background:transparent;pointer-events:none;}
         .poo-error{font-size:.78rem;font-weight:700;color:var(--danger);min-height:18px;margin-bottom:4px;}
 
+        /* ── Offline Toast ── */
+        #offline-toast{
+            position:fixed;
+            bottom:24px;
+            left:50%;
+            transform:translateX(-50%) translateY(0);
+            z-index:9998;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:11px 16px;
+            background:var(--surface);
+            border:0.5px solid #EF9F27;
+            border-left:3px solid #BA7517;
+            border-radius:14px;
+            box-shadow:0 8px 28px rgba(0,0,0,.18);
+            font-size:.8rem;
+            font-weight:700;
+            color:var(--text);
+            white-space:nowrap;
+            pointer-events:none;
+            opacity:0;
+            transition:opacity .35s ease, transform .35s ease;
+            max-width:calc(100vw - 32px);
+        }
+        #offline-toast.show{opacity:1;pointer-events:auto;}
+        #offline-toast.hide{opacity:0;transform:translateX(-50%) translateY(12px);}
+        #offline-dot{width:8px;height:8px;border-radius:50%;background:#BA7517;flex-shrink:0;}
+        #offline-label{display:flex;flex-direction:column;gap:1px;}
+        #offline-label strong{font-size:.82rem;color:var(--text);}
+        #offline-label span{font-size:.7rem;font-weight:600;color:var(--text-sub);}
+
     </style>
     <script>
         if ('serviceWorker' in navigator) {
@@ -238,6 +263,16 @@
     </script>
 </head>
 <body>
+
+<!-- Offline toast -->
+<div id="offline-toast" role="status" aria-live="polite">
+    <div id="offline-dot"></div>
+    <div id="offline-label">
+        <strong>Sin conexión</strong>
+        <span>El clima, el chat y la calculadora de tax funcionan igual</span>
+    </div>
+</div>
+
 <div class="wrap">
     
    <div class="app-header">
@@ -1556,6 +1591,25 @@ window.onload = () => {
     } else {
         init();
     }
+})();
+</script>
+
+<!-- ── Offline Toast ── -->
+<script>
+(function(){
+    var toast = document.getElementById('offline-toast');
+    function updateStatus(){
+        if(!navigator.onLine){
+            toast.classList.remove('hide');
+            toast.classList.add('show');
+        } else {
+            toast.classList.remove('show');
+            toast.classList.add('hide');
+        }
+    }
+    window.addEventListener('online',  updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
 })();
 </script>
 </body>
