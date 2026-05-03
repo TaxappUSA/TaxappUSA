@@ -274,13 +274,13 @@
         <div class="group-topbar">
             <div>
                 <h2 id="g-titulo">—</h2>
-                <div class="code-badge" onclick="copiarCodigo()">🔑 <span id="g-codigo">—</span> · Copiar</div>
             </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-                <button class="btn-danger-txt" onclick="volverLobby()" style="color:var(--text-sub);">← Volver</button>
-                <button class="btn-danger-txt" id="btn-salir-grupo" onclick="abandonarGrupo()" style="font-size:.7rem;opacity:.7;">🚪 Salir del grupo</button>
-                <button class="btn-danger-txt" id="btn-eliminar-grupo" onclick="eliminarGrupo()" style="display:none;font-size:.7rem;opacity:.7;">🗑️ Eliminar grupo</button>
-            </div>
+            <button class="btn-danger-txt" onclick="volverLobby()" style="color:var(--text-sub);font-size:.8rem;">← Volver</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+            <div class="code-badge" onclick="copiarCodigo()" style="flex:1;justify-content:center;">🔑 <span id="g-codigo">—</span> · Copiar</div>
+            <button class="btn-danger-txt" id="btn-salir-grupo" onclick="abandonarGrupo()" style="font-size:.72rem;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:20px;padding:5px 12px;white-space:nowrap;">🚪 Salir</button>
+            <button class="btn-danger-txt" id="btn-eliminar-grupo" onclick="eliminarGrupo()" style="display:none;font-size:.72rem;background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.2);border-radius:20px;padding:5px 12px;white-space:nowrap;">🗑️ Eliminar</button>
         </div>
 
         <!-- Tabs -->
