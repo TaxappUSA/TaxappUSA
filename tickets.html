@@ -208,9 +208,25 @@
         .app-footer img{width:16px;border-radius:2px;}
     
         @keyframes pinBoxIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+        /* ── Offline Toast ── */
+        #offline-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:9px;padding:10px 18px;background:var(--surface);border:1.5px solid var(--warn);border-radius:14px;font-size:.78rem;font-weight:700;color:var(--text);box-shadow:var(--shadow-lg);z-index:9998;white-space:nowrap;animation:ot-in .3s cubic-bezier(.34,1.56,.64,1);}
+        #offline-toast.show{display:flex;}
+        #offline-toast .ot-dot{width:8px;height:8px;border-radius:50%;background:var(--warn);flex-shrink:0;animation:ot-pulse 1.8s ease-in-out infinite;}
+        @keyframes ot-in{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+        @keyframes ot-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+        /* Sync success banner */
+        #sync-ok-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);display:none;align-items:center;gap:9px;padding:10px 18px;background:rgba(16,185,129,.12);border:1.5px solid var(--success);border-radius:14px;font-size:.78rem;font-weight:700;color:var(--success);box-shadow:var(--shadow-lg);z-index:9998;white-space:nowrap;animation:ot-in .3s cubic-bezier(.34,1.56,.64,1);}
+        #sync-ok-toast.show{display:flex;}
     </style>
 </head>
 <body>
+<!-- ── Offline Toast ── -->
+<div id="offline-toast">
+  <span class="ot-dot"></span>
+  <span id="offline-toast-msg">Sin conexión — los documentos se sincronizarán al reconectar</span>
+</div>
+<div id="sync-ok-toast">✅ <span id="sync-ok-msg">Todo sincronizado</span></div>
 <div class="wrap">
 
     <!-- Header -->
@@ -517,6 +533,10 @@ onAuthStateChanged(auth, user => {
     const foto = localStorage.getItem('perfilActivoFoto') || user.photoURL;
     if (foto) { const b = document.getElementById('btnSettings'); b.style.backgroundImage=`url(${foto})`; b.innerText=''; }
     initDocs();
+    // Expose flush so the offline detection script can call it
+    if (navigator.onLine && window._flushTicketsPending) {
+        window._flushTicketsPending();
+    }
 });
 
 window.gestionarPIN = () => {
@@ -914,7 +934,32 @@ window.capturePhoto = () => {
     stopCamera();
 };
 
-// ── Save → Firestore ───────────────────────────────────────────────────────
+// ── Offline queue ──────────────────────────────────────────────────────────
+const QUEUE_KEY = 'taxusa_tickets_pending_ops';
+function loadQueue() { try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch { return []; } }
+function saveQueue(q) { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); }
+function enqueue(op) { const q = loadQueue(); q.push(op); saveQueue(q); }
+function dequeue(id) { const q = loadQueue().filter(o => o.docId !== id); saveQueue(q); }
+
+window._flushTicketsPending = async () => {
+    const q = loadQueue();
+    if (!q.length || !navigator.onLine) return;
+    let synced = 0;
+    for (const op of q) {
+        try {
+            if (op.type === 'save_doc') {
+                await window.fsSave(window._uid, perfilId, op.docObj);
+            } else if (op.type === 'del_doc') {
+                await window.fsDelete(window._uid, perfilId, op.docId);
+            }
+            dequeue(op.docId);
+            synced++;
+        } catch(e) { console.warn('Flush error', e); break; }
+    }
+    if (synced > 0) showSyncOk(`✅ ${synced} documento${synced>1?'s':''} sincronizado${synced>1?'s':''}`);
+};
+
+// ── Save → Firestore (offline-aware) ──────────────────────────────────────
 window.saveDoc = async () => {
     const name = document.getElementById('inp-name').value.trim();
     if (!name)          { alert('Ingresá un nombre.'); return; }
@@ -927,6 +972,12 @@ window.saveDoc = async () => {
     renderList();
     updateStorage();
 
+    if (!navigator.onLine) {
+        enqueue({ type:'save_doc', docId: docObj.id, docObj });
+        updateOfflineToast();
+        return;
+    }
+
     // Sync to Firestore
     showSyncBanner('Sincronizando…', false);
     try {
@@ -934,20 +985,35 @@ window.saveDoc = async () => {
         hideSyncBanner();
     } catch(e) {
         console.error('Firestore save error', e);
-        showSyncBanner('Sin conexión — se guarda solo al reconectar', true);
+        enqueue({ type:'save_doc', docId: docObj.id, docObj });
+        updateOfflineToast();
+        showSyncBanner('Sin conexión — se guarda al reconectar', true);
         setTimeout(hideSyncBanner, 4000);
     }
 };
 
-// ── Delete ─────────────────────────────────────────────────────────────────
+// ── Delete (offline-aware) ─────────────────────────────────────────────────
 window.deleteDoc = async id => {
     const lang = localStorage.getItem('appLang')||'es';
     const msg = { es:'¿Eliminar este documento?', en:'Delete this document?', pt:'Excluir este documento?' };
     if (!confirm(msg[lang]||msg.es)) return;
+    // Cancel pending save if it exists (optimistic cancel)
+    const q = loadQueue();
+    const wasPending = q.some(o => o.docId === id && o.type === 'save_doc');
+    if (wasPending) { dequeue(id); }
     allDocs = allDocs.filter(d=>d.id!==id);
     renderList(); updateStorage();
+    if (!navigator.onLine) {
+        if (!wasPending) enqueue({ type:'del_doc', docId: id });
+        updateOfflineToast();
+        return;
+    }
     try { await window.fsDelete(window._uid, perfilId, id); }
-    catch(e) { console.warn('Firestore delete error', e); }
+    catch(e) {
+        console.warn('Firestore delete error', e);
+        if (!wasPending) enqueue({ type:'del_doc', docId: id });
+        updateOfflineToast();
+    }
 };
 window.deleteFromViewer = async () => { if (viewingId) { await deleteDoc(viewingId); closeViewer(); } };
 
@@ -1606,6 +1672,56 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 </script>
 <!-- ═══════════════ FIN TAXUSA AI CHAT ═══════════════ -->
+
+<!-- ── Offline detection + auto-sync ── -->
+<script>
+(function() {
+    function updateOfflineToast() {
+        const toast = document.getElementById('offline-toast');
+        if (!toast) return;
+        const QUEUE_KEY = 'taxusa_tickets_pending_ops';
+        let q = [];
+        try { q = JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch {}
+        const msgEl = document.getElementById('offline-toast-msg');
+        if (!navigator.onLine) {
+            if (q.length > 0) {
+                if (msgEl) msgEl.textContent = q.length + ' cambio' + (q.length > 1 ? 's' : '') + ' pendiente' + (q.length > 1 ? 's' : '') + ' — se sincronizarán al reconectar';
+            } else {
+                if (msgEl) msgEl.textContent = 'Sin conexión — el chat de Taxie no está disponible';
+            }
+            toast.classList.add('show');
+        } else {
+            toast.classList.remove('show');
+        }
+    }
+    window.updateOfflineToast = updateOfflineToast;
+
+    function showSyncOk(msg) {
+        const t = document.getElementById('sync-ok-toast');
+        const m = document.getElementById('sync-ok-msg');
+        if (!t) return;
+        if (m) m.textContent = msg || 'Todo sincronizado';
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3500);
+    }
+    window.showSyncOk = showSyncOk;
+
+    window.addEventListener('online', async () => {
+        updateOfflineToast();
+        if (window._flushTicketsPending) {
+            try { await window._flushTicketsPending(); } catch(e) { console.warn('Flush error', e); }
+        }
+    });
+    window.addEventListener('offline', updateOfflineToast);
+
+    // Check on load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateOfflineToast);
+    } else {
+        updateOfflineToast();
+    }
+})();
+</script>
 
 </body>
 </html>
