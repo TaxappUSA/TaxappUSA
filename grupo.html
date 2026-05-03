@@ -145,6 +145,12 @@
         .drawer-btn{width:100%;padding:12px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--input-bg);color:var(--text);cursor:pointer;font-weight:700;margin-bottom:8px;font-size:.85rem;text-align:left;font-family:inherit;transition:var(--tr);display:flex;align-items:center;gap:10px;}
         .drawer-btn:hover{background:var(--surface-2);border-color:var(--primary);}
         .drawer-btn.d-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
+        .drawer-section-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:8px;display:block;}
+        .lang-selector{display:flex;background:var(--input-bg);border-radius:var(--radius-sm);padding:4px;gap:4px;margin-bottom:14px;border:1.5px solid var(--border);}
+        .lang-opt{flex:1;padding:8px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;font-size:.75rem;font-weight:800;color:var(--text-sub);font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--tr);}
+        .lang-opt img{width:18px;border-radius:2px;}
+        .lang-opt.active{background:var(--primary);color:white;}
+        .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
 
         /* Toast */
         .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:11px 20px;font-size:.8rem;font-weight:700;opacity:0;transition:opacity .3s,transform .3s;z-index:9999;pointer-events:none;box-shadow:var(--shadow-lg);white-space:nowrap;}
@@ -188,11 +194,11 @@
 
     <!-- Nav -->
     <nav class="nav-bar">
-        <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span>INICIO</span></a>
-        <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span>GASTOS</span></a>
-        <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span>ITINERARIO</span></a>
-        <a href="unidades.html"   class="btn-nav"><span class="ni">⚖️</span><span>UNIDADES</span></a>
-        <a href="tickets.html"    class="btn-nav"><span class="ni">📄</span><span>TICKETS</span></a>
+        <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span data-i18n="nav_home">INICIO</span></a>
+        <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span data-i18n="nav_expenses">GASTOS</span></a>
+        <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span data-i18n="nav_itinerary">ITINERARIO</span></a>
+        <a href="unidades.html"   class="btn-nav"><span class="ni">⚖️</span><span data-i18n="nav_units">UNIDADES</span></a>
+        <a href="tickets.html"    class="btn-nav"><span class="ni">📄</span><span data-i18n="nav_tickets">TICKETS</span></a>
         <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
     </nav>
 
@@ -205,24 +211,24 @@
 
     <!-- S1: Lobby -->
     <div id="s-lobby" class="hidden">
-        <button class="demo-chip" onclick="activarDemo()">▶ Probar en modo demo — sin cuenta</button>
+        <button class="demo-chip" onclick="activarDemo()">▶ <span data-i18n="demo_btn">Probar en modo demo — sin cuenta</span></button>
 
         <div class="lobby-grid">
             <div class="card" style="margin-bottom:0;">
-                <span class="slabel">✈️ Nuevo grupo</span>
+                <span class="slabel" data-i18n="lbl_new_group">✈️ Nuevo grupo</span>
                 <div class="input-group">
-                    <input id="inp-nombre" type="text" placeholder="Nombre del viaje" maxlength="40">
+                    <input id="inp-nombre" type="text" placeholder="Nombre del viaje" maxlength="40" data-i18n-ph="ph_trip_name">
                 </div>
-                <button id="btn-crear" class="btn btn-primary" onclick="crearGrupo()">Crear</button>
+                <button id="btn-crear" class="btn btn-primary" onclick="crearGrupo()" data-i18n="btn_crear">Crear</button>
             </div>
             <div class="card" style="margin-bottom:0;">
-                <span class="slabel">🔗 Unirse</span>
+                <span class="slabel" data-i18n="lbl_join">🔗 Unirse</span>
                 <div class="input-group">
                     <input id="inp-codigo" type="text" placeholder="Código" maxlength="6"
                            style="text-transform:uppercase;letter-spacing:.18em;font-weight:900;text-align:center;"
-                           oninput="this.value=this.value.toUpperCase()">
+                           oninput="this.value=this.value.toUpperCase()" data-i18n-ph="ph_code">
                 </div>
-                <button id="btn-unirse" class="btn btn-ghost" onclick="unirseGrupo()">Unirse</button>
+                <button id="btn-unirse" class="btn btn-ghost" onclick="unirseGrupo()" data-i18n="btn_unirse">Unirse</button>
             </div>
         </div>
     </div>
@@ -241,45 +247,45 @@
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('gastos',this)">
-                <span class="ti">💸</span>GASTOS
+                <span class="ti">💸</span><span data-i18n="tab_gastos">GASTOS</span>
             </button>
             <button class="tab-btn" onclick="switchTab('balances',this)">
-                <span class="ti">⚖️</span>BALANCE
+                <span class="ti">⚖️</span><span data-i18n="tab_balance">BALANCE</span>
             </button>
             <button class="tab-btn" onclick="switchTab('resumen',this)">
-                <span class="ti">📊</span>RESUMEN
+                <span class="ti">📊</span><span data-i18n="tab_resumen">RESUMEN</span>
             </button>
         </div>
 
         <!-- Tab: Gastos -->
         <div id="tab-gastos" class="tab-panel active">
             <div class="card">
-                <span class="slabel">➕ Nuevo gasto</span>
+                <span class="slabel" data-i18n="lbl_new_expense">➕ Nuevo gasto</span>
                 <div class="input-group">
-                    <input id="g-desc" type="text" placeholder="Descripción (ej: Cena en Miami)">
+                    <input id="g-desc" type="text" placeholder="Descripción (ej: Cena en Miami)" data-i18n-ph="ph_desc">
                 </div>
                 <div class="input-group">
-                    <input id="g-monto" type="number" placeholder="Monto en USD" min="0.01" step="0.01" inputmode="decimal">
+                    <input id="g-monto" type="number" placeholder="Monto en USD" min="0.01" step="0.01" inputmode="decimal" data-i18n-ph="ph_amount">
                 </div>
                 <div class="cat-bar">
-                    <button class="cat-pill active" onclick="setCategoria('comida',this)">🍽️ Comida</button>
-                    <button class="cat-pill" onclick="setCategoria('transporte',this)">🚗 Transporte</button>
-                    <button class="cat-pill" onclick="setCategoria('alojamiento',this)">🏨 Hotel</button>
-                    <button class="cat-pill" onclick="setCategoria('actividad',this)">🎡 Actividad</button>
-                    <button class="cat-pill" onclick="setCategoria('compras',this)">🛍️ Compras</button>
-                    <button class="cat-pill" onclick="setCategoria('otro',this)">📦 Otro</button>
+                    <button class="cat-pill active" onclick="setCategoria('comida',this)">🍽️ <span data-i18n="cat_food">Comida</span></button>
+                    <button class="cat-pill" onclick="setCategoria('transporte',this)">🚗 <span data-i18n="cat_transport">Transporte</span></button>
+                    <button class="cat-pill" onclick="setCategoria('alojamiento',this)">🏨 <span data-i18n="cat_hotel">Hotel</span></button>
+                    <button class="cat-pill" onclick="setCategoria('actividad',this)">🎡 <span data-i18n="cat_activity">Actividad</span></button>
+                    <button class="cat-pill" onclick="setCategoria('compras',this)">🛍️ <span data-i18n="cat_shopping">Compras</span></button>
+                    <button class="cat-pill" onclick="setCategoria('otro',this)">📦 <span data-i18n="cat_other">Otro</span></button>
                 </div>
                 <div class="input-group">
-                    <span class="slabel">Pagó</span>
+                    <span class="slabel" data-i18n="lbl_paid_by">Pagó</span>
                     <select id="g-pagador"></select>
                 </div>
-                <button id="btn-agregar" class="btn btn-success" onclick="agregarGasto()">✓ Registrar gasto</button>
+                <button id="btn-agregar" class="btn btn-success" onclick="agregarGasto()" data-i18n="btn_add_expense">✓ Registrar gasto</button>
             </div>
 
             <div class="card">
-                <span class="slabel">📋 Historial</span>
+                <span class="slabel" data-i18n="lbl_history">📋 Historial</span>
                 <div id="lista-gastos" class="gasto-list">
-                    <div class="empty-state">Todavía no hay gastos 🧳</div>
+                    <div class="empty-state" data-i18n="empty_expenses">Todavía no hay gastos 🧳</div>
                 </div>
             </div>
         </div>
@@ -287,14 +293,14 @@
         <!-- Tab: Balances -->
         <div id="tab-balances" class="tab-panel">
             <div class="card">
-                <span class="slabel">⚖️ Quién le debe a quién</span>
-                <p style="font-size:.73rem;color:var(--text-dim);font-weight:600;margin-bottom:14px;">
+                <span class="slabel" data-i18n="lbl_who_owes">⚖️ Quién le debe a quién</span>
+                <p style="font-size:.73rem;color:var(--text-dim);font-weight:600;margin-bottom:14px;" data-i18n="lbl_algo">
                     Algoritmo de transferencias mínimas — la menor cantidad de pagos posible.
                 </p>
-                <div id="balances-cont"><div class="empty-state">Sin datos aún</div></div>
+                <div id="balances-cont"><div class="empty-state" data-i18n="empty_data">Sin datos aún</div></div>
             </div>
             <div class="card">
-                <span class="slabel">👥 Integrantes</span>
+                <span class="slabel" data-i18n="lbl_members">👥 Integrantes</span>
                 <div id="members-list" class="members-wrap"></div>
             </div>
         </div>
@@ -302,12 +308,12 @@
         <!-- Tab: Resumen -->
         <div id="tab-resumen" class="tab-panel">
             <div class="total-hero">
-                <div class="total-hero-lbl">Total gastado por el grupo</div>
+                <div class="total-hero-lbl" data-i18n="lbl_total_group">Total gastado por el grupo</div>
                 <div class="total-hero-val" id="total-global">USD 0.00</div>
             </div>
             <div class="card">
-                <span class="slabel">📊 Por persona</span>
-                <div id="resumen-cont"><div class="empty-state">Sin datos aún</div></div>
+                <span class="slabel" data-i18n="lbl_per_person">📊 Por persona</span>
+                <div id="resumen-cont"><div class="empty-state" data-i18n="empty_data">Sin datos aún</div></div>
             </div>
         </div>
 
@@ -321,15 +327,25 @@
 </div><!-- /wrap -->
 
 <!-- Settings drawer -->
-<div class="menu-overlay" id="menuOverlay" onclick="toggleSettings()"></div>
-<div class="settings-drawer" id="settingsDrawer">
-    <div class="drawer-header">⚙️ Configuración</div>
-    <div class="drawer-email" id="drawerEmail">—</div>
-    <span class="drawer-section-label">Apariencia</span>
-    <button class="drawer-btn" onclick="toggleTheme()">🌓 Cambiar tema (claro/oscuro)</button>
-    <div class="divider"></div>
-    <span class="drawer-section-label">Grupo</span>
-    <button class="drawer-btn d-danger" onclick="salirGrupo();toggleSettings()">🚪 Salir del grupo</button>
+<div id="menuOverlay" class="menu-overlay" onclick="toggleSettings()"></div>
+<div id="settingsDrawer" class="settings-drawer">
+    <div class="drawer-header"><span data-i18n="settings_title">Ajustes</span></div>
+    <p id="userEmail" class="drawer-email"></p>
+    <span class="drawer-section-label" data-i18n="label_language">Idioma</span>
+    <div class="lang-selector">
+        <button class="lang-opt" id="lang-es" onclick="window.changeLanguage('es')"><img src="https://flagcdn.com/w20/ar.png" alt=""> ES</button>
+        <button class="lang-opt" id="lang-en" onclick="window.changeLanguage('en')"><img src="https://flagcdn.com/w20/us.png" alt=""> EN</button>
+        <button class="lang-opt" id="lang-pt" onclick="window.changeLanguage('pt')"><img src="https://flagcdn.com/w20/br.png" alt=""> PT</button>
+    </div>
+    <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_change_profile">Cambiar Perfil</span></button>
+    <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
+    <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="doChangeEmail()">📧 <span data-i18n="btn_email">Cambiar Correo</span></button>
+    <button class="drawer-btn" onclick="doChangePassword()">🔑 <span data-i18n="btn_password">Cambiar Contraseña</span></button>
+    <button class="drawer-btn" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
+    <div style="margin-top:auto;padding-top:16px;">
+        <button class="drawer-btn btn-danger" onclick="doDeleteAccount()">🗑️ <span data-i18n="btn_delete">Eliminar Cuenta</span></button>
+    </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -341,7 +357,7 @@ import {
     getFirestore, doc, setDoc, getDoc, updateDoc,
     arrayUnion, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged }
+import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail, deleteUser, verifyBeforeUpdateEmail }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 // 🔧 Firebase config
@@ -386,11 +402,29 @@ function shake(id) {
 }
 
 // Auth
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, async user => {
     if (user) {
         currentUser = { uid:user.uid, name:user.displayName||user.email.split('@')[0] };
-        $('drawerEmail').textContent = user.email||currentUser.name;
-        showSection('s-lobby');
+        const perfilNombre = localStorage.getItem('perfilActivoNombre');
+        document.getElementById('userEmail').innerText = perfilNombre || user.email;
+
+        // Restaurar grupo guardado
+        const savedCode = localStorage.getItem('grupoActivo');
+        if (savedCode) {
+            try {
+                const snap = await getDoc(doc(db, 'grupos', savedCode));
+                if (snap.exists()) {
+                    suscribirGrupo(savedCode);
+                } else {
+                    localStorage.removeItem('grupoActivo');
+                    showSection('s-lobby');
+                }
+            } catch(e) {
+                showSection('s-lobby');
+            }
+        } else {
+            showSection('s-lobby');
+        }
     } else {
         currentUser = null;
         showSection('s-lobby');
@@ -401,40 +435,64 @@ onAuthStateChanged(auth, user => {
         btn.style.backgroundImage = `url(${img})`;
         btn.innerText = '';
     }
+    const lang = localStorage.getItem('appLang') || 'es';
+    window.changeLanguage(lang);
 });
 
 // Crear grupo
 window.crearGrupo = async () => {
-    if (!currentUser) { activarDemo(); return; }
     const nombre = $('inp-nombre').value.trim();
-    if (!nombre) { shake('btn-crear'); return; }
-    const code = Math.random().toString(36).substring(2,8).toUpperCase();
-    await setDoc(doc(db,'grupos',code),{
-        nombre, codigo:code, creadoPor:currentUser.uid,
-        createdAt:serverTimestamp(),
-        miembros:[{uid:currentUser.uid,nombre:currentUser.name}],
-        gastos:[]
-    });
-    suscribirGrupo(code);
+    if (!nombre) { shake('btn-crear'); showToast('⚠️ Escribí un nombre para el viaje'); return; }
+    if (!currentUser) {
+        showToast('⚠️ Iniciá sesión para crear un grupo real');
+        activarDemo(); return;
+    }
+    const btn = $('btn-crear');
+    btn.disabled = true; btn.textContent = 'Creando…';
+    try {
+        const code = Math.random().toString(36).substring(2,8).toUpperCase();
+        await setDoc(doc(db,'grupos',code),{
+            nombre, codigo:code, creadoPor:currentUser.uid,
+            createdAt:serverTimestamp(),
+            miembros:[{uid:currentUser.uid,nombre:currentUser.name}],
+            gastos:[]
+        });
+        suscribirGrupo(code);
+    } catch(e) {
+        showToast('❌ Error: ' + (e.message || 'No se pudo crear el grupo'));
+        console.error('[crearGrupo]', e);
+    } finally {
+        btn.disabled = false; btn.textContent = 'Crear';
+    }
 };
 
 // Unirse
 window.unirseGrupo = async () => {
-    if (!currentUser) { activarDemo(); return; }
+    if (!currentUser) { showToast('⚠️ Iniciá sesión para unirte a un grupo'); activarDemo(); return; }
     const code = $('inp-codigo').value.trim().toUpperCase();
-    if (code.length!==6) { shake('btn-unirse'); return; }
-    const ref  = doc(db,'grupos',code);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) { showToast('❌ Código no encontrado'); return; }
-    const data = snap.data();
-    if (!data.miembros.some(m=>m.uid===currentUser.uid)) {
-        await updateDoc(ref,{miembros:arrayUnion({uid:currentUser.uid,nombre:currentUser.name})});
+    if (code.length!==6) { shake('btn-unirse'); showToast('⚠️ El código debe tener 6 caracteres'); return; }
+    const btn = $('btn-unirse');
+    btn.disabled = true; btn.textContent = 'Buscando…';
+    try {
+        const ref  = doc(db,'grupos',code);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) { showToast('❌ Código no encontrado'); return; }
+        const data = snap.data();
+        if (!data.miembros.some(m=>m.uid===currentUser.uid)) {
+            await updateDoc(ref,{miembros:arrayUnion({uid:currentUser.uid,nombre:currentUser.name})});
+        }
+        suscribirGrupo(code);
+    } catch(e) {
+        showToast('❌ Error: ' + (e.message || 'No se pudo unir al grupo'));
+        console.error('[unirseGrupo]', e);
+    } finally {
+        btn.disabled = false; btn.textContent = 'Unirse';
     }
-    suscribirGrupo(code);
 };
 
 function suscribirGrupo(code) {
     if (unsubscribe) unsubscribe();
+    localStorage.setItem('grupoActivo', code);
     unsubscribe = onSnapshot(doc(db,'grupos',code), snap=>{
         if (!snap.exists()) return;
         currentGroup = {id:snap.id,data:snap.data()};
@@ -474,6 +532,7 @@ window.setCategoria = (cat,el) => {
 
 window.salirGrupo = () => {
     if (unsubscribe) unsubscribe();
+    localStorage.removeItem('grupoActivo');
     currentGroup=null; showSection('s-lobby');
 };
 
@@ -496,7 +555,7 @@ function renderGrupo() {
 
     const lista=$('lista-gastos');
     if (!gastos.length) {
-        lista.innerHTML='<div class="empty-state">Todavía no hay gastos 🧳</div>';
+        lista.innerHTML=`<div class="empty-state">${(i18n[localStorage.getItem('appLang')||'es']||i18n.es).empty_expenses}</div>`;
     } else {
         lista.innerHTML=[...gastos].reverse().map(g=>`
             <div class="gasto-item">
@@ -543,7 +602,7 @@ function calcularDeudas(miembros,gastos) {
 function renderBalances(miembros,gastos){
     const cont=$('balances-cont');
     const txs=calcularDeudas(miembros,gastos);
-    if(!txs.length){ cont.innerHTML='<div class="empty-state">¡Todos están al día! 🎉</div>'; return; }
+    if(!txs.length){ cont.innerHTML=`<div class="empty-state">${(i18n[localStorage.getItem('appLang')||'es']||i18n.es).all_good}</div>`; return; }
     cont.innerHTML=txs.map(t=>`
         <div class="balance-row">
             <span class="b-de">${t.de}</span>
@@ -607,17 +666,118 @@ function switchTab(name,btn){
     document.getElementById('tab-'+name).classList.add('active');
     btn.classList.add('active');
 }
-function toggleSettings(){
-    const d=document.getElementById('settingsDrawer');
-    d.classList.toggle('open');
-    document.getElementById('menuOverlay').style.display=d.classList.contains('open')?'block':'none';
-}
-function toggleTheme(){
-    const html=document.documentElement;
-    const dark=html.getAttribute('data-theme')==='dark';
-    html.setAttribute('data-theme',dark?'':'dark');
-    localStorage.setItem('theme',dark?'':'dark');
-}
+window.toggleSettings = () => {
+    const d = document.getElementById('settingsDrawer');
+    const open = d.classList.toggle('open');
+    document.getElementById('menuOverlay').style.display = open ? 'block' : 'none';
+};
+window.toggleDarkMode = () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+};
+window.changeProfile = () => { localStorage.removeItem('perfilActivoId'); window.location.href = 'profiles.html'; };
+window.doLogout = () => signOut(auth).then(() => window.location.replace('login.html'));
+window.doChangeEmail = async () => {
+    if (!currentUser) return;
+    const e = prompt('Nuevo correo:');
+    if (e) { try { await verifyBeforeUpdateEmail(currentUser, e); alert('Verificación enviada.'); } catch(er) { alert(er.message); } }
+};
+window.doChangePassword = async () => {
+    if (!currentUser) return;
+    try { await sendPasswordResetEmail(auth, currentUser.email); alert('Correo de recuperación enviado.'); } catch(er) { alert(er.message); }
+};
+window.doDeleteAccount = async () => {
+    if (!confirm('¿Eliminar cuenta permanentemente?')) return;
+    try { await deleteDoc(doc(db, 'usuarios', currentUser.uid)); await deleteUser(currentUser); window.location.replace('login.html'); }
+    catch(e) { alert('Reautenticación requerida.'); }
+};
+const i18n = {
+    es: {
+        nav_home:'INICIO', nav_expenses:'GASTOS', nav_itinerary:'ITINERARIO',
+        nav_units:'UNIDADES', nav_tickets:'TICKETS',
+        settings_title:'Ajustes', label_language:'Idioma',
+        btn_change_profile:'Cambiar Perfil', btn_theme:'Cambiar Tema',
+        btn_update:'Actualizar App', btn_email:'Cambiar Correo',
+        btn_password:'Cambiar Contraseña', btn_logout:'Cerrar Sesión', btn_delete:'Eliminar Cuenta',
+        demo_btn:'Probar en modo demo — sin cuenta',
+        lbl_new_group:'✈️ Nuevo grupo', ph_trip_name:'Nombre del viaje',
+        btn_crear:'Crear', lbl_join:'🔗 Unirse', ph_code:'Código', btn_unirse:'Unirse',
+        tab_gastos:'GASTOS', tab_balance:'BALANCE', tab_resumen:'RESUMEN',
+        lbl_new_expense:'➕ Nuevo gasto', ph_desc:'Descripción (ej: Cena en Miami)',
+        ph_amount:'Monto en USD', lbl_paid_by:'Pagó', btn_add_expense:'✓ Registrar gasto',
+        cat_food:'Comida', cat_transport:'Transporte', cat_hotel:'Hotel',
+        cat_activity:'Actividad', cat_shopping:'Compras', cat_other:'Otro',
+        lbl_history:'📋 Historial', empty_expenses:'Todavía no hay gastos 🧳',
+        lbl_who_owes:'⚖️ Quién le debe a quién',
+        lbl_algo:'Algoritmo de transferencias mínimas — la menor cantidad de pagos posible.',
+        empty_data:'Sin datos aún', lbl_members:'👥 Integrantes',
+        lbl_total_group:'Total gastado por el grupo', lbl_per_person:'📊 Por persona',
+        footer_by:'Creado por Juan Cruz Bria', all_good:'¡Todos están al día! 🎉',
+    },
+    en: {
+        nav_home:'HOME', nav_expenses:'EXPENSES', nav_itinerary:'ITINERARY',
+        nav_units:'UNITS', nav_tickets:'TICKETS',
+        settings_title:'Settings', label_language:'Language',
+        btn_change_profile:'Change Profile', btn_theme:'Toggle Theme',
+        btn_update:'Update App', btn_email:'Change Email',
+        btn_password:'Change Password', btn_logout:'Sign Out', btn_delete:'Delete Account',
+        demo_btn:'Try demo mode — no account needed',
+        lbl_new_group:'✈️ New group', ph_trip_name:'Trip name',
+        btn_crear:'Create', lbl_join:'🔗 Join', ph_code:'Code', btn_unirse:'Join',
+        tab_gastos:'EXPENSES', tab_balance:'BALANCE', tab_resumen:'SUMMARY',
+        lbl_new_expense:'➕ New expense', ph_desc:'Description (e.g. Dinner in Miami)',
+        ph_amount:'Amount in USD', lbl_paid_by:'Paid by', btn_add_expense:'✓ Record expense',
+        cat_food:'Food', cat_transport:'Transport', cat_hotel:'Hotel',
+        cat_activity:'Activity', cat_shopping:'Shopping', cat_other:'Other',
+        lbl_history:'📋 History', empty_expenses:'No expenses yet 🧳',
+        lbl_who_owes:'⚖️ Who owes whom',
+        lbl_algo:'Minimum transfers algorithm — fewest payments possible.',
+        empty_data:'No data yet', lbl_members:'👥 Members',
+        lbl_total_group:'Total spent by the group', lbl_per_person:'📊 Per person',
+        footer_by:'Created by Juan Cruz Bria', all_good:'Everyone is settled up! 🎉',
+    },
+    pt: {
+        nav_home:'INÍCIO', nav_expenses:'GASTOS', nav_itinerary:'ITINERÁRIO',
+        nav_units:'UNIDADES', nav_tickets:'TICKETS',
+        settings_title:'Configurações', label_language:'Idioma',
+        btn_change_profile:'Mudar Perfil', btn_theme:'Mudar Tema',
+        btn_update:'Atualizar App', btn_email:'Mudar E-mail',
+        btn_password:'Mudar Senha', btn_logout:'Sair', btn_delete:'Excluir Conta',
+        demo_btn:'Testar modo demo — sem conta',
+        lbl_new_group:'✈️ Novo grupo', ph_trip_name:'Nome da viagem',
+        btn_crear:'Criar', lbl_join:'🔗 Entrar', ph_code:'Código', btn_unirse:'Entrar',
+        tab_gastos:'GASTOS', tab_balance:'BALANÇO', tab_resumen:'RESUMO',
+        lbl_new_expense:'➕ Nova despesa', ph_desc:'Descrição (ex: Jantar em Miami)',
+        ph_amount:'Valor em USD', lbl_paid_by:'Pagou', btn_add_expense:'✓ Registrar despesa',
+        cat_food:'Comida', cat_transport:'Transporte', cat_hotel:'Hotel',
+        cat_activity:'Atividade', cat_shopping:'Compras', cat_other:'Outro',
+        lbl_history:'📋 Histórico', empty_expenses:'Ainda não há despesas 🧳',
+        lbl_who_owes:'⚖️ Quem deve a quem',
+        lbl_algo:'Algoritmo de transferências mínimas — menor número de pagamentos.',
+        empty_data:'Sem dados ainda', lbl_members:'👥 Integrantes',
+        lbl_total_group:'Total gasto pelo grupo', lbl_per_person:'📊 Por pessoa',
+        footer_by:'Criado por Juan Cruz Bria', all_good:'Todos estão quites! 🎉',
+    }
+};
+
+window.changeLanguage = (lang) => {
+    localStorage.setItem('appLang', lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.querySelectorAll('.lang-opt').forEach(o => o.classList.remove('active'));
+    document.getElementById('lang-' + lang)?.classList.add('active');
+    const t = i18n[lang] || i18n.es;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.getAttribute('data-i18n');
+        if (t[k]) el.innerText = t[k];
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const k = el.getAttribute('data-i18n-ph');
+        if (t[k]) el.placeholder = t[k];
+    });
+    document.title = lang === 'en' ? 'TaxUSA — Group' : lang === 'pt' ? 'TaxUSA — Grupo' : 'TaxUSA — Grupo';
+};
 // Fallback: si Firebase no carga en 2s, mostrar lobby
 setTimeout(()=>{
     const sl=document.getElementById('s-loading');
