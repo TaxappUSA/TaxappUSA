@@ -1,5 +1,5 @@
 // TaxUSA Service Worker — Cache First para assets estáticos
-const CACHE = 'taxusa-v3';
+const CACHE = 'taxusa-v4';
 const PRECACHE = [
     './login.html',
     './selector.html',
@@ -12,8 +12,8 @@ const PRECACHE = [
     './grupo.html',
     './style.css',
     './manifest.json',
-    './icon-512.png',
-    './icon-192.png',
+    './assets/icon-512.png',
+    './assets/icon-192.png',
 ];
 
 // Página de fallback offline por si la red falla y no hay caché
