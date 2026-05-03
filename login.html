@@ -583,7 +583,20 @@ async function sha256(str) {
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-function isOnline() { return navigator.onLine; }
+// navigator.onLine is unreliable on Safari/PWA — use a real fetch probe
+let _isOnline = navigator.onLine; // initial guess, refined below
+
+async function checkRealConnectivity() {
+    try {
+        await fetch('https://www.gstatic.com/generate_204', { method: 'HEAD', cache: 'no-store', mode: 'no-cors', signal: AbortSignal.timeout(3000) });
+        _isOnline = true;
+    } catch(e) {
+        _isOnline = false;
+    }
+    return _isOnline;
+}
+
+function isOnline() { return _isOnline; }
 
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
@@ -689,7 +702,22 @@ window.resetPassword = async () => {
 
 // ── Auth state ──
 onAuthStateChanged(auth, async (user) => {
-    if (!user) return;                       // not logged in — stay on login screen
+    if (!user) return; // not logged in — stay on login screen
+
+    // Wait for the connectivity probe to finish (initScreen runs it concurrently)
+    await checkRealConnectivity();
+
+    // ── If offline: Firebase fires this with cached user. Block goToApp and show PIN instead. ──
+    if (!isOnline()) {
+        const cachedHash  = localStorage.getItem('taxusa_pin_hash');
+        const cachedEmail = localStorage.getItem('taxusa_offline_email');
+        const hasCachedPin = cachedHash && cachedHash !== '' && cachedHash !== 'null';
+        if (cachedEmail && hasCachedPin) {
+            showOfflinePinScreen();
+        }
+        return;
+    }
+
     if (!user.emailVerified) {
         alert(t('noVerif'));
         await signOut(auth);
@@ -705,25 +733,23 @@ onAuthStateChanged(auth, async (user) => {
         const pinEmail = user.email;
 
         // Cache for offline use
-        localStorage.setItem('taxusa_offline_email',  pinEmail);
-        localStorage.setItem('taxusa_offline_uid',    user.uid);
+        localStorage.setItem('taxusa_offline_email', pinEmail);
+        localStorage.setItem('taxusa_offline_uid',   user.uid);
         if (pinHash) localStorage.setItem('taxusa_pin_hash', pinHash);
-        else localStorage.removeItem('taxusa_pin_hash');
-        // Cache avatar/name for PIN screen display
-        const perfilNombre = data.perfiles?.[0]?.nombre || '';
-        const perfilFoto   = data.perfiles?.[0]?.foto   || '';
-        if (perfilNombre) localStorage.setItem('taxusa_cached_name', perfilNombre);
-        if (perfilFoto)   localStorage.setItem('taxusa_cached_foto', perfilFoto);
+        else         localStorage.removeItem('taxusa_pin_hash');
+
+        // Cache name/avatar: try perfilActivoNombre first, then Firestore
+        const cachedName = localStorage.getItem('perfilActivoNombre') || '';
+        const cachedFoto = localStorage.getItem('perfilActivoFoto')   || '';
+        if (cachedName) localStorage.setItem('taxusa_cached_name', cachedName);
+        if (cachedFoto) localStorage.setItem('taxusa_cached_foto', cachedFoto);
 
         if (!pinHash) {
-            // First time: ask user to create PIN
             showCreatePinScreen();
         } else {
-            // Already has PIN — go to app
             goToApp();
         }
     } catch(e) {
-        // Firestore error — still let them in
         goToApp();
     }
 });
@@ -733,22 +759,22 @@ function goToApp() {
 }
 
 // ── Decide initial screen ──
-function initScreen() {
+async function initScreen() {
     applyLanguage(currentLang);
+
+    // navigator.onLine is unreliable on Safari/PWA — verify with a real probe
+    await checkRealConnectivity();
 
     if (isOnline()) {
         showScreen('screen-login');
     } else {
-        // Offline — check if we have a cached PIN
-        const cachedHash = localStorage.getItem('taxusa_pin_hash');
+        const cachedHash  = localStorage.getItem('taxusa_pin_hash');
         const cachedEmail = localStorage.getItem('taxusa_offline_email');
         const hasCachedPin = cachedHash && cachedHash !== '' && cachedHash !== 'null';
         if (cachedEmail && hasCachedPin) {
             showOfflinePinScreen();
         } else {
-            // No cached session at all — show login (will fail but shows instructions)
             showScreen('screen-login');
-            // Show clear offline message
             const badge = document.createElement('div');
             badge.className = 'offline-badge show';
             badge.style.marginBottom = '16px';
