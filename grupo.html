@@ -219,6 +219,9 @@
                 <div class="input-group">
                     <input id="inp-nombre" type="text" placeholder="Nombre del viaje" maxlength="40" data-i18n-ph="ph_trip_name">
                 </div>
+                <div class="input-group">
+                    <input id="inp-apodo-crear" type="text" placeholder="Tu apodo en el grupo" maxlength="24" data-i18n-ph="ph_apodo">
+                </div>
                 <button id="btn-crear" class="btn btn-primary" onclick="crearGrupo()" data-i18n="btn_crear">Crear</button>
             </div>
             <div class="card" style="margin-bottom:0;">
@@ -227,6 +230,9 @@
                     <input id="inp-codigo" type="text" placeholder="Código" maxlength="6"
                            style="text-transform:uppercase;letter-spacing:.18em;font-weight:900;text-align:center;"
                            oninput="this.value=this.value.toUpperCase()" data-i18n-ph="ph_code">
+                </div>
+                <div class="input-group">
+                    <input id="inp-apodo-unirse" type="text" placeholder="Tu apodo en el grupo" maxlength="24" data-i18n-ph="ph_apodo">
                 </div>
                 <button id="btn-unirse" class="btn btn-ghost" onclick="unirseGrupo()" data-i18n="btn_unirse">Unirse</button>
             </div>
@@ -531,6 +537,8 @@ window.crearGrupo = async () => {
         showToast('⚠️ Iniciá sesión para crear un grupo real');
         activarDemo(); return;
     }
+    const apodoInput = $('inp-apodo-crear').value.trim();
+    const apodo = apodoInput || currentUser.name;
     const btn = $('btn-crear');
     btn.disabled = true; btn.textContent = 'Creando…';
     try {
@@ -538,9 +546,11 @@ window.crearGrupo = async () => {
         await setDoc(doc(db,'grupos',code),{
             nombre, codigo:code, creadoPor:currentUser.uid,
             createdAt:serverTimestamp(),
-            miembros:[{uid:currentUser.uid,nombre:currentUser.name}],
+            miembros:[{uid:currentUser.uid, nombre:apodo}],
             gastos:[]
         });
+        currentUser.name = apodo;
+        localStorage.setItem('perfilActivoNombre', apodo);
         suscribirGrupo(code);
     } catch(e) {
         showToast('❌ Error: ' + (e.message || 'No se pudo crear el grupo'));
@@ -555,6 +565,8 @@ window.unirseGrupo = async () => {
     if (!currentUser) { showToast('⚠️ Iniciá sesión para unirte a un grupo'); activarDemo(); return; }
     const code = $('inp-codigo').value.trim().toUpperCase();
     if (code.length!==6) { shake('btn-unirse'); showToast('⚠️ El código debe tener 6 caracteres'); return; }
+    const apodoInput = $('inp-apodo-unirse').value.trim();
+    const apodo = apodoInput || currentUser.name;
     const btn = $('btn-unirse');
     btn.disabled = true; btn.textContent = 'Buscando…';
     try {
@@ -563,8 +575,10 @@ window.unirseGrupo = async () => {
         if (!snap.exists()) { showToast('❌ Código no encontrado'); return; }
         const data = snap.data();
         if (!data.miembros.some(m=>m.uid===currentUser.uid)) {
-            await updateDoc(ref,{miembros:arrayUnion({uid:currentUser.uid,nombre:currentUser.name})});
+            await updateDoc(ref,{miembros:arrayUnion({uid:currentUser.uid, nombre:apodo})});
         }
+        currentUser.name = apodo;
+        localStorage.setItem('perfilActivoNombre', apodo);
         suscribirGrupo(code);
     } catch(e) {
         showToast('❌ Error: ' + (e.message || 'No se pudo unir al grupo'));
@@ -794,7 +808,7 @@ const i18n = {
         btn_update:'Actualizar App', btn_email:'Cambiar Correo',
         btn_password:'Cambiar Contraseña', btn_logout:'Cerrar Sesión', btn_delete:'Eliminar Cuenta',
         demo_btn:'Probar en modo demo — sin cuenta',
-        lbl_new_group:'✈️ Nuevo grupo', ph_trip_name:'Nombre del viaje',
+        lbl_new_group:'✈️ Nuevo grupo', ph_trip_name:'Nombre del viaje', ph_apodo:'Tu apodo en el grupo',
         btn_crear:'Crear', lbl_join:'🔗 Unirse', ph_code:'Código', btn_unirse:'Unirse',
         tab_gastos:'GASTOS', tab_balance:'BALANCE', tab_resumen:'RESUMEN',
         lbl_new_expense:'➕ Nuevo gasto', ph_desc:'Descripción (ej: Cena en Miami)',
@@ -816,7 +830,7 @@ const i18n = {
         btn_update:'Update App', btn_email:'Change Email',
         btn_password:'Change Password', btn_logout:'Sign Out', btn_delete:'Delete Account',
         demo_btn:'Try demo mode — no account needed',
-        lbl_new_group:'✈️ New group', ph_trip_name:'Trip name',
+        lbl_new_group:'✈️ New group', ph_trip_name:'Trip name', ph_apodo:'Your nickname in the group',
         btn_crear:'Create', lbl_join:'🔗 Join', ph_code:'Code', btn_unirse:'Join',
         tab_gastos:'EXPENSES', tab_balance:'BALANCE', tab_resumen:'SUMMARY',
         lbl_new_expense:'➕ New expense', ph_desc:'Description (e.g. Dinner in Miami)',
@@ -838,7 +852,7 @@ const i18n = {
         btn_update:'Atualizar App', btn_email:'Mudar E-mail',
         btn_password:'Mudar Senha', btn_logout:'Sair', btn_delete:'Excluir Conta',
         demo_btn:'Testar modo demo — sem conta',
-        lbl_new_group:'✈️ Novo grupo', ph_trip_name:'Nome da viagem',
+        lbl_new_group:'✈️ Novo grupo', ph_trip_name:'Nome da viagem', ph_apodo:'Seu apelido no grupo',
         btn_crear:'Criar', lbl_join:'🔗 Entrar', ph_code:'Código', btn_unirse:'Entrar',
         tab_gastos:'GASTOS', tab_balance:'BALANÇO', tab_resumen:'RESUMO',
         lbl_new_expense:'➕ Nova despesa', ph_desc:'Descrição (ex: Jantar em Miami)',
