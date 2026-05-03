@@ -639,6 +639,20 @@ window.toggleMode = () => {
 };
 
 window.handleAuth = async () => {
+    // ── Offline shortcut: if no internet and PIN is cached, go to PIN screen ──
+    if (!isOnline()) {
+        const cachedHash  = localStorage.getItem('taxusa_pin_hash');
+        const cachedEmail = localStorage.getItem('taxusa_offline_email');
+        const hasCachedPin = cachedHash && cachedHash !== '' && cachedHash !== 'null';
+        if (cachedEmail && hasCachedPin) {
+            showOfflinePinScreen();
+            return;
+        } else {
+            alert(t('errNetworkFailed'));
+            return;
+        }
+    }
+
     const email = document.getElementById('email').value.trim();
     const pass  = document.getElementById('password').value;
     if (!email || !pass) { alert(t('errFields')); return; }
@@ -693,7 +707,8 @@ onAuthStateChanged(auth, async (user) => {
         // Cache for offline use
         localStorage.setItem('taxusa_offline_email',  pinEmail);
         localStorage.setItem('taxusa_offline_uid',    user.uid);
-        localStorage.setItem('taxusa_pin_hash',       pinHash || '');
+        if (pinHash) localStorage.setItem('taxusa_pin_hash', pinHash);
+        else localStorage.removeItem('taxusa_pin_hash');
         // Cache avatar/name for PIN screen display
         const perfilNombre = data.perfiles?.[0]?.nombre || '';
         const perfilFoto   = data.perfiles?.[0]?.foto   || '';
@@ -727,7 +742,8 @@ function initScreen() {
         // Offline — check if we have a cached PIN
         const cachedHash = localStorage.getItem('taxusa_pin_hash');
         const cachedEmail = localStorage.getItem('taxusa_offline_email');
-        if (cachedEmail && cachedHash) {
+        const hasCachedPin = cachedHash && cachedHash !== '' && cachedHash !== 'null';
+        if (cachedEmail && hasCachedPin) {
             showOfflinePinScreen();
         } else {
             // No cached session at all — show login (will fail but shows instructions)
@@ -744,7 +760,7 @@ function initScreen() {
 }
 
 window.addEventListener('online',  () => { if (document.getElementById('screen-pin-offline').classList.contains('hidden') === false) showScreen('screen-login'); });
-window.addEventListener('offline', () => { if (!document.getElementById('screen-login').classList.contains('hidden')) { const h = localStorage.getItem('taxusa_pin_hash'); const e = localStorage.getItem('taxusa_offline_email'); if (h && e) showOfflinePinScreen(); } });
+window.addEventListener('offline', () => { if (!document.getElementById('screen-login').classList.contains('hidden')) { const h = localStorage.getItem('taxusa_pin_hash'); const e = localStorage.getItem('taxusa_offline_email'); if (e && h && h !== '' && h !== 'null') showOfflinePinScreen(); } });
 
 // ── Offline PIN screen ──
 function showOfflinePinScreen() {
