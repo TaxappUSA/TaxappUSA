@@ -53,7 +53,7 @@
         .btn-nav{flex:1;display:flex;flex-direction:column;align-items:center;text-decoration:none;color:var(--text-sub);font-size:8px;font-weight:700;gap:2px;padding:6px 2px;border-radius:10px;background:none;border:none;cursor:pointer;transition:var(--tr);text-transform:uppercase;letter-spacing:.3px;}
         .btn-nav .ni{font-size:17px;line-height:1;}
         .btn-nav:hover,.btn-nav.active{color:var(--primary);background:var(--primary-dim);}
-        .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:var(--tr);}
+        .btn-nav-set{width:34px;height:34px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;transition:var(--tr);background-size:cover;background-position:center;}
         .btn-nav-set:hover{border-color:var(--primary);}
 
         /* Card */
@@ -188,12 +188,12 @@
 
     <!-- Nav -->
     <nav class="nav-bar">
-        <a href="index.html"      class="btn-nav"><span class="ni">🧮</span><span>TAX</span></a>
+        <a href="index.html"      class="btn-nav"><span class="ni">🏠</span><span>INICIO</span></a>
         <a href="compras.html"    class="btn-nav"><span class="ni">🛍️</span><span>GASTOS</span></a>
         <a href="itinerario.html" class="btn-nav"><span class="ni">📍</span><span>ITINERARIO</span></a>
-        <a href="grupo.html"      class="btn-nav active"><span class="ni">👥</span><span>GRUPO</span></a>
+        <a href="unidades.html"   class="btn-nav"><span class="ni">📐</span><span>UNIDADES</span></a>
         <a href="tickets.html"    class="btn-nav"><span class="ni">📄</span><span>TICKETS</span></a>
-        <button class="btn-nav-set" onclick="toggleSettings()">⚙️</button>
+        <button class="btn-nav-set" id="btnSettings" onclick="toggleSettings()"></button>
     </nav>
 
     <!-- S0: Loading -->
@@ -314,7 +314,8 @@
     </div><!-- /s-grupo -->
 
     <div class="app-footer">
-        <img src="https://flagcdn.com/us.svg" alt="USA"> TaxUSA · Modo Viaje Grupal
+        <span>Creado por Juan Cruz Bria</span>
+        <img src="https://flagcdn.com/w40/ar.png" alt="Argentina">
     </div>
 
 </div><!-- /wrap -->
@@ -343,14 +344,14 @@ import {
 import { getAuth, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-// 🔧 Reemplazá con tu firebaseConfig
+// 🔧 Firebase config
 const firebaseConfig = {
-    apiKey:            "YOUR_API_KEY",
-    authDomain:        "YOUR_AUTH_DOMAIN",
-    projectId:         "YOUR_PROJECT_ID",
-    storageBucket:     "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId:             "YOUR_APP_ID"
+    apiKey:            "AIzaSyCm0Ig-CPklsjf6j-1uSAeF6I8xtyQKj7U",
+    authDomain:        "viajes-db538.firebaseapp.com",
+    projectId:         "viajes-db538",
+    storageBucket:     "viajes-db538.firebasestorage.app",
+    messagingSenderId: "237311739178",
+    appId:             "1:237311739178:web:333e468b184c0402a98a53"
 };
 
 const app  = initializeApp(firebaseConfig);
@@ -361,6 +362,8 @@ let currentUser  = null;
 let currentGroup = null;
 let unsubscribe  = null;
 let categoriaActiva = 'comida';
+
+const perfilFoto = localStorage.getItem('perfilActivoFoto');
 
 const $   = id => document.getElementById(id);
 const fmt = n  => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
@@ -391,6 +394,12 @@ onAuthStateChanged(auth, user => {
     } else {
         currentUser = null;
         showSection('s-lobby');
+    }
+    const img = perfilFoto || (user && user.photoURL);
+    if (img) {
+        const btn = document.getElementById('btnSettings');
+        btn.style.backgroundImage = `url(${img})`;
+        btn.innerText = '';
     }
 });
 
