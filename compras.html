@@ -141,9 +141,49 @@
         .btn-danger{color:var(--danger)!important;border-color:rgba(239,68,68,.3)!important;}
     
         @keyframes pinBoxIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+        /* ── Offline Banner ── */
+        #offline-toast{
+            position:fixed;
+            bottom:24px;
+            left:50%;
+            transform:translateX(-50%) translateY(0);
+            z-index:9999;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:11px 16px;
+            background:var(--surface);
+            border:0.5px solid #EF9F27;
+            border-left:3px solid #BA7517;
+            border-radius:14px;
+            box-shadow:0 8px 28px rgba(0,0,0,.18);
+            font-size:.8rem;
+            font-weight:700;
+            color:var(--text);
+            white-space:nowrap;
+            pointer-events:none;
+            opacity:0;
+            transition:opacity .35s ease, transform .35s ease;
+            max-width:calc(100vw - 32px);
+        }
+        #offline-toast.show{opacity:1;pointer-events:auto;}
+        #offline-toast.hide{opacity:0;transform:translateX(-50%) translateY(12px);}
+        #offline-dot{width:8px;height:8px;border-radius:50%;background:#BA7517;flex-shrink:0;}
+        #offline-label{display:flex;flex-direction:column;gap:1px;}
+        #offline-label strong{font-size:.82rem;color:var(--text);}
+        #offline-label span{font-size:.7rem;font-weight:600;color:var(--text-sub);}
     </style>
 </head>
 <body>
+<div id="offline-toast" role="status" aria-live="polite">
+    <div id="offline-dot"></div>
+    <div id="offline-label">
+        <strong>Sin conexión</strong>
+        <span>El chat y los tipos de cambio no están disponibles</span>
+    </div>
+</div>
+
 <div class="wrap">
     <div class="app-header">
         <a href="index.html" class="logo" style="text-decoration:none;">
@@ -1238,6 +1278,24 @@ document.getElementById('userEmail').innerText = perfilNombre || user.email;
 })();
 </script>
 <!-- ═══════════════ FIN TAXUSA AI CHAT ═══════════════ -->
+<!-- ── Offline Toast ── -->
+<script>
+(function(){
+    var toast = document.getElementById('offline-toast');
+    function updateStatus(){
+        if(!navigator.onLine){
+            toast.classList.remove('hide');
+            toast.classList.add('show');
+        } else {
+            toast.classList.remove('show');
+            toast.classList.add('hide');
+        }
+    }
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+})();
+</script>
 
 </body>
 </html>
