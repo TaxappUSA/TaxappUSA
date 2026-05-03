@@ -277,7 +277,8 @@
                 <div class="code-badge" onclick="copiarCodigo()">🔑 <span id="g-codigo">—</span> · Copiar</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-                <button class="btn-danger-txt" onclick="salirGrupo()">Salir ✕</button>
+                <button class="btn-danger-txt" onclick="volverLobby()" style="color:var(--text-sub);">← Volver</button>
+                <button class="btn-danger-txt" id="btn-salir-grupo" onclick="abandonarGrupo()" style="font-size:.7rem;opacity:.7;">🚪 Salir del grupo</button>
                 <button class="btn-danger-txt" id="btn-eliminar-grupo" onclick="eliminarGrupo()" style="display:none;font-size:.7rem;opacity:.7;">🗑️ Eliminar grupo</button>
             </div>
         </div>
@@ -694,12 +695,38 @@ window.setCategoria = (cat,el) => {
     el.classList.add('active');
 };
 
-window.salirGrupo = () => {
+window.volverLobby = () => {
     if (unsubscribe) unsubscribe();
     localStorage.removeItem('grupoActivo');
     currentGroup=null;
     showSection('s-lobby');
     cargarMisGrupos();
+};
+
+window.abandonarGrupo = async () => {
+    if (!currentGroup || currentGroup._demo) { showToast('\u26a0\ufe0f No disponible en modo demo'); return; }
+    if (!currentUser) return;
+    const nombre = currentGroup.data.nombre;
+    if (!confirm(`\u00bfSalir del grupo "${nombre}"?\n\nVas a dejar de ser miembro. Tus gastos registrados se mantendr\u00e1n.`)) return;
+    try {
+        const ref = doc(db, 'grupos', currentGroup.id);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const nuevosMiembros = data.miembros.filter(m => m.uid !== currentUser.uid);
+        const nuevosUids = (data.miembroUids || []).filter(uid => uid !== currentUser.uid);
+        await updateDoc(ref, { miembros: nuevosMiembros, miembroUids: nuevosUids });
+        const grupos = JSON.parse(localStorage.getItem('misGrupos')||'[]').filter(g => g.id !== currentGroup.id);
+        localStorage.setItem('misGrupos', JSON.stringify(grupos));
+        if (unsubscribe) unsubscribe();
+        localStorage.removeItem('grupoActivo');
+        currentGroup = null;
+        showSection('s-lobby');
+        cargarMisGrupos();
+        showToast('\u2705 Saliste del grupo correctamente');
+    } catch(e) {
+        showToast('\u274c Error: ' + e.message);
+    }
 };
 
 window.eliminarGrupo = async () => {
