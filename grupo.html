@@ -241,7 +241,10 @@
                 <h2 id="g-titulo">—</h2>
                 <div class="code-badge" onclick="copiarCodigo()">🔑 <span id="g-codigo">—</span> · Copiar</div>
             </div>
-            <button class="btn-danger-txt" onclick="salirGrupo()">Salir ✕</button>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                <button class="btn-danger-txt" onclick="salirGrupo()">Salir ✕</button>
+                <button class="btn-danger-txt" id="btn-eliminar-grupo" onclick="eliminarGrupo()" style="display:none;font-size:.7rem;opacity:.7;">🗑️ Eliminar grupo</button>
+            </div>
         </div>
 
         <!-- Tabs -->
@@ -617,6 +620,24 @@ window.salirGrupo = () => {
     currentGroup=null; showSection('s-lobby');
 };
 
+window.eliminarGrupo = async () => {
+    if (!currentGroup || currentGroup._demo) { showToast('⚠️ No disponible en modo demo'); return; }
+    if (currentGroup.data.creadoPor !== currentUser.uid) { showToast('❌ Solo el creador puede eliminar el grupo'); return; }
+    const nombre = currentGroup.data.nombre;
+    if (!confirm(`¿Eliminar el grupo "${nombre}" permanentemente?\n\nEsta acción no se puede deshacer y borrará todos los gastos.`)) return;
+    try {
+        if (unsubscribe) unsubscribe();
+        await deleteDoc(doc(db, 'grupos', currentGroup.id));
+        localStorage.removeItem('grupoActivo');
+        currentGroup = null;
+        showSection('s-lobby');
+        showToast('🗑️ Grupo eliminado correctamente');
+    } catch(e) {
+        showToast('❌ Error al eliminar: ' + e.message);
+        console.error('[eliminarGrupo]', e);
+    }
+};
+
 window.copiarCodigo = () => {
     const c=$('g-codigo').textContent;
     navigator.clipboard?.writeText(c).catch(()=>{});
@@ -625,9 +646,15 @@ window.copiarCodigo = () => {
 
 // Render
 function renderGrupo() {
-    const {nombre,codigo,miembros,gastos} = currentGroup.data;
+    const {nombre,codigo,miembros,gastos,creadoPor} = currentGroup.data;
     $('g-titulo').textContent=nombre;
     $('g-codigo').textContent=codigo;
+
+    // Mostrar botón eliminar solo al creador
+    const btnEliminar = document.getElementById('btn-eliminar-grupo');
+    if (btnEliminar) {
+        btnEliminar.style.display = (currentUser && creadoPor === currentUser.uid && !currentGroup._demo) ? 'block' : 'none';
+    }
 
     const sel=$('g-pagador');
     sel.innerHTML=miembros.map(m=>
