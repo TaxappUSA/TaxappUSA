@@ -1508,7 +1508,8 @@ window.onload = () => {
             const hash = await sha256(entered);
             const stored = localStorage.getItem('taxusa_pin_hash');
             if (hash === stored) {
-                // PIN correcto — ocultar overlay
+                // PIN correcto — guardar sesión y ocultar overlay
+                sessionStorage.setItem('offline_unlocked', '1');
                 document.getElementById('pinOfflineOverlay').classList.remove('show');
             } else {
                 attempts++;
@@ -1527,6 +1528,9 @@ window.onload = () => {
     async function init() {
         const offline = await checkOffline();
         if (!offline) return; // hay internet, no mostrar nada
+
+        // Ya desbloqueado en esta sesión — no pedir PIN de nuevo
+        if (sessionStorage.getItem('offline_unlocked')) return;
 
         const hash = localStorage.getItem('taxusa_pin_hash');
         if (!hash) return; // no hay PIN configurado, dejar pasar
