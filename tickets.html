@@ -369,6 +369,7 @@
     <button class="drawer-btn" onclick="changeProfile()">👤 <span data-i18n="btn_profile">Cambiar Perfil</span></button>
     <button class="drawer-btn" onclick="toggleDarkMode()">🌓 <span data-i18n="btn_theme">Cambiar Tema</span></button>
     <button class="drawer-btn" onclick="location.reload()">🔄 <span data-i18n="btn_update">Actualizar App</span></button>
+    <button class="drawer-btn" onclick="gestionarPIN()">🔢 <span>Cambiar PIN offline</span></button>
     <button class="drawer-btn" onclick="doLogout()">🚪 <span data-i18n="btn_logout">Cerrar Sesión</span></button>
     <div style="margin-top:auto;padding-top:16px;">
         <button class="drawer-btn btn-danger-d" onclick="doDeleteAccount()">🗑️ <span data-i18n="btn_delete">Eliminar Cuenta</span></button>
@@ -481,6 +482,17 @@ onAuthStateChanged(auth, user => {
     initDocs();
 });
 
+window.gestionarPIN = () => {
+    document.getElementById('settingsDrawer').classList.remove('open');
+    document.getElementById('menuOverlay').style.display = 'none';
+    if (!navigator.onLine) {
+        const lang = localStorage.getItem('appLang') || 'es';
+        alert(lang==='en' ? 'You need internet to change your PIN.' : lang==='pt' ? 'Você precisa de internet para alterar o PIN.' : 'Necesitás internet para cambiar el PIN.');
+        return;
+    }
+    localStorage.setItem('taxusa_action', 'change_pin');
+    window.location.href = 'login.html';
+};
 window.doLogout = () => signOut(auth).then(() => window.location.replace('login.html'));
 window.doDeleteAccount = async () => {
     if (!confirm('¿Eliminar cuenta permanentemente?')) return;
